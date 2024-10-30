@@ -1,1 +1,3 @@
 Cześć, tu warstwa klienta.
+
+Z tej strony frontend_developer
