@@ -7,3 +7,5 @@ Uczę się Git-a.
 Bo lubię.
 
 I muszę...
+
+Kope lat
