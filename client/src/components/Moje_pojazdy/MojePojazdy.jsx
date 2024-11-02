@@ -1,36 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
 import '../css/Style.css'
-import './Moje_pojazdy.css'
-import logo from '../css/img/mechanik-alpha.png';
+import './MojePojazdy.css'
 import vehicle_icon from '../css/img/vehicle.png';
 
-const Moje_pojazdy = () => {
+const MojePojazdy = () => {
     return(
         <div className='body-div'>
-            <header>
-                <div>
-                    <a href="/">
-                        <img src={logo}/>
-                    </a>
-                    <h1>Stacja Kontroli Pojazdów</h1>
-                </div>
-                <nav>
-                    <ul>
-                        <Link to="/" className="btn">Strona główna</Link>
-                        <Link to="/o_nas" className="btn">O nas</Link>
-                        <Link to="/moje_konto" className="btn">Moje konto</Link>
-                        <Link to="/moje_pojazdy" className="btn">Moje pojazdy</Link>
-                        <Link to="/moje_rezerwacje" className="btn">Moje rezerwacje</Link>
-                        <Link to="/zamow_usluge" className="btn">Zamów usługę</Link>
-                        <Link to="/logowanie" className="btn">Zaloguj się</Link>
-                        <Link to="/rejestracja" className="btn">Zarejestruj się</Link>
-                    </ul>
-                </nav>
-            </header>
             <h2>Moje pojazdy</h2>
             <div className='moje_pojazdy-main-div'>
-                <button id="add">Dodaj</button>
+                <button id="add"><Link to="/moje_pojazdy/dodaj_pojazd" className="btn">Dodaj</Link></button>
                 <div className="vehicle">
                     <div className="photo">
                         <img src={vehicle_icon}/>
@@ -68,4 +47,4 @@ const Moje_pojazdy = () => {
     );
 };
 
-export default Moje_pojazdy;
+export default MojePojazdy;

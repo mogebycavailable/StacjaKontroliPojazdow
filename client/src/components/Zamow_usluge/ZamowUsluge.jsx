@@ -1,32 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
 import '../css/Style.css'
-import './Zamow_usluge.css'
-import logo from '../css/img/mechanik-alpha.png';
+import './ZamowUsluge.css'
 
-const Zamow_usluge = () => {
+const ZamowUsluge = () => {
     return(
         <div className='body-div'>
-            <header>
-                <div>
-                    <a href="/">
-                        <img src={logo}/>
-                    </a>
-                    <h1>Stacja Kontroli Pojazdów</h1>
-                </div>
-                <nav>
-                    <ul>
-                        <Link to="/" className="btn">Strona główna</Link>
-                        <Link to="/o_nas" className="btn">O nas</Link>
-                        <Link to="/moje_konto" className="btn">Moje konto</Link>
-                        <Link to="/moje_pojazdy" className="btn">Moje pojazdy</Link>
-                        <Link to="/moje_rezerwacje" className="btn">Moje rezerwacje</Link>
-                        <Link to="/zamow_usluge" className="btn">Zamów usługę</Link>
-                        <Link to="/logowanie" className="btn">Zaloguj się</Link>
-                        <Link to="/rejestracja" className="btn">Zarejestruj się</Link>
-                    </ul>
-                </nav>
-            </header>
             <h2>zamawianie usługi</h2>
             <main>
                 <div className="progress-bar">
@@ -104,4 +83,4 @@ const Zamow_usluge = () => {
     );
 };
 
-export default Zamow_usluge;
+export default ZamowUsluge;

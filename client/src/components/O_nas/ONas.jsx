@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
-import './O_nas.css'
+import './ONas.css'
 import '../css/Style.css'
-import logo from '../css/img/mechanik-alpha.png';
 import foto3 from '../css/img/foto3.jpg';
 import foto4 from '../css/img/foto4.jpg';
 import foto5 from '../css/img/foto5.png';
@@ -10,29 +9,9 @@ import foto6 from '../css/img/foto6.png';
 import foto7 from '../css/img/foto7.png';
 import foto8 from '../css/img/foto8.png';
 
-const O_nas = () => {
+const ONas = () => {
     return(
         <div className='div-body'>
-            <header>
-                <div>
-                    <a href="/">
-                        <img src={logo}/>
-                    </a>
-                    <h1>Stacja Kontroli Pojazdów</h1>
-                </div>
-                <nav>
-                    <ul>
-                        <Link to="/" className="btn">Strona główna</Link>
-                        <Link to="/o_nas" className="btn">O nas</Link>
-                        <Link to="/moje_konto" className="btn">Moje konto</Link>
-                        <Link to="/moje_pojazdy" className="btn">Moje pojazdy</Link>
-                        <Link to="/moje_rezerwacje" className="btn">Moje rezerwacje</Link>
-                        <Link to="/zamow_usluge" className="btn">Zamów usługę</Link>
-                        <Link to="/logowanie" className="btn">Zaloguj się</Link>
-                        <Link to="/rejestracja" className="btn">Zarejestruj się</Link>
-                    </ul>
-                </nav>
-            </header>
             <h2>O naszej firmie i działalności</h2>
             <main>
                 <article>
@@ -66,4 +45,4 @@ const O_nas = () => {
     );
 };
 
-export default O_nas;
+export default ONas;

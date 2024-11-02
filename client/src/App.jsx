@@ -1,31 +1,42 @@
 import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-//import './App.css'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
-import Strona_glowna from './components/Strona_glowna/Strona_glowna'
-import O_nas from './components/O_nas/O_nas'
-import Moje_konto from './components/Moje_konto/Moje_konto'
-import Moje_pojazdy from './components/Moje_pojazdy/Moje_pojazdy'
-import Moje_rezerwacje from './components/Moje_rezerwacje/Moje_rezerwacje'
-import Zamow_usluge from './components/Zamow_usluge/Zamow_usluge'
+import Menu from './components/Menu/Menu'
+import Footer from './components/Footer/Footer'
+import StronaGlowna from './components/Strona_glowna/StronaGlowna'
+import ONas from './components/O_nas/ONas'
+import MojeKonto from './components/Moje_konto/MojeKonto'
+import MojePojazdy from './components/Moje_pojazdy/MojePojazdy'
+import DodajPojazd from './components/Moje_pojazdy/DodajPojazd'
+import EdytujPojazd from './components/Moje_pojazdy/EdytujPojazd'
+import MojeRezerwacje from './components/Moje_rezerwacje/MojeRezerwacje'
+import ZamowUsluge from './components/Zamow_usluge/ZamowUsluge'
 import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
 
 function App() {
 
   return (
-    <Routes>
-      <Route path='/' element={<Strona_glowna/>}/>
-      <Route path='/o_nas' exact element={<O_nas/>}/>
-      <Route path='/moje_konto' exact element={<Moje_konto/>}/>
-      <Route path='/moje_pojazdy' exact element={<Moje_pojazdy/>}/>
-      <Route path='/moje_rezerwacje' exact element={<Moje_rezerwacje/>}/>
-      <Route path='/zamow_usluge' exact element={<Zamow_usluge/>}/>
-      <Route path='/rejestracja' exact element={<Rejestracja/>}/>
-      <Route path='/logowanie' exact element={<Logowanie/>}/>
-    </Routes>
+    <BrowserRouter>
+      <div>
+        <Menu />
+        <div>
+          <Routes>
+            <Route path='/' element={<StronaGlowna/>}/>
+            <Route path='/o_nas' exact element={<ONas/>}/>
+            <Route path='/moje_konto' exact element={<MojeKonto/>}/>
+            <Route path='/moje_pojazdy' exact element={<MojePojazdy/>}/>
+            <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/>
+            <Route path='/moje_pojazdy/edytuj_pojazd' exact element={<EdytujPojazd/>}/>
+            <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/>
+            <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/>
+            <Route path='/rejestracja' exact element={<Rejestracja/>}/>
+            <Route path='/logowanie' exact element={<Logowanie/>}/>
+          </Routes>
+        </div>
+        <Footer />
+      </div>
+    </BrowserRouter>
   )
 }
 
