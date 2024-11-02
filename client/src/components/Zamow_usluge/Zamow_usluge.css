@@ -1,0 +1,111 @@
+.progress-bar
+{
+	margin: 0 auto;
+	width: 60%;
+	padding: 0;
+	background-color: black;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: stretch;
+}
+
+#first
+{
+	height: 1em;
+	flex: 1;
+}
+
+#second
+{
+	height: 1em;
+	flex: 1;
+}
+
+#third
+{
+	height: 1em;
+	flex: 1;
+}
+
+.zamow_usluge-h3
+{
+	text-align: center;
+	color: #ddd;
+	font-size: 26px;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	font-weight: 400;
+}
+
+select,input[type=date]
+{
+	margin: 5px 0;
+	border: 3px solid gray;
+	border-radius: 7px;
+	font-size: 20px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+input[type=submit]
+{
+	min-width: 100px;
+	padding: 10px;
+	background-color: #ffa500;
+	border: 2px solid #cc7200;
+	border-radius: 10px;
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	color: #000;
+	text-decoration: none;
+	box-sizing: border-box;
+	font-size: 20px;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+input[type=submit]:hover, form a:hover
+{
+	background-color: #ffc722;
+	cursor: pointer;
+}
+
+form
+{
+	font-size: 20px;
+	max-width: 20em;
+	margin: 1em auto;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: #333;
+	padding: 0.5em 1em;
+	border-radius: 10px;
+}
+
+fieldset
+{
+	border-radius: 10px;
+	margin: 10px;
+	border-color: #ffa500;
+}
+
+legend
+{
+	color: #ffa500;
+}
+
+input[type=radio],input[type=checkbox]
+{
+	accent-color: #ffa500;
+}
+
+.flex-buttons
+{
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+}

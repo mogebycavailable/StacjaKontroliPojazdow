@@ -1,0 +1,109 @@
+.moje_pojazd-main-div
+{
+	width: 70%;
+	margin: 20px auto;
+	background-color: #333;
+	border-radius: 14px;
+	padding: 5px;
+}
+
+img
+{
+	margin: 0;
+}
+
+.vehicle,.rezerwacja
+{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	border: 2px solid black;
+	border-radius: 5px;
+	margin: 5px;
+}
+
+.photo
+{
+	/* width: 20%; */
+	margin: 14px;
+}
+
+.data
+{
+	width: 50%;
+	margin: 14px;
+}
+
+h4
+{
+	color: #ddd;
+	line-height: 1.05em;
+	margin: 0.5em 0;
+	padding: 0;
+}
+
+.wazne
+{
+	color: green;
+}
+
+.niewazne
+{
+	color: red;
+}
+
+button
+{
+	background-color: #cc7300;
+	border: 2px solid #aa5100;
+	font-size: 14px;
+	border-radius: 10px;
+	padding: 5px;
+	margin-right: 1em;
+	font-weight: 700;
+	color: white;
+}
+
+button:hover
+{
+	background-color: #ffa500;
+	cursor: pointer;
+}
+
+#logout
+{
+	background-color: #ffa500;
+	border: 2px solid #770000;
+}
+
+#logout:hover
+{
+	background-color: #ffc722;
+}
+
+#delete
+{
+	background-color: #222;
+	border: 2px solid black;
+}
+
+#delete:hover
+{
+	background-color: #555;
+}
+
+#add
+{
+	display: block;
+	margin: 10px auto;
+	background-color: green;
+	border: 2px solid darkgreen;
+	font-size: 26px;
+}
+
+#add:hover
+{
+	background-color: #33dd22;
+	cursor: pointer;
+}

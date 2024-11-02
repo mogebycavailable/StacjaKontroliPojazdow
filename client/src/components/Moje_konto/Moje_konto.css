@@ -1,0 +1,63 @@
+.moje_konto-main-div
+{
+	width: 60%;
+	background-color: #333;
+	border-radius: 14px;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: center;
+	margin: 1em auto;
+	color: white;
+	padding: 1.618em;
+}
+
+div > img
+{
+	display: block;
+}
+
+div
+{
+	margin: auto;
+}
+
+button
+{
+	background-color: #cc7300;
+	border: 2px solid #aa5100;
+	font-size: 22px;
+	border-radius: 10px;
+	padding: 5px;
+	margin-right: 1em;
+	font-weight: 700;
+	color: white;
+}
+
+button:hover
+{
+	background-color: #ffa500;
+	cursor: pointer;
+}
+
+#logout
+{
+	background-color: red;
+	border: 2px solid #770000;
+}
+
+#logout:hover
+{
+	background-color: #ff3333;
+}
+
+#delete
+{
+	background-color: #222;
+	border: 2px solid black;
+}
+
+#delete:hover
+{
+	background-color: #555;
+}

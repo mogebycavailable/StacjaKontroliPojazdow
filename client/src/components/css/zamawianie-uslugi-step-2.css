@@ -1,0 +1,24 @@
+#first
+{
+	background-color: #ffa500;
+}
+
+#second
+{
+	background-color: #ffa500;
+}
+
+#third
+{
+	background-color: black;	
+}
+
+option
+{
+	color: green;
+}
+
+option[disabled]
+{
+	color: red;
+}
