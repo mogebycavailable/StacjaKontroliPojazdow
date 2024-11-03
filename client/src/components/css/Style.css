@@ -113,3 +113,9 @@ footer
 	background-color: black;
 	
 }
+
+/* W celu usunięcia podkreśleń z elementów <Link> */
+a
+{
+	text-decoration: none;
+}
