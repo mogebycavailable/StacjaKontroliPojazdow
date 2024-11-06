@@ -4,35 +4,42 @@ import '../css/Style.css'
 import '../css/formstyle.css'
 
 const Rejestracja = () => {
+    const navigate = useNavigate()
     const [data, setData] = useState({
-        name: "",
-        surname: "",
+        imie: "",
+        nazwisko: "",
         email: "",
-        phone_nr: "",
-        password: "",
-        cpassword: ""
+        nrTel: "",
+        haslo: "",
+        powtorzHaslo: "",
+        regulamin: false
     })
 
-    const handleChange = ({ currentTarget: input }) => {
-        setData({ ...data, [input.name]: input.value })
+    const validData = data.imie && data.nazwisko && data.email && data.nrTel && data.haslo && data.powtorzHaslo && data.regulamin && (data.haslo === data.powtorzHaslo)
+
+    const createAccount = async () => {
+        const user = { 
+            imie: data.imie,
+            nazwisko: data.nazwisko,
+            email: data.email,
+            nrTel: data.nrTel,
+            haslo: data.haslo,
+            token: `token_${Date.now()}`
+        }
+
+        fetch('http://localhost:3000/users', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user)
+        }).then(() => {
+            console.log("Dodano nowego użytkownika")
+            navigate('/logowanie')
+        })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            const url = process.env.REGISTER_API_URL+"/api/users"
-            const { data: res } = await axios.post(url, data)
-            navigate("/login")
-            console.log(res.message)
-        } catch (error) {
-            if (
-                error.response &&
-                error.response.status >= 400 &&
-                error.response.status <= 500
-            ) {
-                setError(error.response.data.message)
-            }
-        }
+        createAccount()
     }
 
     return(
@@ -44,9 +51,9 @@ const Rejestracja = () => {
                     <input
                         type="text"
                         placeholder="Wprowadź imię"
-                        name="name"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, name: e.target.value }))}
-                        value={data.name}
+                        name="imie"
+                        onChange={(e) => setData((prevData) => ({ ...prevData, imie: e.target.value }))}
+                        value={data.imie}
                         required
                     />
 
@@ -54,9 +61,9 @@ const Rejestracja = () => {
                     <input
                         type="text"
                         placeholder="Wprowadź nazwisko"
-                        name="surname"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, surname: e.target.value }))}
-                        value={data.surname}
+                        name="nazwisko"
+                        onChange={(e) => setData((prevData) => ({ ...prevData, nazwisko: e.target.value }))}
+                        value={data.nazwisko}
                         required
                     />
 
@@ -73,10 +80,10 @@ const Rejestracja = () => {
                     <label>Nr telefonu</label>
                     <input 
                         type="tel"
-                        placeholder="Wprowadź adres e-mail"
-                        name="email"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
-                        value={data.email}
+                        placeholder="Wprowadź nr telefonu"
+                        name="nrTel"
+                        onChange={(e) => setData((prevData) => ({ ...prevData, nrTel: e.target.value }))}
+                        value={data.nrTel}
                         required
                     />			
                     
@@ -84,9 +91,9 @@ const Rejestracja = () => {
                     <input
                         type="password"
                         placeholder="Wprowadź hasło"
-                        name="password"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, password: e.target.value }))}
-                        value={data.password}
+                        name="haslo"
+                        onChange={(e) => setData((prevData) => ({ ...prevData, haslo: e.target.value }))}
+                        value={data.haslo}
                         required
                     />
                     
@@ -94,16 +101,19 @@ const Rejestracja = () => {
                     <input
                         type="password"
                         placeholder="Powtórz hasło"
-                        name="cpassword"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, cpassword: e.target.value }))}
-                        value={data.cpassword}
+                        name="powtorzHaslo"
+                        onChange={(e) => setData((prevData) => ({ ...prevData, powtorzHaslo: e.target.value }))}
+                        value={data.powtorzHaslo}
                         required
                     />
                     <br/>
-                    <label className="policy"><input type="checkbox" id="policy"/> Akceptuję <a href="https://pl.wikipedia.org/wiki/Regulamin" target="_blank">regulamin</a> i <a href="https://pl.wikipedia.org/wiki/Polityka_prywatno%C5%9Bci" target="_blank">politykę prywatności</a>
+                    <label className="policy">
+                        <input type="checkbox" id="regulamin" checked={data.regulamin} onChange={(e) => setData((prevData) => ({ ...prevData, regulamin: e.target.checked }))} />
+                        Akceptuję <a href="https://pl.wikipedia.org/wiki/Regulamin" target="_blank">regulamin</a> i <a href="https://pl.wikipedia.org/wiki/Polityka_prywatno%C5%9Bci" target="_blank">politykę prywatności</a>
                     </label>
-                    
-                    <input type="submit" value="Zarejestruj się"/>
+                    { validData && (
+                        <button type="submit">Zarejestruj się</button>
+                    )}
                 </div>
             </form>
         </div>

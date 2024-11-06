@@ -1,7 +1,7 @@
 {
   "users": [
-    
   ],
+  
   "vehicles": [
     {
       "id": "709c",
@@ -15,8 +15,8 @@
     {
       "id": "4be0",
       "marka": "Skoda",
-      "model": "Fabia",
-      "rokProdukcji": "2008",
+      "model": "Octavia",
+      "rokProdukcji": "2006",
       "nrRejestracyjny": "UPO 4GW13",
       "nrVin": "1G6DP567150131544",
       "nastepneBadanie": "2024-10-16"
