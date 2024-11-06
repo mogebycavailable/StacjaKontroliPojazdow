@@ -107,3 +107,8 @@ button:hover
 	background-color: #33dd22;
 	cursor: pointer;
 }
+
+.fieldset-edit{
+	width: 30em;
+	margin: 1em auto;
+}

@@ -1,0 +1,13 @@
+{
+  "vehicles": [
+    {
+      "id": "709c",
+      "marka": "Mitshubishi",
+      "model": "Carisma",
+      "rokProdukcji": "2003",
+      "nrRejestracyjny": "LLE 28634",
+      "nrVin": "XMCLNDA1A3F028131",
+      "nastepneBadanie": "2024-12-31"
+    }
+  ]
+}

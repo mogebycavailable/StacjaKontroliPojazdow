@@ -27,7 +27,7 @@ function App() {
             <Route path='/moje_konto' exact element={<MojeKonto/>}/>
             <Route path='/moje_pojazdy' exact element={<MojePojazdy/>}/>
             <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/>
-            <Route path='/moje_pojazdy/edytuj_pojazd' exact element={<EdytujPojazd/>}/>
+            <Route path='/moje_pojazdy/edytuj_pojazd/:id' exact element={<EdytujPojazd/>}/>
             <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/>
             <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/>
             <Route path='/rejestracja' exact element={<Rejestracja/>}/>
