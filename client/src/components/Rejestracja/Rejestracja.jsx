@@ -10,6 +10,7 @@ const Rejestracja = () => {
         email: "",
         phone_nr: "",
         password: "",
+        cpassword: ""
     })
 
     const handleChange = ({ currentTarget: input }) => {
@@ -44,7 +45,7 @@ const Rejestracja = () => {
                         type="text"
                         placeholder="Wprowadź imię"
                         name="name"
-                        onChange={handleChange}
+                        onChange={(e) => setData((prevData) => ({ ...prevData, name: e.target.value }))}
                         value={data.name}
                         required
                     />
@@ -54,7 +55,7 @@ const Rejestracja = () => {
                         type="text"
                         placeholder="Wprowadź nazwisko"
                         name="surname"
-                        onChange={handleChange}
+                        onChange={(e) => setData((prevData) => ({ ...prevData, surname: e.target.value }))}
                         value={data.surname}
                         required
                     />
@@ -64,23 +65,40 @@ const Rejestracja = () => {
                         type="email"
                         placeholder="Wprowadź adres e-mail"
                         name="email"
-                        onChange={handleChange}
+                        onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
                         value={data.email}
                         required
-                    />		
+                    />
+
+                    <label>Nr telefonu</label>
+                    <input 
+                        type="tel"
+                        placeholder="Wprowadź adres e-mail"
+                        name="email"
+                        onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
+                        value={data.email}
+                        required
+                    />			
                     
-                    <label htmlFor="pass">Hasło</label>
+                    <label>Hasło</label>
                     <input
                         type="password"
                         placeholder="Wprowadź hasło"
                         name="password"
-                        onChange={handleChange}
+                        onChange={(e) => setData((prevData) => ({ ...prevData, password: e.target.value }))}
                         value={data.password}
                         required
                     />
                     
-                    <label htmlFor="passrpt">Powtórz hasło</label>
-                    <input type="password" placeholder="Powtórz hasło" id="passrpt"/>
+                    <label>Powtórz hasło</label>
+                    <input
+                        type="password"
+                        placeholder="Powtórz hasło"
+                        name="cpassword"
+                        onChange={(e) => setData((prevData) => ({ ...prevData, cpassword: e.target.value }))}
+                        value={data.cpassword}
+                        required
+                    />
                     <br/>
                     <label className="policy"><input type="checkbox" id="policy"/> Akceptuję <a href="https://pl.wikipedia.org/wiki/Regulamin" target="_blank">regulamin</a> i <a href="https://pl.wikipedia.org/wiki/Polityka_prywatno%C5%9Bci" target="_blank">politykę prywatności</a>
                     </label>

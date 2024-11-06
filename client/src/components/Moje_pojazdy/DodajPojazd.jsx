@@ -98,15 +98,10 @@ const DodajPojazd = () => {
                     value={nastepneBadanie}
                     onChange={(e) => setNastepneBadanie(e.target.value)}
                 />
-                {/* <p>{ marka }</p>
-                <p>{ model }</p>
-                <p>{ rokProdukcji }</p>
-                <p>{ nrRejestracyjny }</p>
-                <p>{ nrVin }</p>
-                <p>{ nastepneBadanie }</p> */}
 
                 <br />
                 <button type="submit">Dodaj pojazd</button>
+                <Link to="/moje_pojazdy"><button id="back">Anuluj</button></Link>
             </form>
 	    </div>
     );

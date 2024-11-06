@@ -12,6 +12,23 @@ const EdytujPojazd = () => {
     const { id } = useParams()
     const navigate = useNavigate()
     const { data: vehicle, error } = useFetch('http://localhost:3000/vehicles/' + id)
+    const [marka, setMarka] = useState('')
+    const [model, setModel] = useState('')
+    const [rokProdukcji, setRokProdukcji] = useState('')
+    const [nrRejestracyjny, setNrRejestracyjny] = useState('')
+    const [nrVin, setNrVin] = useState('')
+    const [nastepneBadanie, setNastepneBadanie] = useState('')
+
+    useEffect(() => {
+        if(vehicle) {
+            setMarka(vehicle.marka || '')
+            setModel(vehicle.model || '')
+            setRokProdukcji(vehicle.rokProdukcji || '')
+            setNrRejestracyjny(vehicle.nrRejestracyjny || '')
+            setNrVin(vehicle.nrVin || '')
+            setNastepneBadanie(vehicle.nastepneBadanie || '')
+        }
+    }, [vehicle])
 
     // DELETE
     const handleDelete=() => {
@@ -24,15 +41,19 @@ const EdytujPojazd = () => {
     }
 
     // UPDATE
-    const handleUpdate=() => {
+    const updateVehicle = async () => {
         fetch('http://localhost:3000/vehicles/' + vehicle.id, {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(vehicle)
+            method: 'PATCH',
+            body: JSON.stringify({ marka, model, rokProdukcji, nrRejestracyjny, nrVin, nastepneBadanie })
         }).then(() => {
             console.log("Zmodyfikowano wybrany pojazd")
             navigate('/moje_pojazdy')
         })
+    }
+
+    const handleSubmit= (e) => {
+        e.preventDefault()
+        updateVehicle()
     }
 
     return(
@@ -43,14 +64,14 @@ const EdytujPojazd = () => {
                     <h2>Edycja danych pojazdu z id: {id}</h2>
                     <fieldset className='fieldset-edit'>
                         <legend>Informacje o pojeździe</legend>
-                        <form onSubmit={handleUpdate}>
+                        <form onSubmit={handleSubmit}>
                             <label>Marka</label>
                             <input
                                 type="text"
                                 placeholder="Wprowadź markę pojazdu"
                                 id="marka"
                                 required
-                                value={vehicle.marka}
+                                value={marka}
                                 onChange={(e) => setMarka(e.target.value)}
                             />
 
@@ -60,7 +81,7 @@ const EdytujPojazd = () => {
                                 placeholder="Wprowadź model pojazdu"
                                 id="model"
                                 required
-                                value={vehicle.model}
+                                value={model}
                                 onChange={(e) => setModel(e.target.value)}
                             />
 
@@ -69,7 +90,7 @@ const EdytujPojazd = () => {
                                 id="rok_prod"
                                 name="rok_prod"
                                 placeholder="Wprowadź rok produkcji pojazdu"
-                                required value={vehicle.rokProdukcji}
+                                required value={rokProdukcji}
                                 onChange={(e) => setRokProdukcji(e.target.value)}>
                                 {years.map((year) => (
                                     <option key={year} value={year}>
@@ -84,7 +105,7 @@ const EdytujPojazd = () => {
                                 placeholder="Wprowadź nr rejestracyjny pojazdu"
                                 id="nr_rej"
                                 required
-                                value={vehicle.nrRejestracyjny}
+                                value={nrRejestracyjny}
                                 onChange={(e) => setNrRejestracyjny(e.target.value)}
                             />
 
@@ -94,7 +115,7 @@ const EdytujPojazd = () => {
                                 placeholder="Wprowadź nr VIN pojazdu"
                                 id="vin"
                                 required
-                                value={vehicle.nrVin}
+                                value={nrVin}
                                 onChange={(e) => setNrVin(e.target.value)}
                             />
 
@@ -104,14 +125,15 @@ const EdytujPojazd = () => {
                                 placeholder="Wprowadź termin badania"
                                 id="termin_badania"
                                 required
-                                value={vehicle.nastepneBadanie}
+                                value={nastepneBadanie}
                                 onChange={(e) => setNastepneBadanie(e.target.value)}
                             />
 
                             <br />
                             <div className='edit-buttons-div' style={{display: 'inline', padding: '1em'}}>
-                                <button id="update" onClick={handleUpdate}>Zapisz zmiany</button>
+                                <button type="submit" id="update">Zapisz zmiany</button>
                                 <button id="delete" onClick={handleDelete}>Usuń pojazd</button>
+                                <Link to="/moje_pojazdy"><button id="back">Anuluj</button></Link>
                             </div>
                         </form>
                     </fieldset>

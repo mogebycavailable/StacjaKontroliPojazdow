@@ -36,7 +36,9 @@ const MojePojazdy = () => {
                             <Link to={`/moje_pojazdy/edytuj_pojazd/${vehicle.id}`}>
                                 <button id="edit">Edytuj dane</button>
                             </Link>
-                            <button id="order">Umów się na przegląd</button>
+                            <Link to={`/zamow_usluge`}>
+                                <button id="order">Umów się na przegląd</button>
+                            </Link>
                         </div>
                     </div>
                 );})}

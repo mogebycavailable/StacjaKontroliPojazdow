@@ -1,4 +1,7 @@
 {
+  "users": [
+    
+  ],
   "vehicles": [
     {
       "id": "709c",
@@ -8,6 +11,15 @@
       "nrRejestracyjny": "LLE 28634",
       "nrVin": "XMCLNDA1A3F028131",
       "nastepneBadanie": "2024-12-31"
+    },
+    {
+      "id": "4be0",
+      "marka": "Skoda",
+      "model": "Fabia",
+      "rokProdukcji": "2008",
+      "nrRejestracyjny": "UPO 4GW13",
+      "nrVin": "1G6DP567150131544",
+      "nastepneBadanie": "2024-10-16"
     }
   ]
 }
