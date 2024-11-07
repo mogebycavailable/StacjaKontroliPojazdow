@@ -15,6 +15,7 @@ import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
 
 function App() {
+  const user = localStorage.getItem('authToken')
 
   return (
     <BrowserRouter>
@@ -24,14 +25,14 @@ function App() {
           <Routes>
             <Route path='/' element={<StronaGlowna/>}/>
             <Route path='/o_nas' exact element={<ONas/>}/>
-            <Route path='/moje_konto' exact element={<MojeKonto/>}/>
-            <Route path='/moje_pojazdy' exact element={<MojePojazdy/>}/>
-            <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/>
-            <Route path='/moje_pojazdy/edytuj_pojazd/:id' exact element={<EdytujPojazd/>}/>
-            <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/>
-            <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/>
-            <Route path='/rejestracja' exact element={<Rejestracja/>}/>
-            <Route path='/logowanie' exact element={<Logowanie/>}/>
+            { user && <Route path='/moje_konto' exact element={<MojeKonto/>}/> }
+            { user && <Route path='/moje_pojazdy' exact element={<MojePojazdy/>}/> }
+            { user && <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/> }
+            { user && <Route path='/moje_pojazdy/edytuj_pojazd/:id' exact element={<EdytujPojazd/>}/> }
+            { user && <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/> }
+            { user && <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/> }
+            { !user && <Route path='/rejestracja' exact element={<Rejestracja/>}/> }
+            { !user && <Route path='/logowanie' exact element={<Logowanie/>}/> }
           </Routes>
         </div>
         <Footer />

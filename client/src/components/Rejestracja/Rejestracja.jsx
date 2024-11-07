@@ -18,13 +18,15 @@ const Rejestracja = () => {
     const validData = data.imie && data.nazwisko && data.email && data.nrTel && data.haslo && data.powtorzHaslo && data.regulamin && (data.haslo === data.powtorzHaslo)
 
     const createAccount = async () => {
+        const token = `token_${Date.now()}`
+
         const user = { 
             imie: data.imie,
             nazwisko: data.nazwisko,
             email: data.email,
             nrTel: data.nrTel,
             haslo: data.haslo,
-            token: `token_${Date.now()}`
+            token: token
         }
 
         fetch('http://localhost:3000/users', {
