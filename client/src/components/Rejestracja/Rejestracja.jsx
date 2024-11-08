@@ -18,15 +18,12 @@ const Rejestracja = () => {
     const validData = data.imie && data.nazwisko && data.email && data.nrTel && data.haslo && data.powtorzHaslo && data.regulamin && (data.haslo === data.powtorzHaslo)
 
     const createAccount = async () => {
-        const token = `token_${Date.now()}`
-
         const user = { 
             imie: data.imie,
             nazwisko: data.nazwisko,
             email: data.email,
             nrTel: data.nrTel,
-            haslo: data.haslo,
-            token: token
+            haslo: data.haslo
         }
 
         fetch('http://localhost:3000/users', {
@@ -94,6 +91,7 @@ const Rejestracja = () => {
                         type="password"
                         placeholder="Wprowadź hasło"
                         name="haslo"
+                        autoComplete="new-password"
                         onChange={(e) => setData((prevData) => ({ ...prevData, haslo: e.target.value }))}
                         value={data.haslo}
                         required
@@ -104,6 +102,7 @@ const Rejestracja = () => {
                         type="password"
                         placeholder="Powtórz hasło"
                         name="powtorzHaslo"
+                        autoComplete="off"
                         onChange={(e) => setData((prevData) => ({ ...prevData, powtorzHaslo: e.target.value }))}
                         value={data.powtorzHaslo}
                         required

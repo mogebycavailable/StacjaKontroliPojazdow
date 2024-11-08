@@ -4,7 +4,7 @@ import '../css/Style.css'
 import './MojeKonto.css'
 import user_icon from '../css/img/user.png';
 
-const MojeKonto = () => {
+const MojeKonto = ({ onLogout }) => {
     return(
         <div className='body-div'>
             <h2>Witaj, Piotrek i Tomasz!</h2>
@@ -18,7 +18,7 @@ const MojeKonto = () => {
                     <h3>Numer telefonu: +48 123-456-789</h3>
                     <span>
                         <button id="password">Zmień hasło</button>
-                        <button id="logout">Wyloguj się</button>
+                        <Link to='/logowanie'><button id="logout" onClick={onLogout}>Wyloguj się</button></Link>
                         <button id="delete">Usuń konto</button>
                     </span>
                 </div>

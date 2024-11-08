@@ -6,8 +6,7 @@
       "nazwisko": "Testowy",
       "email": "test@test.pl",
       "nrTel": "123456789",
-      "haslo": "test",
-      "token": "token_1731014704971"
+      "haslo": "test"
     },
     {
       "id": "16df",
@@ -15,8 +14,7 @@
       "nazwisko": "Testowy",
       "email": "test2@test.pl",
       "nrTel": "123456789",
-      "haslo": "test2",
-      "token": "token_1731015611711"
+      "haslo": "test2"
     }
   ],
   "vehicles": [

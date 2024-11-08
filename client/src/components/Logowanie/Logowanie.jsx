@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import '../css/Style.css'
 import '../css/formstyle.css'
 
-const Logowanie = () => {
+const Logowanie = ({ onLogin }) => {
     const navigate = useNavigate()
     const [data, setData] = useState({
         email: "",
         haslo: "",
-        token: ""
+        error: ""
     })
 
+    const validData = data.email && data.haslo
+
     const loginToAccount = async() => {
-        localStorage.setItem('authToken', token)
+        const response = await fetch(`http://localhost:3000/users?email=${data.email}`)
+        const users = await response.json()
+        const user = users.find((user) => user.password === data.password)
+
+        if(user){
+            const token = `token_${Date.now()}`
+            localStorage.setItem('authToken', token)
+            setData({ ...data, error: "" })
+            onLogin(token)
+            console.log("Utworzenie tokenu uwierzytelniającego i zalogowanie użytkownika")
+            navigate('/')
+        }else{
+            setData((prevData) => ({ ...prevData, error: 'Nieprawidłowy email lub hasło.' }))
+        }
     }
 
     const handleSubmit = async (e) => {
@@ -30,6 +45,7 @@ const Logowanie = () => {
                         type="text"
                         placeholder="Wprowadź e-mail"
                         name="email"
+                        autoComplete="email"
                         onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
                         required
                     />
@@ -39,6 +55,7 @@ const Logowanie = () => {
                         type="password"
                         placeholder="Wprowadź hasło"
                         name="haslo"
+                        autoComplete="current-password"
                         onChange={(e) => setData((prevData) => ({ ...prevData, haslo: e.target.value }))}
                         required
                     />
@@ -46,7 +63,10 @@ const Logowanie = () => {
                     <br/>
                     <a href="https://pl.wikipedia.org/wiki/Has%C5%82o" target="_blank">Zapomniałem hasła</a>
 
-                    <input type="submit" value="Zaloguj się"/>
+                    { validData && (
+                        <button type="submit">Zaloguj się</button>
+                    )}
+                    {data.error && <p style={{ color: 'red' }}>{data.error}</p>}
                 </div>
             </form>
 	    </div>

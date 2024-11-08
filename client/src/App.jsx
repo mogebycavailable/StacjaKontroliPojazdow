@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
 import Menu from './components/Menu/Menu'
@@ -15,7 +15,20 @@ import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
 
 function App() {
-  const user = localStorage.getItem('authToken')
+  const [user, setUser] = useState(null)
+  const [isLogged, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const userToken = localStorage.getItem('authToken')
+    setUser(userToken)
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    console.log("Usunięcie tokenu uwierzytelniającego użytkownika")
+    setIsLoggedIn(false)
+    console.log("Wylogowanie użytkownika")
+  };
 
   return (
     <BrowserRouter>
@@ -25,14 +38,14 @@ function App() {
           <Routes>
             <Route path='/' element={<StronaGlowna/>}/>
             <Route path='/o_nas' exact element={<ONas/>}/>
-            { user && <Route path='/moje_konto' exact element={<MojeKonto/>}/> }
+            { user && <Route path='/moje_konto' exact element={<MojeKonto onLogout={handleLogout}/>}/> }
             { user && <Route path='/moje_pojazdy' exact element={<MojePojazdy/>}/> }
             { user && <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/> }
             { user && <Route path='/moje_pojazdy/edytuj_pojazd/:id' exact element={<EdytujPojazd/>}/> }
             { user && <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/> }
             { user && <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/> }
             { !user && <Route path='/rejestracja' exact element={<Rejestracja/>}/> }
-            { !user && <Route path='/logowanie' exact element={<Logowanie/>}/> }
+            { !user && <Route path='/logowanie' exact element={<Logowanie onLogin={setUser} />}/> }
           </Routes>
         </div>
         <Footer />
