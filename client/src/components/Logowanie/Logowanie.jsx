@@ -16,11 +16,12 @@ const Logowanie = ({ onLogin }) => {
     const loginToAccount = async() => {
         const response = await fetch(`http://localhost:3000/users?email=${data.email}`)
         const users = await response.json()
-        const user = users.find((user) => user.password === data.password)
+        const user = users.find((user) => user.haslo === data.haslo)
 
         if(user){
             const token = `token_${Date.now()}`
             localStorage.setItem('authToken', token)
+            localStorage.setItem('userData', JSON.stringify(user))
             setData({ ...data, error: "" })
             onLogin(token)
             console.log("Utworzenie tokenu uwierzytelniającego i zalogowanie użytkownika")

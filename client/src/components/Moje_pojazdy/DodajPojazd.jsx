@@ -4,12 +4,14 @@ import '../css/Style.css'
 import './MojePojazdy.css'
 
 const DodajPojazd = () => {
-    const [marka, setMarka] = useState('');
-    const [model, setModel] = useState('');
-    const [rokProdukcji, setRokProdukcji] = useState('');
-    const [nrRejestracyjny, setNrRejestracyjny] = useState('');
-    const [nrVin, setNrVin] = useState('');
-    const [nastepneBadanie, setNastepneBadanie] = useState('');
+    const [data, setData] = useState({
+        marka: '',
+        model: '',
+        rokProdukcji: '',
+        nrRejestracyjny: '',
+        nrVin: '',
+        nastepneBadanie: ''
+    })
 
     const navigate = useNavigate();
 
@@ -19,7 +21,8 @@ const DodajPojazd = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const vehicle = { marka, model, rokProdukcji, nrRejestracyjny, nrVin, nastepneBadanie }
+        const user = JSON.parse(localStorage.getItem('userData'))
+        const vehicle = { ...data, userId: user.id }
 
         fetch('http://localhost:3000/vehicles', {
             method: 'POST',
@@ -41,8 +44,8 @@ const DodajPojazd = () => {
                     placeholder="Wprowadź markę pojazdu"
                     id="marka"
                     required
-                    value={marka}
-                    onChange={(e) => setMarka(e.target.value)}
+                    value={data.marka}
+                    onChange={(e) => setData((prevData) => ({ ...prevData, marka: e.target.value }))}
                 />
 
                 <label>Model</label>
@@ -51,17 +54,17 @@ const DodajPojazd = () => {
                     placeholder="Wprowadź model pojazdu"
                     id="model"
                     required
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
+                    value={data.model}
+                    onChange={(e) => setData((prevData) => ({ ...prevData, model: e.target.value }))}
                 />
 
                 <label>Rok produkcji</label>
                 <select
-                    id="rok_prod"
-                    name="rok_prod"
+                    id="rokProdukcji"
                     placeholder="Wprowadź rok produkcji pojazdu"
-                    required value={rokProdukcji}
-                    onChange={(e) => setRokProdukcji(e.target.value)}>
+                    required 
+                    value={data.rokProdukcji}
+                    onChange={(e) => setData((prevData) => ({ ...prevData, rokProdukcji: e.target.value }))}>
                     {years.map((year) => (
                         <option key={year} value={year}>
                             {year}
@@ -73,30 +76,30 @@ const DodajPojazd = () => {
                 <input
                     type="text"
                     placeholder="Wprowadź nr rejestracyjny pojazdu"
-                    id="nr_rej"
+                    id="nrRejestracyjny"
                     required
-                    value={nrRejestracyjny}
-                    onChange={(e) => setNrRejestracyjny(e.target.value)}
+                    value={data.nrRejestracyjny}
+                    onChange={(e) => setData((prevData) => ({ ...prevData, nrRejestracyjny: e.target.value }))}
                 />
 
                 <label>VIN</label>
                 <input
                     type="text"
                     placeholder="Wprowadź nr VIN pojazdu"
-                    id="vin"
+                    id="nrVin"
                     required
-                    value={nrVin}
-                    onChange={(e) => setNrVin(e.target.value)}
+                    value={data.nrVin}
+                    onChange={(e) => setData((prevData) => ({ ...prevData, nrVin: e.target.value }))}
                 />
 
                 <label>Termin następnego badania technicznego</label>
                 <input
                     type="date"
                     placeholder="Wprowadź termin badania"
-                    id="termin_badania"
+                    id="nastepneBadanie"
                     required
-                    value={nastepneBadanie}
-                    onChange={(e) => setNastepneBadanie(e.target.value)}
+                    value={data.nastepneBadanie}
+                    onChange={(e) => setData((prevData) => ({ ...prevData, nastepneBadanie: e.target.value }))}
                 />
 
                 <br />

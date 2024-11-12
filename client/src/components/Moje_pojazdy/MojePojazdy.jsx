@@ -6,12 +6,23 @@ import vehicle_icon from '../css/img/vehicle.png';
 import useFetch from '../../service/useFetch';
 
 const MojePojazdy = () => {
-    const { data: vehicles, error } = useFetch('http://localhost:3000/vehicles')
+    //const { data: vehicles, error } = useFetch('http://localhost:3000/vehicles')
     const today = new Date().toISOString().split('T')[0]
+
+    const [vehicles, setVehicles] = useState([])
+    const user = JSON.parse(localStorage.getItem('userData'))
+
+    useEffect(() => {
+        if (user) {
+          fetch(`http://localhost:3000/vehicles?userId=${user.id}`)
+            .then((res) => res.json())
+            .then((data) => setVehicles(data))
+            .catch((error) => console.error("Błąd pobierania pojazdów:", error))
+        }
+    }, [user])
 
     return(
         <div className='body-div'>
-            { error && <h2>{ error }</h2>}
             <h2>Moje pojazdy</h2>
             <div className='moje_pojazdy-main-div'>
                 <Link to="/moje_pojazdy/dodaj_pojazd">

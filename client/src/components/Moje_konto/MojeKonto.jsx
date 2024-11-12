@@ -5,20 +5,22 @@ import './MojeKonto.css'
 import user_icon from '../css/img/user.png';
 
 const MojeKonto = ({ onLogout }) => {
+    const loggedInUser = JSON.parse(localStorage.getItem('userData'))
+
     return(
         <div className='body-div'>
-            <h2>Witaj, Piotrek i Tomasz!</h2>
+            <h2>Witaj {loggedInUser.imie}</h2>
             <div className='moje_konto-main-div'>
                 <div>
                     <img className='user_icon-img' src={user_icon}/>
                 </div>
                 <div>
-                    <h3>Nazwa użytkownika: Piotrek</h3>
-                    <h3>E-mail: brzozikotek@abc.def</h3>
-                    <h3>Numer telefonu: +48 123-456-789</h3>
+                    <h3>Imię i nazwisko: {loggedInUser.imie} {loggedInUser.nazwisko}</h3>
+                    <h3>E-mail: {loggedInUser.email}</h3>
+                    <h3>Numer telefonu: +48 {loggedInUser.nrTel}</h3>
                     <span>
                         <button id="password">Zmień hasło</button>
-                        <Link to='/logowanie'><button id="logout" onClick={onLogout}>Wyloguj się</button></Link>
+                        <Link to='/'><button id="logout" onClick={onLogout}>Wyloguj się</button></Link>
                         <button id="delete">Usuń konto</button>
                     </span>
                 </div>

@@ -4,7 +4,7 @@ import '../css/Style.css'
 import logo from '../css/img/mechanik-alpha.png';
 
 const Menu = () => {
-    const user = localStorage.getItem('authToken')
+    const token = localStorage.getItem('authToken')
 
     return(
         <header>
@@ -18,12 +18,12 @@ const Menu = () => {
                 <ul>
                     <Link to="/" className="btn">Strona główna</Link>
                     <Link to="/o_nas" className="btn">O nas</Link>
-                    { user && <Link to="/moje_konto" className="btn">Moje konto</Link> }
-                    { user && <Link to="/moje_pojazdy" className="btn">Moje pojazdy</Link> }
-                    { user && <Link to="/moje_rezerwacje" className="btn">Moje rezerwacje</Link> }
-                    { user && <Link to="/zamow_usluge" className="btn">Zamów usługę</Link> }
-                    { !user && <Link to="/logowanie" className="btn">Zaloguj się</Link> }
-                    { !user && <Link to="/rejestracja" className="btn">Zarejestruj się</Link> }
+                    { token && <Link to="/moje_pojazdy" className="btn">Moje pojazdy</Link> }
+                    { token && <Link to="/moje_rezerwacje" className="btn">Moje rezerwacje</Link> }
+                    { token && <Link to="/zamow_usluge" className="btn">Zamów usługę</Link> }
+                    { token && <Link to="/moje_konto" className="btn">Moje konto</Link> }
+                    { !token && <Link to="/logowanie" className="btn">Zaloguj się</Link> }
+                    { !token && <Link to="/rejestracja" className="btn">Zarejestruj się</Link> }
                 </ul>
             </nav>
         </header>

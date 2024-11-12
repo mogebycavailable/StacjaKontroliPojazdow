@@ -15,16 +15,22 @@ import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
 
 function App() {
+  const [token, setToken] = useState(null)
   const [user, setUser] = useState(null)
   const [isLogged, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     const userToken = localStorage.getItem('authToken')
-    setUser(userToken)
+    const userData = localStorage.getItem('userData')
+    setToken(userToken)
+    setUser(userData)
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken')
+    localStorage.removeItem('userData')
+    setToken(null)
+    setUser(null)
     console.log("Usunięcie tokenu uwierzytelniającego użytkownika")
     setIsLoggedIn(false)
     console.log("Wylogowanie użytkownika")
@@ -38,14 +44,14 @@ function App() {
           <Routes>
             <Route path='/' element={<StronaGlowna/>}/>
             <Route path='/o_nas' exact element={<ONas/>}/>
-            { user && <Route path='/moje_konto' exact element={<MojeKonto onLogout={handleLogout}/>}/> }
-            { user && <Route path='/moje_pojazdy' exact element={<MojePojazdy/>}/> }
-            { user && <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/> }
-            { user && <Route path='/moje_pojazdy/edytuj_pojazd/:id' exact element={<EdytujPojazd/>}/> }
-            { user && <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/> }
-            { user && <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/> }
-            { !user && <Route path='/rejestracja' exact element={<Rejestracja/>}/> }
-            { !user && <Route path='/logowanie' exact element={<Logowanie onLogin={setUser} />}/> }
+            { token && <Route path='/moje_pojazdy' exact element={<MojePojazdy/>}/> }
+            { token && <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/> }
+            { token && <Route path='/moje_pojazdy/edytuj_pojazd/:id' exact element={<EdytujPojazd/>}/> }
+            { token && <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/> }
+            { token && <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/> }
+            { token && <Route path='/moje_konto' exact element={<MojeKonto onLogout={handleLogout}/>}/> }
+            { !token && <Route path='/rejestracja' exact element={<Rejestracja/>}/> }
+            { !token && <Route path='/logowanie' exact element={<Logowanie onLogin={setToken} />}/> }
           </Routes>
         </div>
         <Footer />
