@@ -65,6 +65,8 @@ const DodajPojazd = () => {
                     required 
                     value={data.rokProdukcji}
                     onChange={(e) => setData((prevData) => ({ ...prevData, rokProdukcji: e.target.value }))}>
+                        
+                    <option value=""></option>
                     {years.map((year) => (
                         <option key={year} value={year}>
                             {year}

@@ -47,6 +47,32 @@
       "nrVin": "3A8FY68B57T535536",
       "nastepneBadanie": "2024-10-30",
       "userId": "b707"
+    },
+    {
+      "id": "5963",
+      "marka": "Skoda",
+      "model": "Octavia",
+      "rokProdukcji": "1999",
+      "nrRejestracyjny": "ABC 12345",
+      "nrVin": "1FMRU17W94LB24232",
+      "nastepneBadanie": "2024-11-22",
+      "userId": "b707"
+    }
+  ],
+  "services": [
+    {
+      "id": "0a8f",
+      "userId": "b707",
+      "pojazd": "81dd",
+      "typPojazdu": "Samochód osobowy",
+      "typUslugi": "Badanie techniczne",
+      "rodzajPaliwa": "Benzyna",
+      "instalacjaLpg": true,
+      "napedHybrydowy": false,
+      "terminData": "2024-11-27",
+      "terminGodzina": "10:00",
+      "aktualnaData": "2024-11-13",
+      "aktualnaGodzina": "0:31"
     }
   ]
 }
