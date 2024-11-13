@@ -21,7 +21,7 @@
     {
       "id": "e85b",
       "marka": "Mitshubishi",
-      "model": "Carisma",
+      "model": "Space Wagon",
       "rokProdukcji": "2003",
       "nrRejestracyjny": "LUB 53AA2",
       "nrVin": "1FTNE1EW1EDA21448",
@@ -61,18 +61,60 @@
   ],
   "services": [
     {
-      "id": "0a8f",
+      "id": "66bd",
+      "userId": "b707",
+      "pojazd": "5963",
+      "typPojazdu": "Samochód osobowy",
+      "typUslugi": "",
+      "rodzajPaliwa": "Diesel",
+      "instalacjaLpg": false,
+      "napedHybrydowy": false,
+      "terminData": "2024-11-14",
+      "terminGodzina": "8:00",
+      "aktualnaData": "2024-11-13",
+      "aktualnaGodzina": "23:37"
+    },
+    {
+      "id": "9259",
       "userId": "b707",
       "pojazd": "81dd",
       "typPojazdu": "Samochód osobowy",
-      "typUslugi": "Badanie techniczne",
+      "typUslugi": "Sprawdzenie stanu technicznego pojazdu",
       "rodzajPaliwa": "Benzyna",
       "instalacjaLpg": true,
       "napedHybrydowy": false,
-      "terminData": "2024-11-27",
-      "terminGodzina": "10:00",
+      "terminData": "2024-11-22",
+      "terminGodzina": "15:00",
       "aktualnaData": "2024-11-13",
-      "aktualnaGodzina": "0:31"
+      "aktualnaGodzina": "23:38"
+    },
+    {
+      "id": "b3b4",
+      "userId": "ffc9",
+      "pojazd": "e85b",
+      "typPojazdu": "TIR",
+      "typUslugi": "Badanie techniczne",
+      "rodzajPaliwa": "Pojazd elektryczny",
+      "instalacjaLpg": false,
+      "napedHybrydowy": false,
+      "terminData": "2024-12-17",
+      "terminGodzina": "12:00",
+      "aktualnaData": "2024-11-13",
+      "aktualnaGodzina": "23:40"
+    },
+    {
+      "id": "c66f",
+      "userId": "ffc9",
+      "pojazd": "e2be",
+      "typPojazdu": "Samochód osobowy",
+      "typUslugi": "Regulacja wysokości świateł",
+      "rodzajPaliwa": "Diesel",
+      "instalacjaLpg": true,
+      "napedHybrydowy": false,
+      "terminData": "2024-11-25",
+      "terminGodzina": "10:00",
+      "aktualnaData": "2024-11-14",
+      "aktualnaGodzina": "0:6"
     }
   ]
 }
