@@ -10,19 +10,36 @@ const MojeRezerwacje = () => {
     const user = JSON.parse(localStorage.getItem('userData'))
     const navigate = useNavigate()
 
-    useEffect(() => {
-        if(user){
-            fetch(`http://localhost:3000/services?userId=${user.id}`)
-                .then((res) => res.json())
-                .then((data) => setServices(data))
-                .catch((error) => console.error("Błąd pobierania zamówionych usług:", error))
-            
-            fetch(`http://localhost:3000/vehicles?userId=${user.id}`)
-                .then((res) => res.json())
-                .then((data) => setVehicles(data))
-                .catch((error) => console.error("Błąd pobierania pojazdów:", error))
+    useEffect (() => {
+        const fetchVehicles = async () =>{
+            if(user){
+                try{
+                    const res = await fetch(`http://localhost:3000/vehicles?userId=${user.id}`)
+                    if(!res.ok) throw new Error('Błąd pobierania pojazdów')
+                    const data = await res.json()
+                    setVehicles(data)
+                }catch(error){
+                    console.error('Błąd pobierania pojazdów: ', error)
+                }
+            }
         }
-    }, [user])
+
+        const fetchServices = async () =>{
+            if(user){
+                try{
+                    const res = await fetch(`http://localhost:3000/services?userId=${user.id}`)
+                    if(!res.ok) throw new Error('Błąd pobierania rezerwacji usług')
+                    const data = await res.json()
+                    setServices(data)
+                }catch(error){
+                    console.error('Błąd pobierania rezerwacji usług: ', error)
+                }
+            }
+        }
+
+        fetchVehicles()
+        fetchServices()
+    }, [])
 
     const handleDelete = (id) => {
         fetch('http://localhost:3000/services/' + id, {
@@ -49,7 +66,7 @@ const MojeRezerwacje = () => {
                             <div className="data">
                                 <h4>Pojazd: {currentVehicle ? `${currentVehicle.marka} ${currentVehicle.model}` : 'Nie odnaleziono'}</h4>
                                 <h4>Nr rej.: {currentVehicle ? `${currentVehicle.nrRejestracyjny}` : 'Nie odnaleziono'}</h4>
-                                <h4>Przegląd ma się odbyć: {service.terminData} {service.terminGodzina}</h4>
+                                <h4>Przegląd zaplanowany na: {service.terminData} {service.terminGodzina}</h4>
                                 <h4>Umówiłeś go: {service.aktualnaData} {service.aktualnaGodzina}</h4>
                                 <button id="edit">Przełóż przegląd</button>
                                 <button id="delete" onClick={() => handleDelete(service.id)}>Usuń rezerwację</button>
