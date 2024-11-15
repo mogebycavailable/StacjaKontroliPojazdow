@@ -42,7 +42,7 @@
       "id": "81dd",
       "marka": "Citroen",
       "model": "Xsara",
-      "rokProdukcji": "2003",
+      "rokProdukcji": "2004",
       "nrRejestracyjny": "FU 12345",
       "nrVin": "3A8FY68B57T535536",
       "nastepneBadanie": "2024-10-30",
@@ -60,34 +60,6 @@
     }
   ],
   "services": [
-    {
-      "id": "66bd",
-      "userId": "b707",
-      "pojazd": "5963",
-      "typPojazdu": "Samochód osobowy",
-      "typUslugi": "",
-      "rodzajPaliwa": "Diesel",
-      "instalacjaLpg": false,
-      "napedHybrydowy": false,
-      "terminData": "2024-11-14",
-      "terminGodzina": "8:00",
-      "aktualnaData": "2024-11-13",
-      "aktualnaGodzina": "23:37"
-    },
-    {
-      "id": "9259",
-      "userId": "b707",
-      "pojazd": "81dd",
-      "typPojazdu": "Samochód osobowy",
-      "typUslugi": "Sprawdzenie stanu technicznego pojazdu",
-      "rodzajPaliwa": "Benzyna",
-      "instalacjaLpg": true,
-      "napedHybrydowy": false,
-      "terminData": "2024-11-22",
-      "terminGodzina": "15:00",
-      "aktualnaData": "2024-11-13",
-      "aktualnaGodzina": "23:38"
-    },
     {
       "id": "b3b4",
       "userId": "ffc9",
@@ -115,6 +87,20 @@
       "terminGodzina": "10:00",
       "aktualnaData": "2024-11-14",
       "aktualnaGodzina": "0:6"
+    },
+    {
+      "id": "af28",
+      "userId": "b707",
+      "pojazd": "81dd",
+      "typPojazdu": "Samochód osobowy",
+      "typUslugi": "Badanie techniczne",
+      "rodzajPaliwa": "Benzyna",
+      "instalacjaLpg": true,
+      "napedHybrydowy": false,
+      "terminData": "2024-11-23",
+      "terminGodzina": "14:00",
+      "aktualnaData": "2024-11-15",
+      "aktualnaGodzina": "18:50"
     }
   ]
 }

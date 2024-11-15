@@ -46,7 +46,8 @@ const MojeRezerwacje = () => {
             method: 'DELETE'
         }).then(() => {
             console.log("Usunięto wybraną rezerwację")
-            navigate('/moje_rezerwacje')
+            //navigate('/moje_rezerwacje')
+            window.location.reload(false)
         })
     }
 
@@ -68,7 +69,7 @@ const MojeRezerwacje = () => {
                                 <h4>Nr rej.: {currentVehicle ? `${currentVehicle.nrRejestracyjny}` : 'Nie odnaleziono'}</h4>
                                 <h4>Przegląd zaplanowany na: {service.terminData} {service.terminGodzina}</h4>
                                 <h4>Ostatnia modyfikacja: {service.aktualnaData} {service.aktualnaGodzina}</h4>
-                                <Link to={`/moje_pojazdy/edytuj_pojazd/${service.id}`}>
+                                <Link to={`/moje_rezerwacje/edytuj_rezerwacje/${service.id}`}>
                                     <button id="edit">Edytuj rezerwacje</button>
                                 </Link>
                                 <button id="delete" onClick={() => handleDelete(service.id)}>Usuń rezerwację</button>
