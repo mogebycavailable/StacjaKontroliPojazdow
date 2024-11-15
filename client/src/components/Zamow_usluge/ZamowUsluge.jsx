@@ -22,6 +22,9 @@ const ZamowUsluge = () => {
         aktualnaGodzina: ''
     })
 
+    const validStep1 = data.pojazd && data.typPojazdu && data.typUslugi && data.rodzajPaliwa
+    const validStep2 = data.terminData && data.terminGodzina
+
     useEffect(() => {
         if (user) {
           fetch(`http://localhost:3000/vehicles?userId=${user.id}`)
@@ -252,7 +255,8 @@ const ZamowUsluge = () => {
                                     </div>
                                 )}
                             </fieldset>
-                            <button type="button" onClick={nextStep}>Dalej</button>
+                            { validStep1 && <button type="button" onClick={nextStep}>Dalej</button> }
+                            <button type="button" onClick={(e) => setData((prevData) => ({ ...prevData, pojazd: '', typPojazdu: '', typUslugi: '', rodzajPaliwa: '', instalacjaLpg: false, napedHybrydowy: false}))}>Wyczyść</button>
                         </div>
                     )}
                     { step === 2 && (
@@ -288,7 +292,8 @@ const ZamowUsluge = () => {
                             </fieldset>
 
                             <button type="button" onClick={previousStep}>Wstecz</button>
-                            <button type="button" onClick={nextStep}>Dalej</button>
+                            { validStep2 && <button type="button" onClick={nextStep}>Dalej</button> }
+                            <button type="button" onClick={(e) => setData((prevData) => ({ ...prevData, terminData: '', terminGodzina: ''}))}>Wyczyść</button>
                         </div>
                     )}
                     { step === 3 && (

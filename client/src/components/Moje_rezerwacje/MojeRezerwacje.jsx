@@ -67,8 +67,10 @@ const MojeRezerwacje = () => {
                                 <h4>Pojazd: {currentVehicle ? `${currentVehicle.marka} ${currentVehicle.model}` : 'Nie odnaleziono'}</h4>
                                 <h4>Nr rej.: {currentVehicle ? `${currentVehicle.nrRejestracyjny}` : 'Nie odnaleziono'}</h4>
                                 <h4>Przegląd zaplanowany na: {service.terminData} {service.terminGodzina}</h4>
-                                <h4>Umówiłeś go: {service.aktualnaData} {service.aktualnaGodzina}</h4>
-                                <button id="edit">Przełóż przegląd</button>
+                                <h4>Ostatnia modyfikacja: {service.aktualnaData} {service.aktualnaGodzina}</h4>
+                                <Link to={`/moje_pojazdy/edytuj_pojazd/${service.id}`}>
+                                    <button id="edit">Edytuj rezerwacje</button>
+                                </Link>
                                 <button id="delete" onClick={() => handleDelete(service.id)}>Usuń rezerwację</button>
                             </div>
                         </div>
