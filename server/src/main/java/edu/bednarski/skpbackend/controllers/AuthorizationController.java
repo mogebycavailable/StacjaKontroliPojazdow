@@ -1,5 +1,6 @@
 package edu.bednarski.skpbackend.controllers;
 
+import edu.bednarski.skpbackend.domain.dto.JwtTokenDto;
 import edu.bednarski.skpbackend.domain.dto.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ public class AuthorizationController {
     @PostMapping(path = "/login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         if(userDto.getEmail().equals("admin@abc.def") && userDto.getPassword().equals("admin")) {
-            return new ResponseEntity<>("\"token\": \"abcdef\"",HttpStatus.OK);
+            return new ResponseEntity<>(new JwtTokenDto("abcdef","ADMIN"),HttpStatus.OK);
         }
         else return new ResponseEntity<>("Nieprawidlowe dane logowania!",HttpStatus.UNAUTHORIZED);
     }

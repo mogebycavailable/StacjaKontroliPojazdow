@@ -13,6 +13,7 @@ public class UserDto {
 
     private String password;
 
+
     public String getEmail() {
         return this.email;
     }
