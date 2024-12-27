@@ -16,7 +16,7 @@ public class AuthorizationController {
     @PostMapping(path = "/login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         if(userDto.getEmail().equals("admin@abc.def") && userDto.getPassword().equals("admin")) {
-            return new ResponseEntity<>(new JwtTokenDto("abcdef","ADMIN"),HttpStatus.OK);
+            return new ResponseEntity<>(new JwtTokenDto("abcdef","reftoken-876234876534","USER"),HttpStatus.OK);
         }
         else return new ResponseEntity<>("Nieprawidlowe dane logowania!",HttpStatus.UNAUTHORIZED);
     }

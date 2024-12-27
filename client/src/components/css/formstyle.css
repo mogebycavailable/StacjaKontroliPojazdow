@@ -1,0 +1,78 @@
+input
+{
+	margin: 5px 0;
+	border: 3px solid gray;
+	border-radius: 7px;
+	font-size: 20px;
+}
+
+.form
+{
+	font-size: 20px;
+	max-width: 20em;
+	margin-left: auto;
+	margin-right: auto;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: #333;
+	padding: 2em;
+	border-radius: 10px;
+}
+
+.form > *
+{
+	display: block;
+}
+
+input[type=submit]
+{
+	border: 3px solid #dd8300;
+	border-radius: 7px;
+	background-color: #ffa500;
+	color: black;
+	margin-top: 2em;
+}
+
+input[type=checkbox]
+{
+	display: inline;
+	cursor: pointer;
+}
+
+label.policy
+{
+	display: inline;
+}
+
+form a:link
+{
+	color: #ffa500;
+	text-decoration: underline;
+}
+
+form a:visited
+{
+	color: #ffa500;
+	text-decoration: underline;
+}
+
+
+form a:hover
+{
+	color: #dd8300;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
+
+input[type=submit]:hover
+{
+	border: 3px solid #ffa500;
+	border-radius: 7px;
+	background-color: #ffc722;
+	color: black;
+	cursor: pointer;
+}

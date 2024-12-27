@@ -1,0 +1,106 @@
+{
+  "users": [
+    {
+      "id": "b707",
+      "imie": "Tomasz",
+      "nazwisko": "Brzozowski",
+      "email": "tomasz@email.pl",
+      "nrTel": "123456789",
+      "haslo": "tomasz"
+    },
+    {
+      "id": "ffc9",
+      "imie": "Piotr",
+      "nazwisko": "Bednarski",
+      "email": "piotr@email.pl",
+      "nrTel": "987654321",
+      "haslo": "piotr"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "e85b",
+      "marka": "Mitshubishi",
+      "model": "Space Wagon",
+      "rokProdukcji": "2003",
+      "nrRejestracyjny": "LUB 53AA2",
+      "nrVin": "1FTNE1EW1EDA21448",
+      "nastepneBadanie": "2024-11-05",
+      "userId": "ffc9"
+    },
+    {
+      "id": "e2be",
+      "marka": "Fiat",
+      "model": "Uno",
+      "rokProdukcji": "1998",
+      "nrRejestracyjny": "WWA 36DL3",
+      "nrVin": "2B3KA43G86H488335",
+      "nastepneBadanie": "2024-12-17",
+      "userId": "ffc9"
+    },
+    {
+      "id": "81dd",
+      "marka": "Citroen",
+      "model": "Xsara",
+      "rokProdukcji": "2004",
+      "nrRejestracyjny": "FU 12345",
+      "nrVin": "3A8FY68B57T535536",
+      "nastepneBadanie": "2024-10-30",
+      "userId": "b707"
+    },
+    {
+      "id": "5963",
+      "marka": "Skoda",
+      "model": "Octavia",
+      "rokProdukcji": "1999",
+      "nrRejestracyjny": "ABC 12345",
+      "nrVin": "1FMRU17W94LB24232",
+      "nastepneBadanie": "2024-11-22",
+      "userId": "b707"
+    }
+  ],
+  "services": [
+    {
+      "id": "b3b4",
+      "userId": "ffc9",
+      "pojazd": "e85b",
+      "typPojazdu": "TIR",
+      "typUslugi": "Badanie techniczne",
+      "rodzajPaliwa": "Pojazd elektryczny",
+      "instalacjaLpg": false,
+      "napedHybrydowy": false,
+      "terminData": "2024-12-17",
+      "terminGodzina": "12:00",
+      "aktualnaData": "2024-11-13",
+      "aktualnaGodzina": "23:40"
+    },
+    {
+      "id": "c66f",
+      "userId": "ffc9",
+      "pojazd": "e2be",
+      "typPojazdu": "Samochód osobowy",
+      "typUslugi": "Regulacja wysokości świateł",
+      "rodzajPaliwa": "Diesel",
+      "instalacjaLpg": true,
+      "napedHybrydowy": false,
+      "terminData": "2024-11-25",
+      "terminGodzina": "10:00",
+      "aktualnaData": "2024-11-14",
+      "aktualnaGodzina": "0:6"
+    },
+    {
+      "id": "af28",
+      "userId": "b707",
+      "pojazd": "81dd",
+      "typPojazdu": "Samochód osobowy",
+      "typUslugi": "Badanie techniczne",
+      "rodzajPaliwa": "Benzyna",
+      "instalacjaLpg": true,
+      "napedHybrydowy": false,
+      "terminData": "2024-11-23",
+      "terminGodzina": "14:00",
+      "aktualnaData": "2024-11-15",
+      "aktualnaGodzina": "18:50"
+    }
+  ]
+}

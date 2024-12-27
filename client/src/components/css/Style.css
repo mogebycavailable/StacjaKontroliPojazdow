@@ -1,0 +1,121 @@
+body
+{
+	background-image: url("img/dark-honeycomb.png");
+	margin: 0;
+	padding: 0;
+	font-family: "Lato", sans-serif;
+}
+
+
+header > div
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+img
+{
+	width: 200px;
+	height: 200px;
+	margin-right: 150px;
+}
+
+h1
+{
+	color: white;
+	text-transform: uppercase;
+	letter-spacing: 0.6em;
+	font-weight: 900;
+	font-size: 42px;
+	margin: 1em 0;
+	text-align: center;
+}
+
+h2
+{
+	text-transform: uppercase;
+	letter-spacing: 0.5em;
+	color: white;
+	text-align: center;
+	margin: 1em 0;
+	font-weight: 700;
+	font-size: 40px;
+}
+
+nav > ul
+{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	list-style-type: none;
+	background-color: #ffa500;
+	padding: 5px 12px;
+	color: #000;
+	font-weight: 700;
+	font-size: 20px;
+	align-items: stretch;
+}
+
+nav > ul a
+{
+	display: block;
+	border-right: 1px dashed #cc7200;
+	padding: 7px 15px;
+	text-align: center;
+	flex: 3;
+}
+
+nav > ul a:first-child
+{
+	border-left: 1px dashed #cc7200;
+}
+
+nav > ul a:hover
+{
+	cursor: pointer;
+	background-color: #ffc722;
+	border-radius: 7px;
+}
+
+nav a:link
+{
+	color: black;
+	text-decoration: none;
+	display: block;
+}
+
+nav a:active
+{
+	color: black;
+	text-decoration: none;
+	display: block;
+}
+
+nav a:visited
+{
+	color: black;
+	text-decoration: none;
+	display: block;
+}
+
+footer
+{
+	padding: 8px;
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	font-size: 20px;
+	color: #fff;
+	background-color: black;
+	
+}
+
+/* W celu usunięcia podkreśleń z elementów <Link> */
+a
+{
+	text-decoration: none;
+}
