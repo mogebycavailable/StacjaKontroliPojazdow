@@ -3,42 +3,63 @@ import { Link, useNavigate } from "react-router-dom"
 import '../css/Style.css'
 import '../css/formstyle.css'
 
-const Rejestracja = () => {
+const Rejestracja = ({ onRegister }) => {
     const navigate = useNavigate()
     const [data, setData] = useState({
-        imie: "",
-        nazwisko: "",
+        name: "",
+        surname: "",
         email: "",
-        nrTel: "",
-        haslo: "",
-        powtorzHaslo: "",
-        regulamin: false
+        phone: "",
+        pwdHash: "",
+        confirmPwdHash: "",
+        policy: false
     })
 
-    const validData = data.imie && data.nazwisko && data.email && data.nrTel && data.haslo && data.powtorzHaslo && data.regulamin && (data.haslo === data.powtorzHaslo)
+    const validData = data.name && data.surname && data.email && data.phone && data.pwdHash && data.confirmPwdHash && data.policy && (data.pwdHash === data.confirmPwdHash)
 
-    const createAccount = async () => {
-        const user = { 
-            imie: data.imie,
-            nazwisko: data.nazwisko,
-            email: data.email,
-            nrTel: data.nrTel,
-            haslo: data.haslo
-        }
-
-        fetch('http://localhost:3000/users', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(user)
-        }).then(() => {
-            console.log("Dodano nowego użytkownika")
-            navigate('/logowanie')
-        })
+    const handleChange = ({ currentTarget: input }) => {
+        setData({ ...data, [input.name]: input.value })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        createAccount()
+
+        const user = { 
+            name: data.name,
+            surname: data.surname,
+            email: data.email,
+            phone: data.phone,
+            pwdHash: data.pwdHash
+        }
+		
+		try {
+            const url = "http://localhost:8080/api/register"
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+			
+			console.log("Dodano nowego użytkownika")
+            localStorage.setItem("access-token", user.accessToken)
+            localStorage.setItem("refresh-token", user.refreshToken)
+            localStorage.setItem("role", user.role)
+			navigate('/')
+			window.location.reload()
+            
+        } catch (error) {
+            if (
+                error.response &&
+                error.response.status >= 400 &&
+                error.response.status <= 500
+            ) {
+                setError(error.response.data.message)
+            }
+        }
+
+
     }
 
     return(
@@ -50,9 +71,10 @@ const Rejestracja = () => {
                     <input
                         type="text"
                         placeholder="Wprowadź imię"
-                        name="imie"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, imie: e.target.value }))}
-                        value={data.imie}
+                        name="name"
+                        //onChange={(e) => setData((prevData) => ({ ...prevData, name: e.target.value }))}
+                        onChange={handleChange}
+                        value={data.name}
                         required
                     />
 
@@ -60,9 +82,10 @@ const Rejestracja = () => {
                     <input
                         type="text"
                         placeholder="Wprowadź nazwisko"
-                        name="nazwisko"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, nazwisko: e.target.value }))}
-                        value={data.nazwisko}
+                        name="surname"
+                        //onChange={(e) => setData((prevData) => ({ ...prevData, surname: e.target.value }))}
+                        onChange={handleChange}
+                        value={data.surname}
                         required
                     />
 
@@ -71,7 +94,8 @@ const Rejestracja = () => {
                         type="email"
                         placeholder="Wprowadź adres e-mail"
                         name="email"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
+                        //onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
+                        onChange={handleChange}
                         value={data.email}
                         required
                     />
@@ -80,9 +104,10 @@ const Rejestracja = () => {
                     <input 
                         type="tel"
                         placeholder="Wprowadź nr telefonu"
-                        name="nrTel"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, nrTel: e.target.value }))}
-                        value={data.nrTel}
+                        name="phone"
+                        //onChange={(e) => setData((prevData) => ({ ...prevData, phone: e.target.value }))}
+                        onChange={handleChange}
+                        value={data.phone}
                         required
                     />			
                     
@@ -90,10 +115,11 @@ const Rejestracja = () => {
                     <input
                         type="password"
                         placeholder="Wprowadź hasło"
-                        name="haslo"
+                        name="pwdHash"
                         autoComplete="new-password"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, haslo: e.target.value }))}
-                        value={data.haslo}
+                        //onChange={(e) => setData((prevData) => ({ ...prevData, pwdHash: e.target.value }))}
+                        onChange={handleChange}
+                        value={data.pwdHash}
                         required
                     />
                     
@@ -101,15 +127,16 @@ const Rejestracja = () => {
                     <input
                         type="password"
                         placeholder="Powtórz hasło"
-                        name="powtorzHaslo"
+                        name="confirmPwdHash"
                         autoComplete="off"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, powtorzHaslo: e.target.value }))}
-                        value={data.powtorzHaslo}
+                        //onChange={(e) => setData((prevData) => ({ ...prevData, confirmPwdHash: e.target.value }))}
+                        onChange={handleChange}
+                        value={data.confirmPwdHash}
                         required
                     />
                     <br/>
                     <label className="policy">
-                        <input type="checkbox" id="regulamin" checked={data.regulamin} onChange={(e) => setData((prevData) => ({ ...prevData, regulamin: e.target.checked }))} />
+                        <input type="checkbox" id="policy" checked={data.policy} onChange={(e) => setData((prevData) => ({ ...prevData, policy: e.target.checked }))} />
                         Akceptuję <a href="https://pl.wikipedia.org/wiki/Regulamin" target="_blank">regulamin</a> i <a href="https://pl.wikipedia.org/wiki/Polityka_prywatno%C5%9Bci" target="_blank">politykę prywatności</a>
                     </label>
                     { validData && (

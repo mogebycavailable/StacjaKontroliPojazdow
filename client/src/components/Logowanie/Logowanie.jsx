@@ -7,10 +7,10 @@ const Logowanie = ({ onLogin }) => {
     const navigate = useNavigate()
     const [data, setData] = useState({
         email: "",
-        password: ""
+        pwdHash: ""
     })
 
-    const validData = data.email && data.password
+    const validData = data.email && data.pwdHash
     
     
     const handleSubmit = async (e) => {
@@ -64,9 +64,9 @@ const Logowanie = ({ onLogin }) => {
                     <input
                         type="password"
                         placeholder="Wprowadź hasło"
-                        name="password"
+                        name="pwdHash"
                         autoComplete="current-password"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, password: e.target.value }))}
+                        onChange={(e) => setData((prevData) => ({ ...prevData, pwdHash: e.target.value }))}
                         required
                     />
                     
