@@ -1,16 +1,18 @@
 package edu.bednarski.skpbackend.services.impl;
 
+import edu.bednarski.skpbackend.config.TokenConfig;
 import edu.bednarski.skpbackend.services.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.ToString;
+import lombok.extern.java.Log;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,15 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    private static final String SECRET_KEY = "Y2FwaXRhbGNvYXN0Y2F0Y2h3b3JyaWVkYmxvd2FmdGVybm9vbnBhcmFncmFwaHBhaWRwYXJ0aWNsZXNjbGltYXRld2luZGNvbXBhcmVkZXNjcmliZWluc2lkZWF0ZXNodXRmb3VnaHRzdGVhbXdoZW5ldmVyc3dpbWNvYXRmb3Jnb3R2aWN0b3J5YmFsYW5jZXdvcnNlYXJ0Y29uc2lkZXJhdHRlbnRpb25tb3RvcmNhbG10YWxraGF5b2NjdXJicmVhdGhpbmd0cmliZXBvdGF0b2VzY291bnRyeWNoYW1iZXJiZXlvbmR3b29kbWFjaGluZXBhcnR5ZWZmb3J0bWludXRlbXVzdGJyb3dud3JpdHRlbnJlZmVyZmVhdGhlcnNsYW5kc2lsdmVybWVhbnJlYXJtb3JuaW5nY2xvdGhlc3R3aWNldGVhY2hiYW5kc3RlZWxwcm90ZWN0aW9udG9tb3Jyb3dtZWRldGFpbGJ5Z3Jvd3Rod2VpZ2hleGNlcHRyZWFzb25saWV5b3V0aHdhdmVjYW5hY3R1YWxseW5vd2ZpZ2h0ZmV3YmFja3JlcGVhdGNvcm5maWd1cmVncm93dmFzdGRvbGxnaXJsY2VydGFpbmx5Y29sZGhvbWVjb3JyZWN0bWFzc2FnZWhhdGhpbGx0b3RhbGZvcnR5dG8=";
+    private final Long ACCESS_TOKEN_EXPIRATION;
+    private final Long REFRESH_TOKEN_EXPIRATION;
+    private final String SECRET_KEY;
+
+    public JwtServiceImpl(TokenConfig tokenConfig) {
+        this.ACCESS_TOKEN_EXPIRATION = tokenConfig.getAccessExpireMinutes()*60*1_000;
+        this.REFRESH_TOKEN_EXPIRATION = tokenConfig.getRefreshExpireMinutes()*60*1_000;
+        this.SECRET_KEY = tokenConfig.getSecretKey();
+    }
 
     @Override
     public String extractUsername(String token) {
@@ -31,20 +41,25 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateAccessToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails, ACCESS_TOKEN_EXPIRATION);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails, REFRESH_TOKEN_EXPIRATION);
     }
 
     public String generateToken(
             Map<String, Object> extraClaims,
-            UserDetails userDetails
+            UserDetails userDetails,
+            Long expiration
     ) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*15))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS512)
                 .compact();
     }

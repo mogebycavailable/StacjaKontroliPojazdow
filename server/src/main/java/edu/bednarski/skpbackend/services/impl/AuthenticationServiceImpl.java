@@ -41,8 +41,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userEntity.setRole(Role.CLIENT);
         UserEntity savedUserEntity = userRepository.save(userEntity);
         return Optional.of(JwtTokenDto.builder()
-                .accessToken(jwtService.generateToken(savedUserEntity))
-                .refreshToken("przykladowy-ref-token")
+                .accessToken(jwtService.generateAccessToken(savedUserEntity))
+                .refreshToken(jwtService.generateRefreshToken(savedUserEntity))
                 .role(userEntity.getRole().toString())
                 .build());
     }
@@ -57,8 +57,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
         Optional<UserEntity> userEntity = userRepository.findByEmail(userDto.getEmail());
         return userEntity.map(entity -> JwtTokenDto.builder()
-                .accessToken(jwtService.generateToken(entity))
-                .refreshToken("przykladowy-ref-token")
+                .accessToken(jwtService.generateAccessToken(entity))
+                .refreshToken(jwtService.generateRefreshToken(entity))
                 .role(entity.getRole().toString())
                 .build());
     }

@@ -2,17 +2,12 @@ package edu.bednarski.skpbackend;
 
 import edu.bednarski.skpbackend.config.RootConfig;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
-import edu.bednarski.skpbackend.domain.dto.UserDto;
-import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.repositories.UserRepository;
 import edu.bednarski.skpbackend.services.AuthenticationService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @Log
@@ -24,10 +19,10 @@ public class SkpbackendApplication implements CommandLineRunner {
 
 	private UserDetailsDto rootAccount;
 
-	public SkpbackendApplication(AuthenticationService authenticationService, UserRepository userRepository, RootConfig rootAccount) {
+	public SkpbackendApplication(AuthenticationService authenticationService, UserRepository userRepository, RootConfig rootConfig) {
 		this.authenticationService = authenticationService;
 		this.userRepository = userRepository;
-		this.rootAccount = rootAccount;
+		this.rootAccount = rootConfig.buildRootUser();
 	}
 
 
