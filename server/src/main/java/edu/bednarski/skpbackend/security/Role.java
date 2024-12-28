@@ -1,7 +1,7 @@
 package edu.bednarski.skpbackend.security;
 
 public enum Role {
-    CLIENT,
-    WORKER,
-    ADMIN
+    ROLE_CLIENT,
+    ROLE_WORKER,
+    ROLE_ADMIN
 }

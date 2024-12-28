@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -53,6 +54,18 @@ public class AuthorizationController {
         }
         else {
             return new ResponseEntity<>("Sesja wygasla. Zaloguj sie ponownie.",HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping(path = "/admin/register")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> createAdminAccount(@RequestBody UserDetailsDto userDetailsDto) {
+        Optional<UserDetailsDto> savedAdmin = authenticationService.registerAdmin(userDetailsDto);
+        if(savedAdmin.isPresent()) {
+            return new ResponseEntity<>(savedAdmin.get(),HttpStatus.CREATED);
+        }
+        else {
+            return new ResponseEntity<>("Ten email jest juz zajety!",HttpStatus.BAD_REQUEST);
         }
     }
 

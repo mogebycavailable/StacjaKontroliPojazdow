@@ -37,7 +37,7 @@ public class SkpbackendApplication implements CommandLineRunner {
 			log.info("Uwtorzono konto root'a z nastepujacymi danymi:");
 			log.info(String.format("\tE-mail: %s",rootAccount.getEmail()));
 			log.info(String.format("\tHaslo: %s",rootAccount.getPwdHash()));
-			authenticationService.register(rootAccount);
+			authenticationService.registerAdmin(rootAccount);
 		}
 	}
 }

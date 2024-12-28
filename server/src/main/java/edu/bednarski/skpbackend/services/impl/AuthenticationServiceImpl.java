@@ -43,7 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         userDetailsDto.setPwdHash(passwordEncoder.encode(userDetailsDto.getPwdHash()));
         UserEntity userEntity = userDetailsMapper.mapFrom(userDetailsDto);
-        userEntity.setRole(Role.CLIENT);
+        userEntity.setRole(Role.ROLE_CLIENT);
         UserEntity savedUserEntity = userRepository.save(userEntity);
         return Optional.of(JwtTokenDto.builder()
                 .accessToken(jwtService.generateAccessToken(savedUserEntity))
@@ -94,5 +94,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }).orElse(Optional.empty());
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<UserDetailsDto> registerAdmin(UserDetailsDto userDetailsDto) {
+        if(userRepository.existsByEmail(userDetailsDto.getEmail())) {
+            return Optional.empty();
+        }
+        UserEntity adminToCreate = userDetailsMapper.mapFrom(userDetailsDto);
+        adminToCreate.setRole(Role.ROLE_ADMIN);
+        adminToCreate.setPwdHash(passwordEncoder.encode(adminToCreate.getPassword()));
+        UserEntity savedAdmin = userRepository.save(adminToCreate);
+        UserDetailsDto savedAdminDto = userDetailsMapper.mapTo(savedAdmin);
+        return Optional.of(savedAdminDto);
     }
 }
