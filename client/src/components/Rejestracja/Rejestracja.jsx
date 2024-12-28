@@ -5,6 +5,7 @@ import '../css/formstyle.css'
 
 const Rejestracja = ({ onRegister }) => {
     const navigate = useNavigate()
+    const [error, setError] = useState("")
     const [data, setData] = useState({
         name: "",
         surname: "",
@@ -24,7 +25,7 @@ const Rejestracja = ({ onRegister }) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const user = { 
+        const userData = { 
             name: data.name,
             surname: data.surname,
             email: data.email,
@@ -39,27 +40,25 @@ const Rejestracja = ({ onRegister }) => {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(user),
+                body: JSON.stringify(userData),
             })
-			
-			console.log("Dodano nowego użytkownika")
-            localStorage.setItem("access-token", user.accessToken)
-            localStorage.setItem("refresh-token", user.refreshToken)
-            localStorage.setItem("role", user.role)
-			navigate('/')
-			window.location.reload()
-            
-        } catch (error) {
-            if (
-                error.response &&
-                error.response.status >= 400 &&
-                error.response.status <= 500
-            ) {
-                setError(error.response.data.message)
+
+            if(response.ok) {
+                const user = await response.json()
+                console.log("Dodano nowego użytkownika")
+                localStorage.setItem("access-token", user.accessToken)
+                localStorage.setItem("refresh-token", user.refreshToken)
+                localStorage.setItem("role", user.role)
+                navigate('/')
+                window.location.reload()
+            }else if (response.status === 400){
+                setError("Istnieje już konto o podanym adresie e-mail!");
+            }else {
+                setError(`Wystąpił błąd: ${response.status} ${response.statusText}`);
             }
+        } catch (error) {
+            setError("Nie udało się połączyć z serwerem. Spróbuj ponownie później.")
         }
-
-
     }
 
     return(
@@ -72,7 +71,6 @@ const Rejestracja = ({ onRegister }) => {
                         type="text"
                         placeholder="Wprowadź imię"
                         name="name"
-                        //onChange={(e) => setData((prevData) => ({ ...prevData, name: e.target.value }))}
                         onChange={handleChange}
                         value={data.name}
                         required
@@ -83,7 +81,6 @@ const Rejestracja = ({ onRegister }) => {
                         type="text"
                         placeholder="Wprowadź nazwisko"
                         name="surname"
-                        //onChange={(e) => setData((prevData) => ({ ...prevData, surname: e.target.value }))}
                         onChange={handleChange}
                         value={data.surname}
                         required
@@ -94,7 +91,6 @@ const Rejestracja = ({ onRegister }) => {
                         type="email"
                         placeholder="Wprowadź adres e-mail"
                         name="email"
-                        //onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
                         onChange={handleChange}
                         value={data.email}
                         required
@@ -105,7 +101,6 @@ const Rejestracja = ({ onRegister }) => {
                         type="tel"
                         placeholder="Wprowadź nr telefonu"
                         name="phone"
-                        //onChange={(e) => setData((prevData) => ({ ...prevData, phone: e.target.value }))}
                         onChange={handleChange}
                         value={data.phone}
                         required
@@ -117,7 +112,6 @@ const Rejestracja = ({ onRegister }) => {
                         placeholder="Wprowadź hasło"
                         name="pwdHash"
                         autoComplete="new-password"
-                        //onChange={(e) => setData((prevData) => ({ ...prevData, pwdHash: e.target.value }))}
                         onChange={handleChange}
                         value={data.pwdHash}
                         required
@@ -129,7 +123,6 @@ const Rejestracja = ({ onRegister }) => {
                         placeholder="Powtórz hasło"
                         name="confirmPwdHash"
                         autoComplete="off"
-                        //onChange={(e) => setData((prevData) => ({ ...prevData, confirmPwdHash: e.target.value }))}
                         onChange={handleChange}
                         value={data.confirmPwdHash}
                         required
@@ -141,6 +134,11 @@ const Rejestracja = ({ onRegister }) => {
                     </label>
                     { validData && (
                         <button type="submit">Zarejestruj się</button>
+                    )}
+                    { error && (
+                        <p style={{ color: 'red' }}>
+                            {error}
+                        </p>
                     )}
                 </div>
             </form>

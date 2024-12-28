@@ -5,13 +5,17 @@ import '../css/formstyle.css'
 
 const Logowanie = ({ onLogin }) => {
     const navigate = useNavigate()
+    const [error, setError] = useState("")
     const [data, setData] = useState({
         email: "",
         pwdHash: ""
     })
 
     const validData = data.email && data.pwdHash
-    
+
+    const handleChange = ({ currentTarget: input }) => {
+        setData({ ...data, [input.name]: input.value })
+    }
     
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -25,25 +29,22 @@ const Logowanie = ({ onLogin }) => {
                 body: JSON.stringify(data),
             })
 			
-              
-            const user = await response.json()
-			console.log(user)
-            localStorage.setItem("access-token", user.accessToken)
-            localStorage.setItem("refresh-token", user.refreshToken)
-            localStorage.setItem("role", user.role)
-            navigate('/')
-            window.location.reload()
-        } catch (error) {
-            if (
-                error.response &&
-                error.response.status >= 400 &&
-                error.response.status <= 500
-            ) {
-                setError(error.response.data.message)
+            if(response.ok){
+                const user = await response.json()
+                localStorage.setItem("access-token", user.accessToken)
+                localStorage.setItem("refresh-token", user.refreshToken)
+                localStorage.setItem("role", user.role)
+                navigate('/')
+                window.location.reload()
+            }else if (response.status === 403){
+                setError("Niepoprawne dane logowania. Spróbuj ponownie.");
+            }else {
+                setError(`Wystąpił błąd: ${response.status} ${response.statusText}`);
             }
+        } catch (error) {
+            setError("Nie udało się połączyć z serwerem. Spróbuj ponownie później.");
         }
-    }
-    
+    }   
 
     return(
         <div className='div-body'>
@@ -56,7 +57,7 @@ const Logowanie = ({ onLogin }) => {
                         placeholder="Wprowadź e-mail"
                         name="email"
                         autoComplete="email"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, email: e.target.value }))}
+                        onChange={handleChange}
                         required
                     />
 
@@ -66,7 +67,7 @@ const Logowanie = ({ onLogin }) => {
                         placeholder="Wprowadź hasło"
                         name="pwdHash"
                         autoComplete="current-password"
-                        onChange={(e) => setData((prevData) => ({ ...prevData, pwdHash: e.target.value }))}
+                        onChange={handleChange}
                         required
                     />
                     
@@ -76,7 +77,7 @@ const Logowanie = ({ onLogin }) => {
                     { validData && (
                         <button type="submit">Zaloguj się</button>
                     )}
-                    {data.error && <p style={{ color: 'red' }}>{data.error}</p>}
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
             </form>
 	    </div>
