@@ -14,6 +14,7 @@ import EdytujRezerwacje from './components/Moje_rezerwacje/EdytujRezerwacje'
 import ZamowUsluge from './components/Zamow_usluge/ZamowUsluge'
 import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
+import Test from './components/Test/Test'
 
 function App() {
   const [accessToken, setAccessToken] = useState(null)
@@ -59,6 +60,7 @@ function App() {
             { accessToken && <Route path='/moje_konto' exact element={<MojeKonto onLogout={handleLogout}/>}/> }
             { !accessToken && <Route path='/rejestracja' exact element={<Rejestracja onRegister={setAccessToken}/>}/> }
             { !accessToken && <Route path='/logowanie' exact element={<Logowanie onLogin={setAccessToken} />}/>}
+            { accessToken && <Route path='/test' exact element={<Test/>}/>}
           </Routes>
         </div>
         <Footer />
