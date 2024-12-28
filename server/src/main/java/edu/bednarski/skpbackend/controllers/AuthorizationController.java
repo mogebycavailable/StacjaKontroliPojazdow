@@ -35,7 +35,7 @@ public class AuthorizationController {
     public ResponseEntity<?> register(@RequestBody UserDetailsDto userDetailsDto) {
         Optional<JwtTokenDto> tokenResponse = authenticationService.register(userDetailsDto);
         if(tokenResponse.isPresent()) {
-            return new ResponseEntity<>(tokenResponse.get(),HttpStatus.OK);
+            return new ResponseEntity<>(tokenResponse.get(),HttpStatus.CREATED);
         }
         else {
             return new ResponseEntity<>("Ten email jest juz zajety!",HttpStatus.BAD_REQUEST);
