@@ -45,7 +45,7 @@ function App() {
   return (
     <BrowserRouter>
       <div>
-        <Menu />
+        <Menu onLogout={handleLogout}/>
         <div>
           <Routes>
             <Route path='/' element={<StronaGlowna/>}/>

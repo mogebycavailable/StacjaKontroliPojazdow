@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import '../css/Style.css'
 import logo from '../css/img/mechanik-alpha.png';
 
-const Menu = () => {
+const Menu = ({ onLogout }) => {
     const token = localStorage.getItem('access-token')
 
     return(
@@ -24,6 +24,7 @@ const Menu = () => {
                     { token && <Link to="/moje_konto" className="btn">Moje konto</Link> }
                     { !token && <Link to="/logowanie" className="btn">Zaloguj się</Link> }
                     { !token && <Link to="/rejestracja" className="btn">Zarejestruj się</Link> }
+                    { token && <Link to='/' className="btn" onClick={onLogout}>Wyloguj się</Link> }
                 </ul>
             </nav>
         </header>

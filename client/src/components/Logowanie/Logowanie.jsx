@@ -31,8 +31,8 @@ const Logowanie = ({ onLogin }) => {
             localStorage.setItem("access-token", user.accessToken)
             localStorage.setItem("refresh-token", user.refreshToken)
             localStorage.setItem("role", user.role)
-			navigate('/')
-			window.location.reload()
+            navigate('/')
+            window.location.reload()
         } catch (error) {
             if (
                 error.response &&
