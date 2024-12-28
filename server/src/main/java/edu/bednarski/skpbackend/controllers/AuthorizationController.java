@@ -4,13 +4,12 @@ import edu.bednarski.skpbackend.domain.dto.JwtTokenDto;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.UserDto;
 import edu.bednarski.skpbackend.services.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -40,6 +39,20 @@ public class AuthorizationController {
         }
         else {
             return new ResponseEntity<>("Ten email jest juz zajety!",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(path = "/refresh")
+    public ResponseEntity<?> refresh(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        Optional<JwtTokenDto> refreshed = authenticationService.refreshToken(request, response);
+        if(refreshed.isPresent()) {
+            return new ResponseEntity<>(refreshed.get(),HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Sesja wygasla. Zaloguj sie ponownie.",HttpStatus.UNAUTHORIZED);
         }
     }
 

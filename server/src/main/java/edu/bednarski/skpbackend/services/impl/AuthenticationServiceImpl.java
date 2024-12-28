@@ -9,10 +9,16 @@ import edu.bednarski.skpbackend.repositories.UserRepository;
 import edu.bednarski.skpbackend.security.Role;
 import edu.bednarski.skpbackend.services.AuthenticationService;
 import edu.bednarski.skpbackend.services.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -61,5 +67,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .refreshToken(jwtService.generateRefreshToken(entity))
                 .role(entity.getRole().toString())
                 .build());
+    }
+
+    @Override
+    public Optional<JwtTokenDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshToken;
+        final String userEmail;
+        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return Optional.empty();
+        }
+        refreshToken = authHeader.substring(7);
+        userEmail = jwtService.extractUsername(refreshToken);
+        if(userEmail != null) {
+            Optional<UserEntity> userDetails = this.userRepository.findByEmail(userEmail);
+            return userDetails.map(user -> {
+                if(jwtService.isTokenValid(refreshToken,user)) {
+                    String accessToken = jwtService.generateAccessToken(user);
+                    JwtTokenDto result = JwtTokenDto.builder()
+                            .accessToken(accessToken)
+                            .refreshToken(refreshToken)
+                            .role(user.getRole().toString())
+                            .build();
+                    return Optional.of(result);
+                }
+                return Optional.<JwtTokenDto>empty();
+            }).orElse(Optional.empty());
+        }
+        return Optional.empty();
     }
 }
