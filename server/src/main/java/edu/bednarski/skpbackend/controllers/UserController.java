@@ -2,6 +2,8 @@ package edu.bednarski.skpbackend.controllers;
 
 import edu.bednarski.skpbackend.domain.dto.PasswordChangeDto;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
+import edu.bednarski.skpbackend.domain.dto.UserUpdatedDto;
+import edu.bednarski.skpbackend.services.AuthenticationService;
 import edu.bednarski.skpbackend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private final AuthenticationService authenticationService;
+
     @GetMapping(path = "/my-account")
     public ResponseEntity<?> getAccountDetails() {
         String userContext = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -35,7 +39,7 @@ public class UserController {
     ) {
         if(userDetailsDto.getPwdHash() != null) return new ResponseEntity<>("Nie mozna w ten sposob zmodyfikowac hasla!",HttpStatus.BAD_REQUEST);
         String userContext = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<UserDetailsDto> updatedUser = userService.partialUpdate(userContext,userDetailsDto);
+        Optional<UserUpdatedDto> updatedUser = userService.partialUpdate(userContext,userDetailsDto);
         if(updatedUser.isPresent()) {
             return new ResponseEntity<>(updatedUser.get(), HttpStatus.OK);
         }

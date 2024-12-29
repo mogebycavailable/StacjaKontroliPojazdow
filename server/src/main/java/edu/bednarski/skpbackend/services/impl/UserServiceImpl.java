@@ -2,11 +2,13 @@ package edu.bednarski.skpbackend.services.impl;
 
 import edu.bednarski.skpbackend.domain.dto.PasswordChangeDto;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
+import edu.bednarski.skpbackend.domain.dto.UserUpdatedDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.exceptions.BadOldPasswordException;
 import edu.bednarski.skpbackend.exceptions.SamePasswordException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.UserRepository;
+import edu.bednarski.skpbackend.services.JwtService;
 import edu.bednarski.skpbackend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtService jwtService;
+
     @Override
     public Optional<UserDetailsDto> getAccountDetails(String email) {
         Optional<UserEntity> userEntity = userRepository.findByEmail(email);
@@ -37,7 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDetailsDto> partialUpdate(String email, UserDetailsDto newData) {
+    public Optional<UserUpdatedDto> partialUpdate(String email, UserDetailsDto newData) {
         UserEntity updateData = userMapper.mapFrom(newData);
         Optional<UserEntity> userToUpdate = userRepository.findByEmail(email);
         Optional<UserEntity> updatedUser = userToUpdate.map(existingUser -> {
@@ -50,13 +54,15 @@ public class UserServiceImpl implements UserService {
             });
             return Optional.of(existingUser);
         }).orElse(Optional.empty());
+        Optional<UserUpdatedDto> result;
         if(updatedUser.isPresent()) {
             UserEntity savedUser = userRepository.save(updatedUser.get());
-            return Optional.ofNullable(userMapper.mapTo(savedUser));
+            result = Optional.of(new UserUpdatedDto(userMapper.mapTo(savedUser),jwtService.generateRefreshToken(savedUser)));
         }
         else {
-            return Optional.empty();
+            result = Optional.empty();
         }
+        return result;
     }
 
     @Override
