@@ -15,7 +15,9 @@ public class UserDetailsMapper implements Mapper<UserEntity, UserDetailsDto> {
 
     @Override
     public UserDetailsDto mapTo(UserEntity userEntity) {
-        return modelMapper.map(userEntity, UserDetailsDto.class);
+        UserDetailsDto mappedUser = modelMapper.map(userEntity, UserDetailsDto.class);
+        mappedUser.setPwdHash("x");
+        return mappedUser;
     }
 
     @Override
