@@ -1,5 +1,6 @@
 package edu.bednarski.skpbackend.controllers;
 
+import edu.bednarski.skpbackend.domain.dto.PasswordChangeDto;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +33,27 @@ public class UserController {
     public ResponseEntity<?> partialUpdateUser(
             @RequestBody UserDetailsDto userDetailsDto
     ) {
+        if(userDetailsDto.getPwdHash() != null) return new ResponseEntity<>("Nie mozna w ten sposob zmodyfikowac hasla!",HttpStatus.BAD_REQUEST);
         String userContext = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<UserDetailsDto> updatedUser = userService.partialUpdate(userContext,userDetailsDto);
         if(updatedUser.isPresent()) {
             return new ResponseEntity<>(updatedUser.get(), HttpStatus.OK);
         }
         else return new ResponseEntity<>("Tozsamosc uzytkownika nie jest znana serwerowi.",HttpStatus.UNAUTHORIZED);
+    }
+
+    @PatchMapping(path = "/my-account/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestBody PasswordChangeDto passwordChangeDto
+    ) {
+        if(
+                passwordChangeDto == null
+                || passwordChangeDto.getNewPassword() == null
+                || passwordChangeDto.getOldPassword() == null
+        ) return new ResponseEntity<>("Nie otrzymano danych!",HttpStatus.BAD_REQUEST);
+        String userContext = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.changePassword(userContext, passwordChangeDto);
+        return new ResponseEntity<>("Haslo zostalo zmienione!",HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/my-account")
