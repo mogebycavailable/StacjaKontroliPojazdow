@@ -1,3 +1,5 @@
+/* MOJE KONTO */
+
 .moje_konto-main-div
 {
 	width: 60%;
@@ -60,4 +62,70 @@ button:hover
 #delete:hover
 {
 	background-color: #555;
+}
+
+/* EDYCJA KONTA */
+
+.moje_konto-edit-div
+{
+	width: 60%;
+	background-color: #333;
+	border-radius: 14px;
+	border: 2px solid #cc7300;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	justify-content: center;
+	margin: 1em auto;
+	color: white;
+	padding: 1.618em;
+}
+
+.save-changes-button, .cancel-editing-button
+{
+	margin-right: 1em;
+	margin-left: 1em;
+}
+
+.edit-section-h3
+{
+	font-size: 26px;
+	margin-top: 0;
+	margin-bottom: 0;
+	text-align: center;
+}
+
+/* USUWANIE KONTA */
+.moje_konto-delete-div
+{
+	width: 60%;
+	background-color: #333;
+	border-radius: 14px;
+	border: 2px solid #ff3333;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	justify-content: center;
+	margin: 1em auto;
+	color: white;
+	padding: 1.618em;
+}
+
+.delete-button, .cancel-delete-button
+{
+	margin-right: 1em;
+	margin-left: 1em;
+	background-color: #770000;
+	color: #FFFFFF;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Półprzezroczyste tło */
+    z-index: 9999; /* Warstwa nad wszystkimi elementami strony */
+    pointer-events: all; /* Uniemożliwia interakcję z elementami pod spodem */
 }

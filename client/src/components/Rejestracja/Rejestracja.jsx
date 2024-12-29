@@ -98,7 +98,7 @@ const Rejestracja = ({ onRegister }) => {
 
                     <label>Nr telefonu</label>
                     <input 
-                        type="tel"
+                        type="phone"
                         placeholder="Wprowadź nr telefonu"
                         name="phone"
                         onChange={handleChange}
