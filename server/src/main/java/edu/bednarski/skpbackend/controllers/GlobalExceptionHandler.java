@@ -1,6 +1,7 @@
 package edu.bednarski.skpbackend.controllers;
 
 import edu.bednarski.skpbackend.exceptions.BadOldPasswordException;
+import edu.bednarski.skpbackend.exceptions.BadPasswordException;
 import edu.bednarski.skpbackend.exceptions.SamePasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SamePasswordException.class)
     public ResponseEntity<?> handleSamePasswordException(final SamePasswordException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadPasswordException.class)
+    public ResponseEntity<?> handleBadPasswordException(final BadPasswordException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

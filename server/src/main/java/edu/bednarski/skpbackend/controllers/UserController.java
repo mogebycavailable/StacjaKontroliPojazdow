@@ -62,9 +62,12 @@ public class UserController {
 
     @DeleteMapping(path = "/my-account")
     @PreAuthorize("hasRole('ROLE_CLIENT')")
-    public ResponseEntity<?> deleteAccount() {
+    public ResponseEntity<?> deleteAccount(
+            @RequestBody UserDetailsDto userDetailsDto
+    ) {
+        if(userDetailsDto == null || userDetailsDto.getPwdHash() == null) return new ResponseEntity<>("Nie dolaczono hasla!",HttpStatus.BAD_REQUEST);
         String userContext = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<UserDetailsDto> deletedUser = userService.delete(userContext);
+        Optional<UserDetailsDto> deletedUser = userService.delete(userContext,userDetailsDto.getPwdHash());
         if(deletedUser.isPresent()) {
             return new ResponseEntity<>(deletedUser.get(), HttpStatus.OK);
         }

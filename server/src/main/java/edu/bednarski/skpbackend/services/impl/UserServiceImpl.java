@@ -5,6 +5,7 @@ import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.UserUpdatedDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.exceptions.BadOldPasswordException;
+import edu.bednarski.skpbackend.exceptions.BadPasswordException;
 import edu.bednarski.skpbackend.exceptions.SamePasswordException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.UserRepository;
@@ -85,11 +86,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDetailsDto> delete(String email) {
+    public Optional<UserDetailsDto> delete(String email, String password) {
         Optional<UserEntity> userToDelete = userRepository.findByEmail(email);
         if(userToDelete.isPresent()) {
-            userRepository.delete(userToDelete.get());
-            return Optional.ofNullable(userMapper.mapTo(userToDelete.get()));
+            if(passwordEncoder.matches(password,userToDelete.get().getPwdHash())) {
+                userRepository.delete(userToDelete.get());
+                return Optional.ofNullable(userMapper.mapTo(userToDelete.get()));
+            }
+            else throw new BadPasswordException("Nie mozna usunac konta - nieprawidlowe haslo!");
         }
         else return Optional.empty();
     }

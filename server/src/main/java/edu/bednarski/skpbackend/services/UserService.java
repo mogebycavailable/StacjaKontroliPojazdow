@@ -11,7 +11,7 @@ public interface UserService {
 
     Optional<UserUpdatedDto> partialUpdate(String email, UserDetailsDto newData);
 
-    Optional<UserDetailsDto> delete(String email);
+    Optional<UserDetailsDto> delete(String email, String password);
 
     void changePassword(String email, PasswordChangeDto passwordChangeDto);
 }
