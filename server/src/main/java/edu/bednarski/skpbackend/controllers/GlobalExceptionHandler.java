@@ -3,6 +3,7 @@ package edu.bednarski.skpbackend.controllers;
 import edu.bednarski.skpbackend.exceptions.BadOldPasswordException;
 import edu.bednarski.skpbackend.exceptions.BadPasswordException;
 import edu.bednarski.skpbackend.exceptions.SamePasswordException;
+import edu.bednarski.skpbackend.exceptions.VehicleNotProvidedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,6 +24,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadPasswordException.class)
     public ResponseEntity<?> handleBadPasswordException(final BadPasswordException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(VehicleNotProvidedException.class)
+    public ResponseEntity<?> handleVehicleNotProvidedException(final BadPasswordException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
