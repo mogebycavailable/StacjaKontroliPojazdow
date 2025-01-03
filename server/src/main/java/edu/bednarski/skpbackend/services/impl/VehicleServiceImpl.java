@@ -4,6 +4,7 @@ import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
+import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
 import edu.bednarski.skpbackend.exceptions.VehicleNotProvidedException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.UserRepository;
@@ -13,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,8 +72,35 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto) {
-        return Optional.empty();
+    public Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto, String userEmail) throws BadDateFormatException {
+        Optional<UserEntity> user = userRepository.findByEmail(userEmail);
+        return user.map(existingUser -> {
+            Optional<VehicleEntity> currentData = vehicleRepository.findById(vehicleDto.getId());
+            VehicleEntity mergedData = currentData.map(
+                    existingVehicle -> {
+                        if(!existingUser.equals(existingVehicle.getOwner())) return null;
+                        Optional.ofNullable(vehicleDto.getBrand()).ifPresent(existingVehicle::setBrand);
+                        Optional.ofNullable(vehicleDto.getModel()).ifPresent(existingVehicle::setModel);
+                        Optional.ofNullable(vehicleDto.getYear()).ifPresent(existingVehicle::setYear);
+                        Optional.ofNullable(vehicleDto.getRegistrationNumber()).ifPresent(existingVehicle::setRegistrationNumber);
+                        Optional.ofNullable(vehicleDto.getVehicleIdentificationNumber()).ifPresent(existingVehicle::setVehicleIdentificationNumber);
+                        Optional.ofNullable(vehicleDto.getValidityPeriod()).ifPresent(dateString -> {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            try {
+                                existingVehicle.setValidityPeriod(sdf.parse(dateString));
+                            } catch (ParseException ex) {
+                                throw new BadDateFormatException(ex.getMessage());
+                            }
+                        });
+                        return existingVehicle;
+                    }
+            ).orElse(null);
+            if(mergedData != null) {
+                vehicleRepository.save(mergedData);
+                return Optional.of(vehicleMapper.mapTo(mergedData));
+            }
+            else return Optional.<VehicleDto>empty();
+        }).orElseThrow(() -> new UsernameNotFoundException("Tozsamosc uzytkownika nie jest znana serwerowi!"));
     }
 
     @Override

@@ -17,7 +17,7 @@ public interface VehicleService {
 
     Optional<VehicleDto> find(Long id,String userEmail);
 
-    Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto);
+    Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto, String userEmail);
 
     Optional<VehicleDto> delete(VehicleDto vehicleDto, String userEmail);
 }

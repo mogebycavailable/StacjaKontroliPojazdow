@@ -49,6 +49,22 @@ public class VehicleController {
         else return new ResponseEntity<>("Ups! Cos poszlo nie tak!", HttpStatus.BAD_REQUEST);
     }
 
+    @PatchMapping(path = "/vehicles/{id}")
+    public ResponseEntity<?> vehicleUpdate(
+            @PathVariable("id") Long id,
+            @RequestBody VehicleDto vehicleDto
+    ) {
+        vehicleDto.setId(id);
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<VehicleDto> updateResult = vehicleService.partialUpdate(vehicleDto,userName);
+        if(updateResult.isPresent()) {
+            return new ResponseEntity<>(updateResult.get(),HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Ten pojazd nie istnieje, lub nie masz do niego dostepu!",HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @DeleteMapping(path = "/vehicles/{id}")
     public ResponseEntity<?> vehicleDelete(
             @PathVariable("id") Long id

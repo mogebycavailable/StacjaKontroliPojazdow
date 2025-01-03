@@ -21,7 +21,7 @@ public class VehicleDto {
 
     private String model;
 
-    private int year;
+    private Integer year;
 
     private String registrationNumber;
 
