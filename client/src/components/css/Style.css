@@ -119,3 +119,15 @@ a
 {
 	text-decoration: none;
 }
+
+/* Półprzezroczysta warstwa stosowana podczas wyświetlania powiadomień, w celu zablokowania interakcji użytkownika z aplikacją */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Półprzezroczyste tło */
+    z-index: 9999; /* Warstwa nad wszystkimi elementami strony */
+    pointer-events: all; /* Uniemożliwia interakcję z elementami pod spodem */
+}

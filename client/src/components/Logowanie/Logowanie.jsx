@@ -7,8 +7,8 @@ const Logowanie = ({ onLogin }) => {
     const navigate = useNavigate()
     const [error, setError] = useState("")
     const [data, setData] = useState({
-        email: "",
-        pwdHash: ""
+        email: "root@skp.pl",
+        pwdHash: "root"
     })
 
     const validData = data.email && data.pwdHash
@@ -57,6 +57,7 @@ const Logowanie = ({ onLogin }) => {
                         placeholder="Wprowadź e-mail"
                         name="email"
                         autoComplete="email"
+                        value={data.email}
                         onChange={handleChange}
                         required
                     />
@@ -67,6 +68,7 @@ const Logowanie = ({ onLogin }) => {
                         placeholder="Wprowadź hasło"
                         name="pwdHash"
                         autoComplete="current-password"
+                        value={data.pwdHash}
                         onChange={handleChange}
                         required
                     />

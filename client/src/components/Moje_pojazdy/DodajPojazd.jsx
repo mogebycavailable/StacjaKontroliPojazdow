@@ -6,15 +6,15 @@ import './MojePojazdy.css'
 import useRefresh from '../../service/useRefresh'
 
 const DodajPojazd = () => {
-    const navigate = useNavigate()
     const refreshTokens = useRefresh()
+    const [isBlocked, setIsBlocked] = useState(false)
     const [data, setData] = useState({
-        brand: '',
-        model: '',
-        year: '',
-        registrationNumber: '',
-        vehicleIdentificationNumber: '',
-        validityPeriod: ''
+        brand: 'Fiat',
+        model: 'Uno',
+        year: '1998',
+        registrationNumber: 'LSW 51X2K',
+        vehicleIdentificationNumber: '1N6AD0EV1CC444260',
+        validityPeriod: '2025-01-25'
     })
 
     const currentYear = 2024
@@ -27,6 +27,7 @@ const DodajPojazd = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setIsBlocked(true)
         
         const vehicle = {
             brand: data.brand,
@@ -53,25 +54,45 @@ const DodajPojazd = () => {
 
             if (responseStatus >= 200 && responseStatus <= 299) {
                 const resData = await response.json()
-                console.log('resData: '+resData)
-                toast.success('Dodano nowy pojazd:\n'+resData.brand+' '+resData.model+'\n'+resData.year, {
+                toast.success(
+                    <div>
+                        Dodano nowy pojazd:<br/>
+                        {resData.brand} {resData.model}, {resData.year} r.
+                    </div>, 
+                    {
                     onClose: () => {
                         window.location.assign('/moje_pojazdy')
+                        setIsBlocked(false)
                     },
                     autoClose: 3000,
                 })
+            } else if (responseStatus === 400) {
+                const resData = await response.text()
+                console.error(resData)
+                toast.error(resData, {
+                    onClose: () => {
+                        setIsBlocked(false)
+                    },
+                    autoClose: 3000,
+                })
+                setIsBlocked(false)
             } else {
                 console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
+                setIsBlocked(false)
             }
 
             await refreshTokens(responseStatus)
         } catch(error) {
             console.error("Błąd sieci:", error)
+            setIsBlocked(false)
         }
     }
 
     return(
         <div>
+            {/* Nakładka blokująca */}
+            {isBlocked && <div className="overlay"></div>}
+
             <h2>+ Dodawanie pojazdu +</h2>
             <form onSubmit={handleSubmit}>
                 <label>Marka</label>
@@ -144,6 +165,11 @@ const DodajPojazd = () => {
                 <button type="submit">Dodaj pojazd</button>
                 <Link to="/moje_pojazdy"><button id="back">Anuluj</button></Link>
             </form>
+            <ToastContainer 
+                position="top-center"
+                theme="dark"
+                closeOnClick={true}
+            />
 	    </div>
     );
 };

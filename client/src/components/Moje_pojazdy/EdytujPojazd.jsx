@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import './MojePojazdy.css'
 import useFetch from '../../service/useFetch'
@@ -11,8 +12,8 @@ const EdytujPojazd = () => {
     const rangeOfYears = Array.from({ length: currentYear - earliestYear + 1 }, (_, i) => currentYear - i)
 
     const { id } = useParams()
-    const navigate = useNavigate()
     const refreshTokens = useRefresh()
+    const [isBlocked, setIsBlocked] = useState(false)
     
     const [data, setData] = useState({
             brand: '',
@@ -60,15 +61,120 @@ const EdytujPojazd = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setIsBlocked(true)
+
+        const updatedVehicle = {
+            brand: data.brand,
+            model: data.model,
+            year: data.year,
+            registrationNumber: data.registrationNumber,
+            vehicleIdentificationNumber: data.vehicleIdentificationNumber,
+            validityPeriod: data.validityPeriod
+        }
+
+        try {
+            const accessToken = localStorage.getItem('access-token')
+            const url = "http://localhost:8080/api/vehicles/"+id
+            const response = await fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(updatedVehicle),
+            })
+
+            const responseStatus = response.status
+
+            if (responseStatus >= 200 && responseStatus <= 299) {
+                const resData = await response.json()
+                toast.success(
+                    <div>
+                        Zaaktualizowano zmiany dla pojazdu:<br/>
+                        {resData.brand} {resData.model}, {resData.year} r.
+                    </div>,
+                    {
+                    onClose: () => {
+                        window.location.assign('/moje_pojazdy')
+                        setIsBlocked(false)
+                    },
+                    autoClose: 3000,
+                })
+            } else if (responseStatus === 400) {
+                const resData = await response.text()
+                console.error(resData)
+                toast.error(resData, {
+                    onClose: () => {
+                        setIsBlocked(false)
+                    },
+                    autoClose: 3000,
+                })
+                setIsBlocked(false)
+            } else {
+                console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
+                setIsBlocked(false)
+            }
+
+            await refreshTokens(responseStatus)
+        } catch(error) {
+            console.error("Błąd sieci:", error)
+            setIsBlocked(false)
+        }
     }
 
-    const handleDelete = async (e) => {
+    const handleDeleteVehicle = async (e) => {
         e.preventDefault()
+
+        if(window.confirm('Czy na pewno chcesz usunąć ten pojazd?')){
+            setIsBlocked(true)
+
+            try {
+                const accessToken = localStorage.getItem('access-token')
+                const url = "http://localhost:8080/api/vehicles/"+id
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                })
+    
+                const responseStatus = response.status
+    
+                if (responseStatus >= 200 && responseStatus <= 299) {
+                    const resData = await response.json()
+                    toast.success(
+                        <div>
+                            Usunięto pojazd:<br/>
+                            {resData.brand} {resData.model}, {resData.year} r.
+                        </div>,
+                        {
+                        onClose: () => {
+                            window.location.assign('/moje_pojazdy')
+                            setIsBlocked(false)
+                        },
+                        autoClose: 3000,
+                    })
+                } else {
+                    console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
+                    setIsBlocked(false)
+                }
+    
+                await refreshTokens(responseStatus)
+            } catch(error) {
+                console.error("Błąd sieci:", error)
+                setIsBlocked(false)
+            }
+        } else {
+            console.log("Brak zgody użytkownika na usunięcie tego pojazdu.")
+        }
     }
 
     return(
         <div>
-            {/* { error && <h2>{ error }</h2>} */}
+            {/* Nakładka blokująca */}
+            {isBlocked && <div className="overlay"></div>}
+
             { data && (
                 <div>
                     <h2>Edycja danych pojazdu o id: {id}</h2>
@@ -142,13 +248,18 @@ const EdytujPojazd = () => {
                             <br />
                             <div className='edit-buttons-div' style={{display: 'inline', padding: '1em'}}>
                                 <button type="submit" id="update">Zapisz zmiany</button>
-                                <button id="delete" onClick={handleDelete}>Usuń pojazd</button>
+                                <button id="delete" onClick={handleDeleteVehicle}>Usuń pojazd</button>
                                 <Link to="/moje_pojazdy"><button id="back">Anuluj</button></Link>
                             </div>
                         </form>
                     </fieldset>
                 </div>
             )}
+            <ToastContainer 
+                position="top-center"
+                theme="dark"
+                closeOnClick={true}
+            />
 	    </div>
     );
 };

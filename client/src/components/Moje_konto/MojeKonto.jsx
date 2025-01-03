@@ -7,7 +7,7 @@ import user_icon from '../css/img/user.png'
 import useRefresh from '../../service/useRefresh'
 
 const MojeKonto = ({ onLogout }) => {
-    const [isBlocked, setIsBlocked] = useState(false);
+    const [isBlocked, setIsBlocked] = useState(false)
     const [data, setData] = useState([])
     const refreshTokens = useRefresh()
 
@@ -201,51 +201,56 @@ const MojeKonto = ({ onLogout }) => {
 
     const handleDeleteAccount = async (e) => {
         e.preventDefault()
-        setIsBlocked(true)
 
-        const password = {
-            pwdHash: toDelete.password
-        }
+        if(window.confirm('Czy na pewno chcesz usunąć swoje konto?')){
+            setIsBlocked(true)
 
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/user/my-account"
-            const response = await fetch(url, {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-                body: JSON.stringify(password),
-            })
-
-            const responseStatus = response.status
-
-            if(responseStatus >= 200 && responseStatus <= 299){
-                localStorage.removeItem('access-token')
-                localStorage.removeItem('refresh-token')
-                localStorage.removeItem('role')
-                
-                toast.success('Konto zostało pomyślnie usunięte!', {
-                    onClose: () => {
-                        window.location.assign('/'),
-                        setIsBlocked(false)
-                    },
-                    autoClose: 3000,
-                })
-            } else if(responseStatus === 400) {
-                setIsBlocked(false)
-                const responseData = await response.text()
-                setDeleteError(responseData)
-            } else {
-                setIsBlocked(false)
-                console.error("Błąd podczas usuwania konta!", responseStatus)
-                setDeleteError("Error status 403 (Forbidden)")
+            const password = {
+                pwdHash: toDelete.password
             }
 
-        } catch(error) {
-            setIsBlocked(false)
-            console.error("Błąd sieci:", error)
+            try {
+                const accessToken = localStorage.getItem('access-token')
+                const url = "http://localhost:8080/api/user/my-account"
+                const response = await fetch(url, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(password),
+                })
+
+                const responseStatus = response.status
+
+                if(responseStatus >= 200 && responseStatus <= 299){
+                    localStorage.removeItem('access-token')
+                    localStorage.removeItem('refresh-token')
+                    localStorage.removeItem('role')
+                    
+                    toast.success('Konto zostało pomyślnie usunięte!', {
+                        onClose: () => {
+                            window.location.assign('/'),
+                            setIsBlocked(false)
+                        },
+                        autoClose: 3000,
+                    })
+                } else if(responseStatus === 400) {
+                    setIsBlocked(false)
+                    const responseData = await response.text()
+                    setDeleteError(responseData)
+                } else {
+                    setIsBlocked(false)
+                    console.error("Błąd podczas usuwania konta!", responseStatus)
+                    setDeleteError("Error status 403 (Forbidden)")
+                }
+
+            } catch(error) {
+                setIsBlocked(false)
+                console.error("Błąd sieci:", error)
+            }
+        } else {
+            console.log("Brak zgody użytkownika na usunięcie konta.")
         }
     }
 
@@ -262,7 +267,7 @@ const MojeKonto = ({ onLogout }) => {
                 <div>
                     <h3>Imię i nazwisko: {data.name} {data.surname}</h3>
                     <h3>E-mail: {data.email}</h3>
-                    <h3>Numer telefonu: +48 {data.phone}</h3>
+                    <h3>Numer telefonu: {data.phone}</h3>
                     <span>
                         <button id="edit-account" onClick={openCloseEditDataSection}>Edytuj konto</button>
                         <button id="change-password" onClick={openCloseEditPwdSection}>Zmień hasło</button>
@@ -381,7 +386,11 @@ const MojeKonto = ({ onLogout }) => {
                     {deleteError && (<p>{deleteError}</p>)}
                 </div>
             )}
-            <ToastContainer />
+            <ToastContainer 
+                position="top-center"
+                theme="dark"
+                closeOnClick={true}
+            />
 	    </div>
     );
 };

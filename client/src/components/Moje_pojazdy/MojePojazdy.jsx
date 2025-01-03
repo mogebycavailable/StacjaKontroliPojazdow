@@ -6,8 +6,7 @@ import vehicle_icon from '../css/img/vehicle.png';
 import useRefresh from '../../service/useRefresh'
 
 const MojePojazdy = () => {
-    //const today = new Date().toISOString().split('T')[0]
-    //const today = new Date().toLocaleDateString('en-CA').split('T')[0]
+    const today = new Date().toISOString().split('T')[0]
 
     const [data, setData] = useState([])
     const refreshTokens = useRefresh()
@@ -72,7 +71,6 @@ const MojePojazdy = () => {
                             <Link to={`/zamow_usluge`}>
                                 <button id="order">Umów się na przegląd</button>
                             </Link>
-                            <p>{vehicle.id}</p>
                         </div>
                     </div>
                 );})}
