@@ -1,37 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import './MojePojazdy.css'
+import useRefresh from '../../service/useRefresh'
 
 const DodajPojazd = () => {
+    const navigate = useNavigate()
+    const refreshTokens = useRefresh()
     const [data, setData] = useState({
-        marka: '',
+        brand: '',
         model: '',
-        rokProdukcji: '',
-        nrRejestracyjny: '',
-        nrVin: '',
-        nastepneBadanie: ''
+        year: '',
+        registrationNumber: '',
+        vehicleIdentificationNumber: '',
+        validityPeriod: ''
     })
 
-    const navigate = useNavigate();
+    const currentYear = 2024
+    const earliestYear = 1900
+    const rangeOfYears = Array.from({ length: currentYear - earliestYear + 1 }, (_, i) => currentYear - i)
 
-    const currentYear = 2024;
-    const earliestYear = 1900;
-    const years = Array.from({ length: currentYear - earliestYear + 1 }, (_, i) => currentYear - i);
+    const handleChange = ({ currentTarget: input }) => {
+        setData({ ...data, [input.name]: input.value })
+    }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        const user = JSON.parse(localStorage.getItem('userData'))
-        const vehicle = { ...data, userId: user.id }
+        
+        const vehicle = {
+            brand: data.brand,
+            model: data.model,
+            year: data.year,
+            registrationNumber: data.registrationNumber,
+            vehicleIdentificationNumber: data.vehicleIdentificationNumber,
+            validityPeriod: data.validityPeriod
+        }
 
-        fetch('http://localhost:3000/vehicles', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(vehicle)
-        }).then(() => {
-            console.log("Dodano nowy pojazd")
-            navigate('/moje_pojazdy')
-        })
+        try {
+            const accessToken = localStorage.getItem('access-token')
+            const url = "http://localhost:8080/api/vehicles"
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(vehicle),
+            })
+
+            const responseStatus = response.status
+
+            if (responseStatus >= 200 && responseStatus <= 299) {
+                const resData = await response.json()
+                console.log('resData: '+resData)
+                toast.success('Dodano nowy pojazd:\n'+resData.brand+' '+resData.model+'\n'+resData.year, {
+                    onClose: () => {
+                        window.location.assign('/moje_pojazdy')
+                    },
+                    autoClose: 3000,
+                })
+            } else {
+                console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
+            }
+
+            await refreshTokens(responseStatus)
+        } catch(error) {
+            console.error("Błąd sieci:", error)
+        }
     }
 
     return(
@@ -42,32 +78,32 @@ const DodajPojazd = () => {
                 <input
                     type="text"
                     placeholder="Wprowadź markę pojazdu"
-                    id="marka"
+                    name="brand"
                     required
-                    value={data.marka}
-                    onChange={(e) => setData((prevData) => ({ ...prevData, marka: e.target.value }))}
+                    value={data.brand}
+                    onChange={handleChange}
                 />
 
                 <label>Model</label>
                 <input
                     type="text"
                     placeholder="Wprowadź model pojazdu"
-                    id="model"
+                    name="model"
                     required
                     value={data.model}
-                    onChange={(e) => setData((prevData) => ({ ...prevData, model: e.target.value }))}
+                    onChange={handleChange}
                 />
 
                 <label>Rok produkcji</label>
                 <select
-                    id="rokProdukcji"
+                    name="year"
                     placeholder="Wprowadź rok produkcji pojazdu"
                     required 
-                    value={data.rokProdukcji}
-                    onChange={(e) => setData((prevData) => ({ ...prevData, rokProdukcji: e.target.value }))}>
+                    value={data.year}
+                    onChange={handleChange}>
                         
                     <option value=""></option>
-                    {years.map((year) => (
+                    {rangeOfYears.map((year) => (
                         <option key={year} value={year}>
                             {year}
                         </option>
@@ -78,30 +114,30 @@ const DodajPojazd = () => {
                 <input
                     type="text"
                     placeholder="Wprowadź nr rejestracyjny pojazdu"
-                    id="nrRejestracyjny"
+                    name="registrationNumber"
                     required
-                    value={data.nrRejestracyjny}
-                    onChange={(e) => setData((prevData) => ({ ...prevData, nrRejestracyjny: e.target.value }))}
+                    value={data.registrationNumber}
+                    onChange={handleChange}
                 />
 
                 <label>VIN</label>
                 <input
                     type="text"
                     placeholder="Wprowadź nr VIN pojazdu"
-                    id="nrVin"
+                    name="vehicleIdentificationNumber"
                     required
-                    value={data.nrVin}
-                    onChange={(e) => setData((prevData) => ({ ...prevData, nrVin: e.target.value }))}
+                    value={data.vehicleIdentificationNumber}
+                    onChange={handleChange}
                 />
 
                 <label>Termin następnego badania technicznego</label>
                 <input
                     type="date"
                     placeholder="Wprowadź termin badania"
-                    id="nastepneBadanie"
+                    name="validityPeriod"
                     required
-                    value={data.nastepneBadanie}
-                    onChange={(e) => setData((prevData) => ({ ...prevData, nastepneBadanie: e.target.value }))}
+                    value={data.validityPeriod}
+                    onChange={handleChange}
                 />
 
                 <br />

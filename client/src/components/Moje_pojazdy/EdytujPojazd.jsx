@@ -1,67 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from "react-router-dom"
 import '../css/Style.css'
 import './MojePojazdy.css'
-import useFetch from '../../service/useFetch';
+import useFetch from '../../service/useFetch'
+import useRefresh from '../../service/useRefresh'
 
 const EdytujPojazd = () => {
-    const currentYear = 2024;
-    const earliestYear = 1900;
-    const years = Array.from({ length: currentYear - earliestYear + 1 }, (_, i) => currentYear - i);
+    const currentYear = 2024
+    const earliestYear = 1900
+    const rangeOfYears = Array.from({ length: currentYear - earliestYear + 1 }, (_, i) => currentYear - i)
 
     const { id } = useParams()
     const navigate = useNavigate()
-    const { data: vehicle, error } = useFetch('http://localhost:3000/vehicles/' + id)
-    const [marka, setMarka] = useState('')
-    const [model, setModel] = useState('')
-    const [rokProdukcji, setRokProdukcji] = useState('')
-    const [nrRejestracyjny, setNrRejestracyjny] = useState('')
-    const [nrVin, setNrVin] = useState('')
-    const [nastepneBadanie, setNastepneBadanie] = useState('')
+    const refreshTokens = useRefresh()
+    
+    const [data, setData] = useState({
+            brand: '',
+            model: '',
+            year: '',
+            registrationNumber: '',
+            vehicleIdentificationNumber: '',
+            validityPeriod: ''
+    })
+
+    const handleChange = ({ currentTarget: input }) => {
+        setData({ ...data, [input.name]: input.value })
+    }
 
     useEffect(() => {
-        if(vehicle) {
-            setMarka(vehicle.marka || '')
-            setModel(vehicle.model || '')
-            setRokProdukcji(vehicle.rokProdukcji || '')
-            setNrRejestracyjny(vehicle.nrRejestracyjny || '')
-            setNrVin(vehicle.nrVin || '')
-            setNastepneBadanie(vehicle.nastepneBadanie || '')
+        const getVehicleData = async () => {
+            try {
+                const accessToken = localStorage.getItem('access-token')
+                const url = "http://localhost:8080/api/vehicles/"+id
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                    }
+                })
+
+                const responseStatus = response.status
+
+                if (responseStatus >= 200 && responseStatus <= 299) {
+                    const resData = await response.json()
+                    setData(resData)
+                } else {
+                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
+                }
+
+                await refreshTokens(responseStatus)
+            } catch(error) {
+                console.error("Błąd sieci:", error)
+            }
         }
-    }, [vehicle])
 
-    // DELETE
-    const handleDelete=() => {
-        fetch('http://localhost:3000/vehicles/' + vehicle.id, {
-            method: 'DELETE'
-        }).then(() => {
-            console.log("Usunięto wybrany pojazd")
-            navigate('/moje_pojazdy')
-        })
-    }
+        getVehicleData()
+    }, [])
 
-    // UPDATE
-    const updateVehicle = async () => {
-        fetch('http://localhost:3000/vehicles/' + vehicle.id, {
-            method: 'PATCH',
-            body: JSON.stringify({ marka, model, rokProdukcji, nrRejestracyjny, nrVin, nastepneBadanie })
-        }).then(() => {
-            console.log("Zmodyfikowano wybrany pojazd")
-            navigate('/moje_pojazdy')
-        })
-    }
-
-    const handleSubmit= (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        updateVehicle()
+    }
+
+    const handleDelete = async (e) => {
+        e.preventDefault()
     }
 
     return(
         <div>
-            { error && <h2>{ error }</h2>}
-            { vehicle && (
+            {/* { error && <h2>{ error }</h2>} */}
+            { data && (
                 <div>
-                    <h2>Edycja danych pojazdu z id: {id}</h2>
+                    <h2>Edycja danych pojazdu o id: {id}</h2>
                     <fieldset className='fieldset-edit'>
                         <legend>Informacje o pojeździe</legend>
                         <form onSubmit={handleSubmit}>
@@ -69,30 +79,30 @@ const EdytujPojazd = () => {
                             <input
                                 type="text"
                                 placeholder="Wprowadź markę pojazdu"
-                                id="marka"
+                                name="brand"
                                 required
-                                value={marka}
-                                onChange={(e) => setMarka(e.target.value)}
+                                value={data.brand}
+                                onChange={handleChange}
                             />
 
                             <label>Model</label>
                             <input
                                 type="text"
                                 placeholder="Wprowadź model pojazdu"
-                                id="model"
+                                name="model"
                                 required
-                                value={model}
-                                onChange={(e) => setModel(e.target.value)}
+                                value={data.model}
+                                onChange={handleChange}
                             />
 
                             <label>Rok produkcji</label>
                             <select
-                                id="rok_prod"
-                                name="rok_prod"
+                                name="year"
                                 placeholder="Wprowadź rok produkcji pojazdu"
-                                required value={rokProdukcji}
-                                onChange={(e) => setRokProdukcji(e.target.value)}>
-                                {years.map((year) => (
+                                required 
+                                value={data.year}
+                                onChange={handleChange}>
+                                {rangeOfYears.map((year) => (
                                     <option key={year} value={year}>
                                         {year}
                                     </option>
@@ -103,30 +113,30 @@ const EdytujPojazd = () => {
                             <input
                                 type="text"
                                 placeholder="Wprowadź nr rejestracyjny pojazdu"
-                                id="nr_rej"
+                                name="registrationNumber"
                                 required
-                                value={nrRejestracyjny}
-                                onChange={(e) => setNrRejestracyjny(e.target.value)}
+                                value={data.registrationNumber}
+                                onChange={handleChange}
                             />
 
                             <label>VIN</label>
                             <input
                                 type="text"
                                 placeholder="Wprowadź nr VIN pojazdu"
-                                id="vin"
+                                name="vehicleIdentificationNumber"
                                 required
-                                value={nrVin}
-                                onChange={(e) => setNrVin(e.target.value)}
+                                value={data.vehicleIdentificationNumber}
+                                onChange={handleChange}
                             />
 
                             <label>Termin następnego badania technicznego</label>
                             <input
                                 type="date"
                                 placeholder="Wprowadź termin badania"
-                                id="termin_badania"
+                                name="validityPeriod"
                                 required
-                                value={nastepneBadanie}
-                                onChange={(e) => setNastepneBadanie(e.target.value)}
+                                value={data.validityPeriod}
+                                onChange={handleChange}
                             />
 
                             <br />

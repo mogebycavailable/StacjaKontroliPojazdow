@@ -3,23 +3,45 @@ import { Link } from "react-router-dom"
 import '../css/Style.css'
 import './MojePojazdy.css'
 import vehicle_icon from '../css/img/vehicle.png';
-import useFetch from '../../service/useFetch';
+import useRefresh from '../../service/useRefresh'
 
 const MojePojazdy = () => {
-    //const { data: vehicles, error } = useFetch('http://localhost:3000/vehicles')
-    const today = new Date().toISOString().split('T')[0]
+    //const today = new Date().toISOString().split('T')[0]
+    //const today = new Date().toLocaleDateString('en-CA').split('T')[0]
 
-    const [vehicles, setVehicles] = useState([])
-    const user = JSON.parse(localStorage.getItem('userData'))
+    const [data, setData] = useState([])
+    const refreshTokens = useRefresh()
 
     useEffect(() => {
-        if (user) {
-          fetch(`http://localhost:3000/vehicles?userId=${user.id}`)
-            .then((res) => res.json())
-            .then((data) => setVehicles(data))
-            .catch((error) => console.error("Błąd pobierania pojazdów:", error))
+        const getAllVehiclesData = async () => {
+            try {
+                const accessToken = localStorage.getItem('access-token')
+                const url = "http://localhost:8080/api/vehicles"
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                    }
+                })
+
+                const responseStatus = response.status
+
+                if (responseStatus >= 200 && responseStatus <= 299) {
+                    const resData = await response.json()
+                    setData(resData)
+                } else {
+                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
+                }
+
+                await refreshTokens(responseStatus)
+            } catch(error) {
+                console.error("Błąd sieci:", error)
+            }
         }
-    }, [user])
+
+        getAllVehiclesData()
+    }, [])
 
     return(
         <div className='body-div'>
@@ -28,9 +50,9 @@ const MojePojazdy = () => {
                 <Link to="/moje_pojazdy/dodaj_pojazd">
                     <button id="add">Dodaj</button>
                 </Link>
-                {vehicles && vehicles.map((vehicle) => {
-                    const dateStyle = { color: vehicle.nastepneBadanie < today ? 'red' : 'green' };
-                    const isExpired = vehicle.nastepneBadanie < today;
+                {data && data.map((vehicle) => {
+                    const dateStyle = { color: vehicle.validityPeriod < today ? 'red' : 'green' };
+                    const isExpired = vehicle.validityPeriod < today;
                     const statusText = isExpired ? "(NIEWAŻNE)" : "(WAŻNE)";
                     return (
                     <div key={vehicle.id} className="vehicle">
@@ -38,21 +60,27 @@ const MojePojazdy = () => {
                             <img src={vehicle_icon}/>
                         </div>
                         <div className="data">
-                            <h4>Marka: {vehicle.marka}</h4>
+                            <h4>Marka: {vehicle.brand}</h4>
                             <h4>Model: {vehicle.model}</h4>
-                            <h4>Rok produkcji: {vehicle.rokProdukcji}</h4>
-                            <h4>Nr rejestracyjny: {vehicle.nrRejestracyjny}</h4>
-                            <h4>Nr VIN: {vehicle.nrVin}</h4>
-                            <h4>Badania techniczne:   <span style={dateStyle}>{vehicle.nastepneBadanie} {statusText}</span></h4>
+                            <h4>Rok produkcji: {vehicle.year}</h4>
+                            <h4>Nr rejestracyjny: {vehicle.registrationNumber}</h4>
+                            <h4>Nr VIN: {vehicle.vehicleIdentificationNumber}</h4>
+                            <h4>Termin ważności badania:   <span style={dateStyle}>{vehicle.validityPeriod} {statusText}</span></h4>
                             <Link to={`/moje_pojazdy/edytuj_pojazd/${vehicle.id}`}>
                                 <button id="edit">Edytuj dane</button>
                             </Link>
                             <Link to={`/zamow_usluge`}>
                                 <button id="order">Umów się na przegląd</button>
                             </Link>
+                            <p>{vehicle.id}</p>
                         </div>
                     </div>
                 );})}
+                {data == [] && (
+                    <h2>
+                        Nie masz jeszcze dodanych pojazdów
+                    </h2>
+                )}
             </div>
 	    </div>
     );

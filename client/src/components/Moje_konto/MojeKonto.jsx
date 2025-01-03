@@ -266,7 +266,7 @@ const MojeKonto = ({ onLogout }) => {
                     <span>
                         <button id="edit-account" onClick={openCloseEditDataSection}>Edytuj konto</button>
                         <button id="change-password" onClick={openCloseEditPwdSection}>Zmień hasło</button>
-                        <button id="logout" onChange={onLogout}>Wyloguj się</button>
+                        <Link to='/'><button id="logout" onClick={onLogout}>Wyloguj się</button></Link>
                         <button id="delete" onClick={openCloseDeleteSection}>Usuń konto</button>
                     </span>
                 </div>
