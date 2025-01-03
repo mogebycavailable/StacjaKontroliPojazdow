@@ -5,6 +5,7 @@ import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
 import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
+import edu.bednarski.skpbackend.exceptions.DuplicateVinException;
 import edu.bednarski.skpbackend.exceptions.VehicleNotProvidedException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.UserRepository;
@@ -33,9 +34,16 @@ public class VehicleServiceImpl implements VehicleService {
 
 
     @Override
-    public Optional<VehicleDto> create(VehicleDto vehicleDto, String userEmail) {
+    public Optional<VehicleDto> create(VehicleDto vehicleDto, String userEmail) throws DuplicateVinException {
         if(vehicleDto==null) throw new VehicleNotProvidedException("Nie otrzymano danych pojazdu!");
         vehicleDto.setId(null);
+        if(vehicleDto.getVehicleIdentificationNumber() != null) {
+            Optional<VehicleEntity> duplicateVehicle = vehicleRepository.findByVehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber());
+            if(duplicateVehicle.isPresent()) {
+                throw new DuplicateVinException("Wykryto duplikat numeru VIN. Prosze upewnic sie, czy wprowadzona wartosc jest taka sama jak w Dowodzie Rejestracyjnym.");
+            }
+        }
+
         Optional<UserEntity> user = userRepository.findByEmail(userEmail);
         return user.map(existingUser -> {
             VehicleEntity vehicleUponCreate = vehicleMapper.mapFrom(vehicleDto);
@@ -72,12 +80,18 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto, String userEmail) throws BadDateFormatException {
+    public Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto, String userEmail) throws BadDateFormatException, DuplicateVinException {
         Optional<UserEntity> user = userRepository.findByEmail(userEmail);
         return user.map(existingUser -> {
             Optional<VehicleEntity> currentData = vehicleRepository.findById(vehicleDto.getId());
             VehicleEntity mergedData = currentData.map(
                     existingVehicle -> {
+                        if(vehicleDto.getVehicleIdentificationNumber() != null &&(!vehicleDto.getVehicleIdentificationNumber().equals(existingVehicle.getVehicleIdentificationNumber()))) {
+                            Optional<VehicleEntity> duplicateVehicle = vehicleRepository.findByVehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber());
+                            if(duplicateVehicle.isPresent()) {
+                                throw new DuplicateVinException("Wykryto duplikat numeru VIN. Prosze upewnic sie, czy wprowadzona wartosc jest taka sama jak w Dowodzie Rejestracyjnym.");
+                            }
+                        }
                         if(!existingUser.equals(existingVehicle.getOwner())) return null;
                         Optional.ofNullable(vehicleDto.getBrand()).ifPresent(existingVehicle::setBrand);
                         Optional.ofNullable(vehicleDto.getModel()).ifPresent(existingVehicle::setModel);

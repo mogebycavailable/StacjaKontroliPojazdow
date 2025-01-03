@@ -31,7 +31,7 @@ public class VehicleEntity {
     @Column(name = "registration_number")
     private String registrationNumber;
 
-    @Column(name = "vin")
+    @Column(name = "vin", unique = true)
     private String vehicleIdentificationNumber;
 
     @Column(name = "validity")
