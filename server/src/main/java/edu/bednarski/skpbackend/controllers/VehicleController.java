@@ -49,4 +49,21 @@ public class VehicleController {
         else return new ResponseEntity<>("Ups! Cos poszlo nie tak!", HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping(path = "/vehicles/{id}")
+    public ResponseEntity<?> vehicleDelete(
+            @PathVariable("id") Long id
+    ) {
+        VehicleDto vehicleToDelete = VehicleDto
+                .builder()
+                .id(id)
+                .build();
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<VehicleDto> deletedVehicle = vehicleService.delete(vehicleToDelete,userName);
+        if(deletedVehicle.isPresent()) {
+            return new ResponseEntity<>(deletedVehicle.get(),HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Ten pojazd nie istnieje, lub nie masz do niego dostepu!",HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -73,7 +73,22 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Optional<VehicleDto> delete(VehicleDto vehicleDto) {
-        return Optional.empty();
+    public Optional<VehicleDto> delete(VehicleDto vehicleDto, String userEmail) {
+        Optional<UserEntity> user = userRepository.findByEmail(userEmail);
+        return user.map(existingUser -> {
+            Optional<VehicleEntity> vehicleToDelete = vehicleRepository.findById(vehicleDto.getId());
+            if(vehicleToDelete.isPresent()) {
+                if(existingUser.equals(vehicleToDelete.get().getOwner())) {
+                    vehicleRepository.deleteById(vehicleToDelete.get().getId());
+                    return Optional.ofNullable(vehicleMapper.mapTo(vehicleToDelete.get()));
+                }
+                else {
+                    return Optional.<VehicleDto>empty();
+                }
+            }
+            else {
+                return Optional.<VehicleDto>empty();
+            }
+        }).orElseThrow(() -> new UsernameNotFoundException("Tozsamosc uzytkownika nie jest znana serwerowi!"));
     }
 }

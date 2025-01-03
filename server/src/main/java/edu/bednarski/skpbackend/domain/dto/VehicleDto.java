@@ -27,6 +27,6 @@ public class VehicleDto {
 
     private String vehicleIdentificationNumber;
 
-    private Date validityPeriod;
+    private String validityPeriod;
 
 }

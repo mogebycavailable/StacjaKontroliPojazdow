@@ -2,23 +2,52 @@ package edu.bednarski.skpbackend.mappers.impl;
 
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
+import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 @Component
-@RequiredArgsConstructor
 public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
 
-    private final ModelMapper modelMapper;
     @Override
     public VehicleDto mapTo(VehicleEntity vehicleEntity) {
-        return modelMapper.map(vehicleEntity, VehicleDto.class);
+        VehicleDto mapped = VehicleDto
+                .builder()
+                .id(vehicleEntity.getId())
+                .model(vehicleEntity.getModel())
+                .brand(vehicleEntity.getBrand())
+                .year(vehicleEntity.getYear())
+                .registrationNumber(vehicleEntity.getRegistrationNumber())
+                .vehicleIdentificationNumber(vehicleEntity.getVehicleIdentificationNumber())
+                .build();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        mapped.setValidityPeriod(sdf.format(vehicleEntity.getValidityPeriod()));
+        return mapped;
     }
 
     @Override
     public VehicleEntity mapFrom(VehicleDto vehicleDto) {
-        return modelMapper.map(vehicleDto, VehicleEntity.class);
+        VehicleEntity mapped = VehicleEntity
+                .builder()
+                .id(null)
+                .model(vehicleDto.getModel())
+                .brand(vehicleDto.getBrand())
+                .year(vehicleDto.getYear())
+                .vehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber())
+                .registrationNumber(vehicleDto.getRegistrationNumber())
+                .build();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        try {
+            mapped.setValidityPeriod(sdf.parse(vehicleDto.getValidityPeriod()));
+        } catch (ParseException ex) {
+            throw new BadDateFormatException("Podano date w zlym formacie!");
+        }
+        return mapped;
+
     }
 }

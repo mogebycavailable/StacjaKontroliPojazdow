@@ -19,5 +19,5 @@ public interface VehicleService {
 
     Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto);
 
-    Optional<VehicleDto> delete(VehicleDto vehicleDto);
+    Optional<VehicleDto> delete(VehicleDto vehicleDto, String userEmail);
 }
