@@ -1,5 +1,6 @@
 package edu.bednarski.skpbackend.mappers.impl;
 
+import edu.bednarski.skpbackend.config.DateFormatConfig;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
 import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
@@ -14,6 +15,15 @@ import java.text.SimpleDateFormat;
 @Component
 public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
 
+    private final String DATE_FORMAT;
+
+    private final String DATETIME_FORMAT;
+
+    public VehicleMapper(DateFormatConfig dateFormatConfig) {
+        this.DATE_FORMAT = dateFormatConfig.getDate();
+        this.DATETIME_FORMAT = dateFormatConfig.getDatetime();
+    }
+
     @Override
     public VehicleDto mapTo(VehicleEntity vehicleEntity) {
         VehicleDto mapped = VehicleDto
@@ -25,7 +35,7 @@ public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
                 .registrationNumber(vehicleEntity.getRegistrationNumber())
                 .vehicleIdentificationNumber(vehicleEntity.getVehicleIdentificationNumber())
                 .build();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         mapped.setValidityPeriod(sdf.format(vehicleEntity.getValidityPeriod()));
         return mapped;
     }
@@ -41,7 +51,7 @@ public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
                 .vehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber())
                 .registrationNumber(vehicleDto.getRegistrationNumber())
                 .build();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         try {
             mapped.setValidityPeriod(sdf.parse(vehicleDto.getValidityPeriod()));
         } catch (ParseException ex) {

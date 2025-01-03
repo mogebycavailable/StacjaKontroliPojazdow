@@ -1,5 +1,6 @@
 package edu.bednarski.skpbackend.services.impl;
 
+import edu.bednarski.skpbackend.config.DateFormatConfig;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
@@ -31,6 +32,8 @@ public class VehicleServiceImpl implements VehicleService {
     private final UserRepository userRepository;
 
     private final Mapper<VehicleEntity, VehicleDto> vehicleMapper;
+
+    private final DateFormatConfig globalDateFormat;
 
 
     @Override
@@ -99,7 +102,7 @@ public class VehicleServiceImpl implements VehicleService {
                         Optional.ofNullable(vehicleDto.getRegistrationNumber()).ifPresent(existingVehicle::setRegistrationNumber);
                         Optional.ofNullable(vehicleDto.getVehicleIdentificationNumber()).ifPresent(existingVehicle::setVehicleIdentificationNumber);
                         Optional.ofNullable(vehicleDto.getValidityPeriod()).ifPresent(dateString -> {
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat sdf = new SimpleDateFormat(globalDateFormat.getDate());
                             try {
                                 existingVehicle.setValidityPeriod(sdf.parse(dateString));
                             } catch (ParseException ex) {
