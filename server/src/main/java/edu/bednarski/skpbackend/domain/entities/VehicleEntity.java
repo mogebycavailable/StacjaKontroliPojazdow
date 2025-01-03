@@ -38,7 +38,7 @@ public class VehicleEntity {
     private Date validityPeriod;
 
     @JoinColumn(name = "fk_user")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private UserEntity owner;
 
 }
