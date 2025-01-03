@@ -25,7 +25,7 @@ public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
                 .registrationNumber(vehicleEntity.getRegistrationNumber())
                 .vehicleIdentificationNumber(vehicleEntity.getVehicleIdentificationNumber())
                 .build();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         mapped.setValidityPeriod(sdf.format(vehicleEntity.getValidityPeriod()));
         return mapped;
     }
@@ -41,7 +41,7 @@ public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
                 .vehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber())
                 .registrationNumber(vehicleDto.getRegistrationNumber())
                 .build();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             mapped.setValidityPeriod(sdf.parse(vehicleDto.getValidityPeriod()));
         } catch (ParseException ex) {
