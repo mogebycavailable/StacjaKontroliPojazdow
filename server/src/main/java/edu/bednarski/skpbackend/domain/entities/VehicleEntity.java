@@ -1,5 +1,6 @@
 package edu.bednarski.skpbackend.domain.entities;
 
+import edu.bednarski.skpbackend.domain.enums.VehicleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,13 @@ public class VehicleEntity {
 
     @Column(name = "vin", unique = true)
     private String vehicleIdentificationNumber;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private VehicleType vehicleType;
+
+    @Column(name = "has_lpg")
+    private Boolean hasLpg;
 
     @Column(name = "validity")
     private Date validityPeriod;

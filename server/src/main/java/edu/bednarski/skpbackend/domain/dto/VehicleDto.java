@@ -27,6 +27,10 @@ public class VehicleDto {
 
     private String vehicleIdentificationNumber;
 
+    private String vehicleType;
+
+    private Boolean hasLpg;
+
     private String validityPeriod;
 
 }

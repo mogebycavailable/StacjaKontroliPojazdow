@@ -3,7 +3,9 @@ package edu.bednarski.skpbackend.mappers.impl;
 import edu.bednarski.skpbackend.config.DateFormatConfig;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
+import edu.bednarski.skpbackend.domain.enums.VehicleType;
 import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
+import edu.bednarski.skpbackend.exceptions.UnknownVehicleTypeException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -34,6 +36,8 @@ public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
                 .year(vehicleEntity.getYear())
                 .registrationNumber(vehicleEntity.getRegistrationNumber())
                 .vehicleIdentificationNumber(vehicleEntity.getVehicleIdentificationNumber())
+                .vehicleType(vehicleEntity.getVehicleType().toString())
+                .hasLpg(vehicleEntity.getHasLpg())
                 .build();
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         mapped.setValidityPeriod(sdf.format(vehicleEntity.getValidityPeriod()));
@@ -42,15 +46,22 @@ public class VehicleMapper implements Mapper<VehicleEntity, VehicleDto> {
 
     @Override
     public VehicleEntity mapFrom(VehicleDto vehicleDto) {
-        VehicleEntity mapped = VehicleEntity
-                .builder()
-                .id(null)
-                .model(vehicleDto.getModel())
-                .brand(vehicleDto.getBrand())
-                .year(vehicleDto.getYear())
-                .vehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber())
-                .registrationNumber(vehicleDto.getRegistrationNumber())
-                .build();
+        VehicleEntity mapped;
+        try {
+            mapped = VehicleEntity
+                    .builder()
+                    .id(null)
+                    .model(vehicleDto.getModel())
+                    .brand(vehicleDto.getBrand())
+                    .year(vehicleDto.getYear())
+                    .vehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber())
+                    .registrationNumber(vehicleDto.getRegistrationNumber())
+                    .vehicleType(VehicleType.valueOf(vehicleDto.getVehicleType()))
+                    .hasLpg(vehicleDto.getHasLpg())
+                    .build();
+        } catch (IllegalArgumentException ex) {
+            throw new UnknownVehicleTypeException("Nieprawidlowy typ pojazdu. Dostepne opcje: CAR/TRUCK/MOTORCYCLE/VINTAGE/SLOW_MOVING");
+        }
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         try {
             mapped.setValidityPeriod(sdf.parse(vehicleDto.getValidityPeriod()));
