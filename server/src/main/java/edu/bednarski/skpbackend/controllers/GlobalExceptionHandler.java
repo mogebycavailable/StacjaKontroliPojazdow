@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(VehicleNotProvidedException.class)
+    @ExceptionHandler(DataNotProvidedException.class)
     public ResponseEntity<?> handleVehicleNotProvidedException(final BadPasswordException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

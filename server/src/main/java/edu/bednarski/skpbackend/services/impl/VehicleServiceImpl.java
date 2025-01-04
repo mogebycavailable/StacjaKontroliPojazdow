@@ -1,7 +1,6 @@
 package edu.bednarski.skpbackend.services.impl;
 
 import edu.bednarski.skpbackend.config.DateFormatConfig;
-import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
@@ -9,7 +8,7 @@ import edu.bednarski.skpbackend.domain.enums.VehicleType;
 import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
 import edu.bednarski.skpbackend.exceptions.DuplicateVinException;
 import edu.bednarski.skpbackend.exceptions.UnknownVehicleTypeException;
-import edu.bednarski.skpbackend.exceptions.VehicleNotProvidedException;
+import edu.bednarski.skpbackend.exceptions.DataNotProvidedException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.UserRepository;
 import edu.bednarski.skpbackend.repositories.VehicleRepository;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -40,7 +38,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Optional<VehicleDto> create(VehicleDto vehicleDto, String userEmail) throws DuplicateVinException {
-        if(vehicleDto==null) throw new VehicleNotProvidedException("Nie otrzymano danych pojazdu!");
+        if(vehicleDto==null) throw new DataNotProvidedException("Nie otrzymano danych pojazdu!");
         vehicleDto.setId(null);
         if(vehicleDto.getVehicleIdentificationNumber() != null) {
             Optional<VehicleEntity> duplicateVehicle = vehicleRepository.findByVehicleIdentificationNumber(vehicleDto.getVehicleIdentificationNumber());

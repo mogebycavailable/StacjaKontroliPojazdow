@@ -1,12 +1,12 @@
 package edu.bednarski.skpbackend.exceptions;
 
-public class VehicleNotProvidedException extends RuntimeException{
+public class DataNotProvidedException extends RuntimeException{
 
-    public VehicleNotProvidedException() {
+    public DataNotProvidedException() {
         super();
     }
 
-    public VehicleNotProvidedException(String message) {
+    public DataNotProvidedException(String message) {
         super(message);
     }
 

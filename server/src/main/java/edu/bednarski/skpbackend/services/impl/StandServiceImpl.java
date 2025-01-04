@@ -2,6 +2,7 @@ package edu.bednarski.skpbackend.services.impl;
 
 import edu.bednarski.skpbackend.domain.dto.StandDto;
 import edu.bednarski.skpbackend.domain.entities.StandEntity;
+import edu.bednarski.skpbackend.exceptions.DataNotProvidedException;
 import edu.bednarski.skpbackend.exceptions.DuplicateStandNameException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.StandRepository;
@@ -49,11 +50,23 @@ public class StandServiceImpl implements StandService {
 
     @Override
     public Optional<StandDto> partialUpdate(Long standId, StandDto standDto) {
-        return Optional.empty();
+        Optional<StandEntity> existingStand = standRepository.findById(standId);
+        if(existingStand.isEmpty()) return Optional.empty();
+        if(standDto == null) throw new DataNotProvidedException("Dane do edycji stanowiska nie zostaly podane!");
+        StandEntity editData = standMapper.mapFrom(standDto);
+        return existingStand.map(dataInDatabase -> {
+            Optional.ofNullable(editData.getName()).ifPresent(dataInDatabase::setName);
+            Optional.ofNullable(editData.getIsActive()).ifPresent(dataInDatabase::setIsActive);
+            StandEntity savedEntity = standRepository.save(dataInDatabase);
+            return Optional.ofNullable(standMapper.mapTo(savedEntity));
+        }).orElse(Optional.empty());
     }
 
     @Override
     public Optional<StandDto> delete(Long standId) {
-        return Optional.empty();
+        Optional<StandEntity> existingStand = standRepository.findById(standId);
+        if(existingStand.isEmpty()) return Optional.empty();
+        standRepository.deleteById(standId);
+        return Optional.ofNullable(standMapper.mapTo(existingStand.get()));
     }
 }
