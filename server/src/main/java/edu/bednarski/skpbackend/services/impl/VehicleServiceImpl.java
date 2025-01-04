@@ -5,8 +5,10 @@ import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
+import edu.bednarski.skpbackend.domain.enums.VehicleType;
 import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
 import edu.bednarski.skpbackend.exceptions.DuplicateVinException;
+import edu.bednarski.skpbackend.exceptions.UnknownVehicleTypeException;
 import edu.bednarski.skpbackend.exceptions.VehicleNotProvidedException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.UserRepository;
@@ -83,7 +85,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto, String userEmail) throws BadDateFormatException, DuplicateVinException {
+    public Optional<VehicleDto> partialUpdate(VehicleDto vehicleDto, String userEmail) throws BadDateFormatException, DuplicateVinException, UnknownVehicleTypeException {
         Optional<UserEntity> user = userRepository.findByEmail(userEmail);
         return user.map(existingUser -> {
             Optional<VehicleEntity> currentData = vehicleRepository.findById(vehicleDto.getId());
@@ -101,6 +103,14 @@ public class VehicleServiceImpl implements VehicleService {
                         Optional.ofNullable(vehicleDto.getYear()).ifPresent(existingVehicle::setYear);
                         Optional.ofNullable(vehicleDto.getRegistrationNumber()).ifPresent(existingVehicle::setRegistrationNumber);
                         Optional.ofNullable(vehicleDto.getVehicleIdentificationNumber()).ifPresent(existingVehicle::setVehicleIdentificationNumber);
+                        Optional.ofNullable(vehicleDto.getHasLpg()).ifPresent(existingVehicle::setHasLpg);
+                        Optional.ofNullable(vehicleDto.getVehicleType()).ifPresent(vehicleTypeString -> {
+                            try {
+                                existingVehicle.setVehicleType(VehicleType.valueOf(vehicleTypeString));
+                            } catch (IllegalArgumentException ex) {
+                                throw new UnknownVehicleTypeException("Nieprawidlowy typ pojazdu. Dostepne opcje: CAR/TRUCK/MOTORCYCLE/VINTAGE/SLOW_MOVING");
+                            }
+                        });
                         Optional.ofNullable(vehicleDto.getValidityPeriod()).ifPresent(dateString -> {
                             SimpleDateFormat sdf = new SimpleDateFormat(globalDateFormat.getDate());
                             try {
