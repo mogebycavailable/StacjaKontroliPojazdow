@@ -36,8 +36,8 @@ const MojeKonto = ({ onLogout }) => {
     })
     const [deleteError, setDeleteError] = useState("")
 
-    const [isEditingData, setisEditingData] = useState(false)
-    const [isEditingPwd, setisEditingPwd] = useState(false)
+    const [isEditingData, setIsEditingData] = useState(false)
+    const [isEditingPwd, setIsEditingPwd] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 
     const handleAccountChange = ({ currentTarget: input }) => {
@@ -94,7 +94,7 @@ const MojeKonto = ({ onLogout }) => {
                 phone: ""
             })
         }
-        setisEditingData((prev) => !prev)
+        setIsEditingData((prev) => !prev)
     }
 
     const openCloseEditPwdSection = () => {
@@ -103,7 +103,7 @@ const MojeKonto = ({ onLogout }) => {
             newPassword: "",
             confirmNewPassword: ""
         })
-        setisEditingPwd((prev) => !prev)
+        setIsEditingPwd((prev) => !prev)
     }
 
     const openCloseDeleteSection = () => {

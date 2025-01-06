@@ -11,6 +11,14 @@ const MojePojazdy = () => {
     const [data, setData] = useState([])
     const refreshTokens = useRefresh()
 
+    const vehicleTypeTranslations = {
+        CAR: "Samochód osobowy",
+        TRUCK: "Samochód ciężarowy",
+        MOTORCYCLE: "Motocykl",
+        VINTAGE: "Samochód zabytkowy",
+        SLOW_MOVING: "Pojazd wolnobieżny",
+      }
+
     useEffect(() => {
         const getAllVehiclesData = async () => {
             try {
@@ -64,6 +72,8 @@ const MojePojazdy = () => {
                             <h4>Rok produkcji: {vehicle.year}</h4>
                             <h4>Nr rejestracyjny: {vehicle.registrationNumber}</h4>
                             <h4>Nr VIN: {vehicle.vehicleIdentificationNumber}</h4>
+                            <h4>Typ pojazdu: {vehicleTypeTranslations[vehicle.vehicleType] || "Nieznany typ"}</h4>
+                            <h4>Czy posiada instalację LPG: {vehicle.hasLpg ? "TAK" : "NIE"}</h4>
                             <h4>Termin ważności badania:   <span style={dateStyle}>{vehicle.validityPeriod} {statusText}</span></h4>
                             <Link to={`/moje_pojazdy/edytuj_pojazd/${vehicle.id}`}>
                                 <button id="edit">Edytuj dane</button>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
+import Switch from 'react-switch'
 import '../css/Style.css'
 import './MojePojazdy.css'
-import useFetch from '../../service/useFetch'
 import useRefresh from '../../service/useRefresh'
 
 const EdytujPojazd = () => {
@@ -21,8 +21,18 @@ const EdytujPojazd = () => {
             year: '',
             registrationNumber: '',
             vehicleIdentificationNumber: '',
+            vehicleType: '',
+            hasLpg: '',
             validityPeriod: ''
     })
+
+    const vehicleTypes = [
+        {key: 'CAR', label: 'Samochód osobowy'},
+        {key: 'TRUCK', label: 'Samochód ciężarowy'},
+        {key: 'MOTORCYCLE', label: 'Motocykl'},
+        {key: 'VINTAGE', label: 'Samochód zabytkowy'},
+        {key: 'SLOW_MOVING', label: 'Pojazd wolnobieżny'},
+    ]
 
     const handleChange = ({ currentTarget: input }) => {
         setData({ ...data, [input.name]: input.value })
@@ -69,6 +79,8 @@ const EdytujPojazd = () => {
             year: data.year,
             registrationNumber: data.registrationNumber,
             vehicleIdentificationNumber: data.vehicleIdentificationNumber,
+            vehicleType: data.vehicleType,
+            hasLpg: data.hasLpg,
             validityPeriod: data.validityPeriod
         }
 
@@ -233,6 +245,31 @@ const EdytujPojazd = () => {
                                 required
                                 value={data.vehicleIdentificationNumber}
                                 onChange={handleChange}
+                            />
+
+                            <label>Typ pojazdu</label>
+                            <select
+                                type="text"
+                                placeholder="Wybierz typ pojazdu"
+                                name="vehicleType"
+                                required
+                                value={data.vehicleType}
+                                onChange={handleChange}
+                            >
+                                
+                                <option value="" disabled>
+                                    Wybierz typ pojazdu
+                                </option>
+                                {vehicleTypes.map((type) => (
+                                    <option key={type.key} value={type.key}>{type.label}</option>
+                                ))}
+                            </select>
+
+                            <label>Czy posiada instlację LPG?</label>
+                            <Switch
+                                name="hasLpg"
+                                checked={data.hasLpg}
+                                onChange={(checked) => {setData((prevState) => ({...prevState,hasLpg: checked}))}}
                             />
 
                             <label>Termin następnego badania technicznego</label>

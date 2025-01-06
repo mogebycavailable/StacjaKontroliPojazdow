@@ -5,6 +5,7 @@ import logo from '../css/img/mechanik-alpha.png';
 
 const Menu = ({ onLogout }) => {
     const token = localStorage.getItem('access-token')
+    const role = localStorage.getItem('role')
 
     return(
         <header>
@@ -24,6 +25,7 @@ const Menu = ({ onLogout }) => {
                     { token && <Link to="/moje_konto" className="btn">Moje konto</Link> }
                     { !token && <Link to="/logowanie" className="btn">Zaloguj się</Link> }
                     { !token && <Link to="/rejestracja" className="btn">Zarejestruj się</Link> }
+                    { token && role === 'ROLE_ADMIN' && <Link to="/panel_administratora" className="btn">Panel administratora</Link> }
                     { token && <Link to='/' className="btn" onClick={onLogout}>Wyloguj się</Link> }
                 </ul>
             </nav>

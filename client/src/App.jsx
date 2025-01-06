@@ -14,6 +14,13 @@ import EdytujRezerwacje from './components/Moje_rezerwacje/EdytujRezerwacje'
 import ZamowUsluge from './components/Zamow_usluge/ZamowUsluge'
 import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
+import PanelAdministratora from './components/Panel_Administratora/PanelAdministratora'
+import Stanowiska from './components/Panel_Administratora/Stanowiska/Stanowiska'
+import TydzienPracy from './components/Panel_Administratora/TydzienPracy/TydzienPracy'
+import Kalendarz from './components/Panel_Administratora/Kalendarz/Kalendarz'
+import Pracownicy from './components/Panel_Administratora/Pracownicy/Pracownicy'
+import Klienci from './components/Panel_Administratora/Klienci/Klienci'
+import Rezerwacje from './components/Panel_Administratora/Rezerwacje/Rezerwacje'
 import Test from './components/Test/Test'
 
 function App() {
@@ -58,6 +65,13 @@ function App() {
             { accessToken && <Route path='/moje_rezerwacje/edytuj_rezerwacje/:id' exact element={<EdytujRezerwacje/>}/> }
             { accessToken && <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/> }
             { accessToken && <Route path='/moje_konto' exact element={<MojeKonto onLogout={handleLogout}/>}/> }
+            { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora' exact element={<PanelAdministratora/>}/> }
+            { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/stanowiska' exact element={<Stanowiska/>}/> }
+            { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/tydzien_pracy' exact element={<TydzienPracy/>}/> }
+            { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/kalendarz' exact element={<Kalendarz/>}/> }
+            { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/pracownicy' exact element={<Pracownicy/>}/> }
+            { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/klienci' exact element={<Klienci/>}/> }
+            { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/rezerwacje' exact element={<Rezerwacje/>}/> }
             { !accessToken && <Route path='/rejestracja' exact element={<Rejestracja onRegister={setAccessToken}/>}/> }
             { !accessToken && <Route path='/logowanie' exact element={<Logowanie onLogin={setAccessToken} />}/>}
             { accessToken && <Route path='/test' exact element={<Test/>}/>}
