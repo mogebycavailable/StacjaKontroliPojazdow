@@ -16,23 +16,29 @@ public class WorkWeekTemplateMapper implements Mapper<WorkWeekTemplateEntity, Wo
 
     @Override
     public WorkWeekTemplateDto mapTo(WorkWeekTemplateEntity workWeekTemplateEntity) {
-        return WorkWeekTemplateDto
+        WorkWeekTemplateDto result = WorkWeekTemplateDto
                 .builder()
                 .weekDay(workWeekTemplateEntity.getWeekDay())
                 .isWorkFree(workWeekTemplateEntity.getIsWorkFree())
-                .workStart(timeFormatter.toStr(workWeekTemplateEntity.getWorkStart()))
-                .workEnd(timeFormatter.toStr(workWeekTemplateEntity.getWorkEnd()))
                 .build();
+        if(workWeekTemplateEntity.getWorkStart() != null)
+            result.setWorkStart(timeFormatter.toStr(workWeekTemplateEntity.getWorkStart()));
+        if(workWeekTemplateEntity.getWorkEnd() != null)
+            result.setWorkEnd(timeFormatter.toStr(workWeekTemplateEntity.getWorkEnd()));
+        return result;
     }
 
     @Override
     public WorkWeekTemplateEntity mapFrom(WorkWeekTemplateDto workWeekTemplateDto) throws BadDateFormatException {
-        return WorkWeekTemplateEntity
+        WorkWeekTemplateEntity result = WorkWeekTemplateEntity
                 .builder()
                 .weekDay(workWeekTemplateDto.getWeekDay())
                 .isWorkFree(workWeekTemplateDto.getIsWorkFree())
-                .workStart(timeFormatter.toLocalTime(workWeekTemplateDto.getWorkStart()))
-                .workEnd(timeFormatter.toLocalTime(workWeekTemplateDto.getWorkEnd()))
                 .build();
+        if(workWeekTemplateDto.getWorkStart() != null)
+            result.setWorkStart(timeFormatter.toLocalTime(workWeekTemplateDto.getWorkStart()));
+        if(workWeekTemplateDto.getWorkEnd() != null)
+            result.setWorkEnd(timeFormatter.toLocalTime(workWeekTemplateDto.getWorkEnd()));
+        return result;
     }
 }
