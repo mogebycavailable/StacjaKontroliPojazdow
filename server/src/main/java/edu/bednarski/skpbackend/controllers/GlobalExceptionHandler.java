@@ -49,4 +49,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BadDateFormatException.class)
+    public ResponseEntity<?> handleWeekDayNotFoundException(final BadDateFormatException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

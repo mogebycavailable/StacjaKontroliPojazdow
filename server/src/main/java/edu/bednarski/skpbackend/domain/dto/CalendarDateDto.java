@@ -17,7 +17,7 @@ public class CalendarDateDto {
 
     private WeekDay weekDay;
 
-    private Date date;
+    private String date;
 
     private String description;
 

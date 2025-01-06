@@ -48,7 +48,8 @@ public class CalendarDateServiceImpl implements CalendarDateService {
         Optional<CalendarDateEntity> foundWorkDay = calendarDateRepository.findByDate(date);
         return foundWorkDay.map(existingWorkDay -> Optional.<CalendarDateDto>empty())
                 .orElseGet(() -> {
-                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+                    Locale locale = new Locale("en","US");
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE",locale);
                     String weekDayName = sdf.format(date).toUpperCase();
                     WeekDay weekDay = WeekDay.valueOf(weekDayName);
                     Optional<WorkWeekTemplateEntity> dayTemplate = dayTemplateRepository.findById(weekDay);
