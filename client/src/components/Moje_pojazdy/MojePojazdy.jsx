@@ -76,10 +76,10 @@ const MojePojazdy = () => {
                             <h4>Czy posiada instalację LPG: {vehicle.hasLpg ? "TAK" : "NIE"}</h4>
                             <h4>Termin ważności badania:   <span style={dateStyle}>{vehicle.validityPeriod} {statusText}</span></h4>
                             <Link to={`/moje_pojazdy/edytuj_pojazd/${vehicle.id}`}>
-                                <button id="edit">Edytuj dane</button>
+                                <button className='edit-vehicle-btn' id="edit">Edytuj dane</button>
                             </Link>
                             <Link to={`/zamow_usluge`}>
-                                <button id="order">Umów się na przegląd</button>
+                                <button className='order-btn' id="order">Umów się na przegląd</button>
                             </Link>
                         </div>
                     </div>

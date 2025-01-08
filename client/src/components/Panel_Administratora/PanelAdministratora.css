@@ -50,7 +50,7 @@
     font-weight: bold;
 }
 
-.empty-repo-heading
+.-repo-heading
 {
 	font-size: 28px; /* Określa wielkość czcionki */
 	font-weight: bold; /* Pogrubienie czcionki */

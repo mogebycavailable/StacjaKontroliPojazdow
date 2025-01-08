@@ -19,7 +19,7 @@ const StronaGlowna = () => {
                         U nas wykonasz badanie techniczne pojazdu.
                         Umów się już teraz na wizytę przez <Link to="/zamow_usluge" className="btn">formularz</Link>!
                     </p>
-                    <span>Motoryzacja to możliwość przemieszczania się. Dla nas to przede wszystkim pasja!</span>
+                    <span className='span'>Motoryzacja to możliwość przemieszczania się. Dla nas to przede wszystkim pasja!</span>
                     <div className="flex-tiles">
                         <div className="tile">Stan opon a bezpieczeństwo na drodze &gt;</div>
                         <div className="tile">Zagrożenia związane z użytkowaniem instalacji LPG w złym stanie technicznym &gt;</div>

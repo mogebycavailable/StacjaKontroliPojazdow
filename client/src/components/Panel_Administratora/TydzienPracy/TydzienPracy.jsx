@@ -81,7 +81,7 @@ const TydzienPracy = () => {
     }
 
     const handleEditWorkDay = async (e) => {
-        e.preventDefault
+        e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz zaaktualizować tydzień pracy?')){
             setIsBlocked(true)
