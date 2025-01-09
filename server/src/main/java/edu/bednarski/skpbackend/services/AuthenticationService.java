@@ -17,4 +17,6 @@ public interface AuthenticationService {
     Optional<JwtTokenDto> refreshToken(HttpServletRequest request, HttpServletResponse response);
 
     Optional<UserDetailsDto> registerAdmin(UserDetailsDto userDetailsDto);
+
+    Optional<UserDetailsDto> registerWorker(UserDetailsDto userDetailsDto);
 }

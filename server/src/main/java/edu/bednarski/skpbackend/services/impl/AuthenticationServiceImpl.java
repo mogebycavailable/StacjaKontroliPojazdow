@@ -108,4 +108,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDetailsDto savedAdminDto = userDetailsMapper.mapTo(savedAdmin);
         return Optional.of(savedAdminDto);
     }
+
+    @Override
+    public Optional<UserDetailsDto> registerWorker(UserDetailsDto userDetailsDto) {
+        if(userRepository.existsByEmail(userDetailsDto.getEmail())) {
+            return Optional.empty();
+        }
+        UserEntity workerToCreate = userDetailsMapper.mapFrom(userDetailsDto);
+        workerToCreate.setRole(Role.ROLE_WORKER);
+        workerToCreate.setPwdHash(passwordEncoder.encode(workerToCreate.getPassword()));
+        UserEntity savedWorker = userRepository.save(workerToCreate);
+        UserDetailsDto savedWorkerDto = userDetailsMapper.mapTo(savedWorker);
+        return Optional.of(savedWorkerDto);
+    }
 }

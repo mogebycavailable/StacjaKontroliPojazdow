@@ -6,16 +6,20 @@ import edu.bednarski.skpbackend.domain.dto.UserUpdatedDto;
 import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.exceptions.BadOldPasswordException;
 import edu.bednarski.skpbackend.exceptions.BadPasswordException;
+import edu.bednarski.skpbackend.exceptions.DataNotProvidedException;
 import edu.bednarski.skpbackend.exceptions.SamePasswordException;
 import edu.bednarski.skpbackend.mappers.Mapper;
 import edu.bednarski.skpbackend.repositories.UserRepository;
+import edu.bednarski.skpbackend.security.Role;
 import edu.bednarski.skpbackend.services.JwtService;
 import edu.bednarski.skpbackend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,20 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtService jwtService;
+
+    @Override
+    public List<UserDetailsDto> getAllAccountsByRole(String role) {
+        Role roleType;
+        try {
+            roleType = Role.valueOf(role);
+        } catch (NullPointerException ex) {
+            throw new DataNotProvidedException("Brak danych lub dane w nieprawidlowym formacie!");
+        } catch (IllegalArgumentException ex) {
+            throw new DataNotProvidedException("Wprowadzona rola jest niepoprawna!");
+        }
+        List<UserEntity> foundAccounts = userRepository.findByRole(roleType);
+        return foundAccounts.stream().map(userMapper::mapTo).collect(Collectors.toList());
+    }
 
     @Override
     public Optional<UserDetailsDto> getAccountDetails(String email) {
@@ -96,5 +114,14 @@ public class UserServiceImpl implements UserService {
             else throw new BadPasswordException("Nie mozna usunac konta - nieprawidlowe haslo!");
         }
         else return Optional.empty();
+    }
+
+    @Override
+    public Optional<UserDetailsDto> deleteWithoutConfirmation(String email) {
+        Optional<UserEntity> userToDelete = userRepository.findByEmail(email);
+        return userToDelete.map(existingUser -> {
+            userRepository.delete(existingUser);
+            return Optional.of(userMapper.mapTo(existingUser));
+        }).orElse(Optional.empty());
     }
 }
