@@ -5,13 +5,13 @@ import Switch from 'react-switch'
 import '../../css/Style.css'
 import './TydzienPracy.css'
 import useRefresh from '../../../service/useRefresh'
+import apiRequest from '../../../service/restApiService'
 
 const TydzienPracy = () => {
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
 
     const [data, setData] = useState([])
-    const [isEditingWorkDay, setIsEditingWorkDay] = useState(false)
 
     const [editingWorkDay, setEditingWorkDay] = useState(null)
     const [editingWorkDayData, setEditingWorkDayData] = useState({
@@ -34,42 +34,6 @@ const TydzienPracy = () => {
         setEditingWorkDayData((prev) => ({ ...prev , [input.name]: input.value }))
     }
 
-    useEffect(() => {
-        const getWorkWeek = async () => {
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/workweek"
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    }
-                })
-
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
-                    setData(resData)
-                } else {
-                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-            }
-        }
-
-        getWorkWeek()
-    }, [])
-
-    const openCloseEditWorkDaySection = () => {
-        setIsEditingWorkDay((prev) => !prev)
-        setEditingWorkDay(null)
-    }
-
     const handleEditClick = (day) => {
         setEditingWorkDay(day.weekDay)
         setEditingWorkDayData({
@@ -79,75 +43,7 @@ const TydzienPracy = () => {
             isWorkFree: day.isWorkFree
         })
     }
-
-    const handleEditWorkDay = async (e) => {
-        e.preventDefault()
-
-        if(window.confirm('Czy na pewno chcesz zaaktualizować tydzień pracy?')){
-            setIsBlocked(true)
-
-            const workDay = {
-                workStart: editingWorkDayData.workStart,
-                workEnd: editingWorkDayData.workEnd,
-                isWorkFree: editingWorkDayData.isWorkFree
-            }
-
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/workweek/"+editingWorkDay
-                const response = await fetch(url, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify(workDay),
-                })
-
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
-                    const matchedDay = weekDays.find(d => d.key === resData.weekDay)
-                    toast.success(
-                        <div>
-                            Zapisano zmiany dla dnia pracy:<br/>
-                            {matchedDay.label}
-                        </div>,
-                        {
-                        onClose: () => {
-                            window.location.assign('/panel_administratora/tydzien_pracy')
-                            setIsBlocked(false)
-                        },
-                        autoClose: 3000,
-                    })
-                } else if (responseStatus === 400) {
-                    const resData = await response.text()
-                    console.error(resData, responseStatus)
-                    toast.error(resData, {
-                        onClose: () => {
-                            setIsBlocked(false)
-                        },
-                        autoClose: 3000,
-                    })
-                    setIsBlocked(false)
-                } else {
-                    const resData = await response.text()
-                    console.error(resData, responseStatus)
-                    setIsBlocked(false)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-                setIsBlocked(false)
-            }
-        } else {
-            console.log("Brak zgody administratora na edycje tygodnia pracy.")
-        }
-        setEditingWorkDay(null)
-    }
-    
+  
     const handleCancelEditing = () => {
         setEditingWorkDay(null)
         setEditingWorkDayData({
@@ -162,6 +58,67 @@ const TydzienPracy = () => {
         const indexB = weekDays.findIndex((d) => d.key === b.weekDay);
         return indexA - indexB;
     })
+
+    useEffect(() => {
+        getWorkWeek()
+    }, [])
+
+    // GET
+    const getWorkWeek = async () => {
+        const url = "http://localhost:8080/api/admin/workweek"
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setData(data)
+            }),
+            refreshTokens,
+        })
+    }
+
+    // PATCH
+    const handleEditWorkDay = async (e) => {
+        e.preventDefault()
+
+        if(window.confirm('Czy na pewno chcesz zaaktualizować tydzień pracy?')){
+            const workDay = {
+                workStart: editingWorkDayData.workStart,
+                workEnd: editingWorkDayData.workEnd,
+                isWorkFree: editingWorkDayData.isWorkFree
+            }
+            const url = "http://localhost:8080/api/admin/workweek/"+editingWorkDay
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'PATCH',
+                body: workDay,
+                onSuccess: ((status, data) => {
+                    toast.success(
+                        <div>
+                            Zapisano zmiany dla dnia pracy:<br/>
+                            {weekDays.find((day) => day.key === data.weekDay)?.label || 'Nieznany dzień'}
+                        </div>,
+                        {
+                        onOpen: () => setIsBlocked(true),
+                        onClose: () => {
+                            window.location.assign('/panel_administratora/tydzien_pracy')
+                            setIsBlocked(false)
+                        },
+                        autoClose: 3000,
+                    })
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
+                        autoClose: 3000,
+                    })
+                }),
+                refreshTokens,
+            })
+        } else {
+            console.log("Brak zgody administratora na edycje tygodnia pracy.")
+        }
+        setEditingWorkDay(null)
+    }
 
     return(
         <div className='div-body'>

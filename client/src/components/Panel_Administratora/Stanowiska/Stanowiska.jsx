@@ -6,7 +6,7 @@ import Switch from 'react-switch'
 //import '../PanelAdministratora.css'
 import './Stanowiska.css'
 import useRefresh from '../../../service/useRefresh'
-import useGet from '../../../service/useGet'
+import apiRequest from '../../../service/restApiService'
 
 const Stanowiska = () => {
     const refreshTokens = useRefresh()
@@ -22,7 +22,6 @@ const Stanowiska = () => {
 
     // Edytowanie stanowiska
     const [editingStandId, setEditingStandId] = useState(null)
-    const [isEditingStand, setIsEditingStand] = useState(false)
     const [editingStandData, setEditingStandData] = useState({
         name: '',
         isActive: false
@@ -32,37 +31,6 @@ const Stanowiska = () => {
         setNewStand({ ...newStand, [input.name]: input.value })
     }
 
-    useEffect(() => {
-        const getStandData = async () => {
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/stand"
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    }
-                })
-
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
-                    setData(resData)
-                } else {
-                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch (error) {
-                console.error("Błąd sieci:", error)
-            }
-        }
-
-        getStandData()
-    }, [])
-
     const openCloseAddingStandSection = () => {
         setNewStand({
             name: '',
@@ -70,65 +38,6 @@ const Stanowiska = () => {
         })
         setIsAddingStand((prev) => !prev)
         setEditingStandId(null)
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setIsBlocked(true)
-
-        const stand = {
-            name: newStand.name,
-            isActive: newStand.isActive,
-        }
-
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/admin/stand"
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(stand),
-            })
-
-            const responseStatus = response.status
-
-            if (responseStatus >= 200 && responseStatus <= 299) {
-                const resData = await response.json()
-                toast.success(
-                    <div>
-                        Dodano nowe stanowisko:<br/>
-                        {resData.name}
-                    </div>, 
-                    {
-                    onClose: () => {
-                        window.location.assign('/panel_administratora/stanowiska')
-                        setIsBlocked(false)
-                    },
-                    autoClose: 3000,
-                })
-            } else if (responseStatus === 400) {
-                const resData = await response.text()
-                console.error(resData)
-                toast.error(resData, {
-                    onClose: () => {
-                        setIsBlocked(false)
-                    },
-                    autoClose: 3000,
-                })
-                setIsBlocked(false)
-            } else {
-                console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                setIsBlocked(false)
-            }
-
-            await refreshTokens(responseStatus)
-        } catch(error) {
-            console.error("Błąd sieci:", error)
-            setIsBlocked(false)
-        }
     }
 
     const handleEditClick = (stand) => {
@@ -141,118 +50,132 @@ const Stanowiska = () => {
         setEditingStandId(null)
     }
 
-    const handleEditStand = async (e) => {
-        e.preventDefault
-        setIsBlocked(true)
+    useEffect(() => {
+        getStandData()
+    }, [])
+
+    // GET
+    const getStandData = async () => {
+        const url = "http://localhost:8080/api/admin/stand"
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setData(data)
+            }),
+            refreshTokens,
+        })
+    }
+
+    // POST
+    const handleAddNewStand = async (e) => {
+        e.preventDefault()
 
         const stand = {
-            name: editingStandData.name,
-            isActive: editingStandData.isActive
+            name: newStand.name,
+            isActive: newStand.isActive,
         }
 
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/admin/stand/"+editingStandId
-            const response = await fetch(url, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(stand),
-            })
+        const url = "http://localhost:8080/api/admin/stand"
 
-            const responseStatus = response.status
-
-            if (responseStatus >= 200 && responseStatus <= 299) {
-                const resData = await response.json()
+        await apiRequest({
+            url,
+            useToken: true,
+            method: 'POST',
+            body: stand,
+            onSuccess: ((status, data) => {
                 toast.success(
                     <div>
-                        Zaaktualizowano zmiany dla stanowiska:<br/>
-                        {resData.name}
-                    </div>,
+                        Dodano nowe stanowisko:<br/>
+                        {data.name}
+                    </div>, 
                     {
+                    onOpen: () => setIsBlocked(true),
                     onClose: () => {
                         window.location.assign('/panel_administratora/stanowiska')
                         setIsBlocked(false)
                     },
                     autoClose: 3000,
                 })
-            } else if (responseStatus === 400) {
-                const resData = await response.text()
-                console.error(resData, responseStatus)
-                toast.error(resData, {
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
+            refreshTokens,
+        })
+    }
+
+    // PATCH
+    const handleEditStand = async (e) => {
+        e.preventDefault()
+        const stand = {
+            name: editingStandData.name,
+            isActive: editingStandData.isActive
+        }
+        const url = "http://localhost:8080/api/admin/stand/"+editingStandId
+        await apiRequest({
+            url,
+            useToken: true,
+            method: 'PATCH',
+            body: stand,
+            onSuccess: ((status, data) => {
+                toast.success(
+                    <div>
+                        Zaaktualizowano zmiany dla stanowiska:<br/>
+                        {data.name}
+                    </div>, 
+                    {
+                    onOpen: () => setIsBlocked(true),
                     onClose: () => {
+                        window.location.assign('/panel_administratora/stanowiska')
                         setIsBlocked(false)
                     },
                     autoClose: 3000,
                 })
-                setIsBlocked(false)
-            } else {
-                const resData = await response.text()
-                console.error(resData, responseStatus)
-                setIsBlocked(false)
-            }
-
-            await refreshTokens(responseStatus)
-        } catch(error) {
-            console.error("Błąd sieci:", error)
-            setIsBlocked(false)
-        }
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
+            refreshTokens,
+        })
     }
 
+    // DELETE
     const handleDeleteStand = async (e) => {
-        e.preventDefault
+        e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz usunąć to stanowisko?')){
-            setIsBlocked(true)
-
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/stand/"+editingStandId
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                })
-    
-                const responseStatus = response.status
-    
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
+            const url = "http://localhost:8080/api/admin/stand/"+editingStandId
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'DELETE',
+                onSuccess: ((status, data) => {
                     toast.success(
                         <div>
                             Usunięto stanowisko:<br/>
-                            {resData.name}
-                        </div>,
+                            {data.name}
+                        </div>, 
                         {
+                        onOpen: () => setIsBlocked(true),
                         onClose: () => {
                             window.location.assign('/panel_administratora/stanowiska')
                             setIsBlocked(false)
                         },
                         autoClose: 3000,
                     })
-                } else if (responseStatus === 400) {
-                    const resData = await response.text()
-                    console.error(resData)
-                    toast.error(resData, {
-                        onClose: () => {
-                            setIsBlocked(false)
-                        },
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
                         autoClose: 3000,
                     })
-                } else {
-                    console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                    setIsBlocked(false)
-                }
-    
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-                setIsBlocked(false)
-            }
+                }),
+                refreshTokens,
+            })
         } else {
             console.log("Brak zgody administratora na usunięcie tego stanowiska.")
         }
@@ -325,7 +248,7 @@ const Stanowiska = () => {
                             <div className='stand'>
                                 <div className='add-stand'>
                                     <div className='stand-title'>Stanowisko</div>
-                                    <form onSubmit={handleSubmit} className='stand-adding-form'>
+                                    <form className='stand-adding-form'>
                                         <div className='name-stand'>
                                             <input
                                                 type="text"
@@ -345,7 +268,7 @@ const Stanowiska = () => {
                                             />
                                         </div>
                                         <div className='adding-btns'>
-                                            <div className='add-stand-btn' onClick={handleSubmit}>&#x2714;</div>
+                                            <div className='add-stand-btn' onClick={handleAddNewStand}>&#x2714;</div>
                                             <div className='cancel-adding-stand-btn' onClick={openCloseAddingStandSection}>&#x2716;</div>
                                         </div>
                                     </form>

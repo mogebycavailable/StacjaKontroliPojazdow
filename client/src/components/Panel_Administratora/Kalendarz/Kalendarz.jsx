@@ -8,9 +8,11 @@ import { format, getMonth, getYear } from 'date-fns'
 import '../../css/Style.css'
 import './Kalendarz.css'
 import useRefresh from '../../../service/useRefresh'
+import apiRequest from '../../../service/restApiService'
 
 const Kalendarz = () => {
     const refreshTokens = useRefresh()
+
     const weekDays = [
         {key: 'MONDAY', label: 'Poniedziałek'},
         {key: 'TUESDAY', label: 'Wtorek'},
@@ -47,76 +49,45 @@ const Kalendarz = () => {
         setCurrentYear(getYear(activeStartDate))
     }
 
-    // GET-y
-    const getActiveDates = async (year, month) => {
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = `http://localhost:8080/api/admin/calendar/${year}/${month+1}`
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                }
-            })
-
-            const responseStatus = response.status
-
-            if (responseStatus >= 200 && responseStatus <= 299) {
-                const resData = await response.json()
-                setActiveDays(resData)
-            } else {
-                console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
-            }
-
-            await refreshTokens(responseStatus)
-        } catch (error) {
-            console.error("Błąd sieci:", error)
-        }
-    }
-
     useEffect(() => {
         getActiveDates(currentYear, currentMonth)
     }, [currentYear, currentMonth])
+
+    // GET-y
+    // metoda getActiveDates jest używana przy tworzeniu komponentu w useEffect() oraz po udanej edycji dnia.
+    const getActiveDates = async (year, month) => {
+        const url = `http://localhost:8080/api/admin/calendar/${year}/${month + 1}`
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setActiveDays(data)
+            }),
+            refreshTokens,
+        })
+    }
 
     const handleDateChange = (date) => {
         const formattedDate = format(date, 'yyyy-MM-dd')
         setCalendarDate(formattedDate)
 
         const getDateDetails = async () => {
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/calendar/"+formattedDate
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
+            const url = "http://localhost:8080/api/admin/calendar/"+formattedDate
+            await apiRequest({
+                url,
+                useToken: true,
+                onSuccess: ((status, data) => {
+                    setDateDetails(data)
+                }),
+                onError: ((status, data) => {
+                    if(status === 404){
+                        toast.info("Wybrany dzień jest nieaktywowany", {
+                            autoClose: 1000,
+                        })
                     }
-                })
-
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
-                    setDateDetails(resData)
-                } else if(responseStatus === 404) {
-                    console.log("Wybrany dzień jest nieaktywowany:", responseStatus)
-                    toast.warning("Wybrany dzień jest nieaktywowany", {
-                        onClose: () => {
-                            setIsBlocked(false)
-                        },
-                        autoClose: 1000,
-                    })
-                    setIsBlocked(false)
-                } else {
-                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch (error) {
-                console.error("Błąd sieci:", error)
-            }
+                }),
+                refreshTokens,
+            })
         }
 
         getDateDetails()
@@ -127,59 +98,40 @@ const Kalendarz = () => {
         e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz aktywować ten zakres dat?')){
-            setIsBlocked(true)
-
             const activationDateRange = {
                 startingDate: dateRange.startingDate,
                 endingDate: dateRange.endingDate
             }
 
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/calendar/range"
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify(activationDateRange),
-                })
+            const url = "http://localhost:8080/api/admin/calendar/range"
 
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'POST',
+                body: activationDateRange,
+                onSuccess: ((status, data) => {
                     toast.success(
                         <div>
                             Aktywowano daty z podanego zakresu
                         </div>,
                         {
+                        onOpen: () => setIsBlocked(true),
                         onClose: () => {
                             window.location.assign('/panel_administratora/kalendarz')
                             setIsBlocked(false)
                         },
                         autoClose: 3000,
                     })
-                } else if (responseStatus === 400) {
-                    const resData = await response.text()
-                    console.error(resData)
-                    toast.error(resData, {
-                        onClose: () => {
-                            setIsBlocked(false)
-                        },
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
                         autoClose: 3000,
                     })
-                    setIsBlocked(false)
-                } else {
-                    console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                    setIsBlocked(false)
-                }
+                }),
+                refreshTokens,
+            }) 
 
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-                setIsBlocked(false)
-            }
         } else {
             console.log("Brak zgody administratora na aktywowanie kalendarza w podanym zakresie.")
         }
@@ -187,55 +139,35 @@ const Kalendarz = () => {
 
     const handleSetActiveDate = async (e) => {
         e.preventDefault()
-        setIsBlocked(true)
 
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/admin/calendar"
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(calendarDate),
-            })
+        const url = "http://localhost:8080/api/admin/calendar"
 
-            const responseStatus = response.status
-
-            if (responseStatus >= 200 && responseStatus <= 299) {
-                const resData = await response.json()
+        await apiRequest({
+            url,
+            useToken: true,
+            method: 'POST',
+            body: calendarDate,
+            onSuccess: ((status, data) => {
                 toast.success(
                     <div>
-                        Aktywowano date: {resData.date}
+                        Aktywowano date: {data.date}
                     </div>,
                     {
+                    onOpen: () => setIsBlocked(true),
                     onClose: () => {
                         window.location.assign('/panel_administratora/kalendarz')
                         setIsBlocked(false)
                     },
-                    autoClose: 1000,
+                    autoClose: 3000,
                 })
-            } else if (responseStatus === 400) {
-                const resData = await response.text()
-                console.error(resData)
-                toast.error(resData, {
-                    onClose: () => {
-                        setIsBlocked(false)
-                    },
-                    autoClose: 1000,
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
                 })
-                setIsBlocked(false)
-            } else {
-                console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                setIsBlocked(false)
-            }
-
-            await refreshTokens(responseStatus)
-        } catch(error) {
-            console.error("Błąd sieci:", error)
-            setIsBlocked(false)
-        }
+            }),
+            refreshTokens,
+        })
     }
 
     // UPDATE-y
@@ -243,8 +175,6 @@ const Kalendarz = () => {
         e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz zapisać zmiany dla tego dnia?')){
-            setIsBlocked(true)
-            
             const editingDate = {
                 date: dateDetails.date,
                 updateData: {
@@ -255,28 +185,21 @@ const Kalendarz = () => {
                 }
             }
 
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/calendar"
-                const response = await fetch(url, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify(editingDate),
-                })
+            const url = "http://localhost:8080/api/admin/calendar"
 
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'PATCH',
+                body: editingDate,
+                onSuccess: ((status, data) => {
                     toast.success(
                         <div>
                             Zapisano zmiany dla dnia:<br/>
-                            {resData.date}
+                            {data.date}
                         </div>,
                         {
+                        onOpen: () => setIsBlocked(true),
                         onClose: () => {
                             getActiveDates(currentYear, currentMonth)
                             window.location.assign('/panel_administratora/kalendarz')
@@ -284,27 +207,14 @@ const Kalendarz = () => {
                         },
                         autoClose: 3000,
                     })
-                } else if (responseStatus === 400) {
-                    const resData = await response.text()
-                    console.error(resData, responseStatus)
-                    toast.error(resData, {
-                        onClose: () => {
-                            setIsBlocked(false)
-                        },
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
                         autoClose: 3000,
                     })
-                    setIsBlocked(false)
-                } else {
-                    const resData = await response.text()
-                    console.error(resData, responseStatus)
-                    setIsBlocked(false)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-                setIsBlocked(false)
-            }
+                }),
+                refreshTokens,
+            })
         } else {
             console.log("Brak zgody administratora na dokonanie zmian dla tego dnia w kalendarzu.")
         }
@@ -313,120 +223,80 @@ const Kalendarz = () => {
     // DELETE-y (dezaktywacje)
     const handleDeactivationDate = async (e) => {
         e.preventDefault()
-        setIsBlocked(true)
 
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/admin/calendar"
-            const response = await fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(calendarDate)
-            })
+        const url = "http://localhost:8080/api/admin/calendar"
 
-            const responseStatus = response.status
-
-            if (responseStatus >= 200 && responseStatus <= 299) {
-                const resData = await response.json()
+        await apiRequest({
+            url,
+            useToken: true,
+            method: 'DELETE',
+            body: calendarDate,
+            onSuccess: ((status, data) => {
                 toast.success(
                     <div>
-                        Dezaktywowano datę: {resData.date}
+                        Dezaktywowano datę: {data.date}
                     </div>,
                     {
+                    onOpen: () => setIsBlocked(true),
                     onClose: () => {
                         window.location.assign('/panel_administratora/kalendarz')
                         setIsBlocked(false)
                     },
                     autoClose: 3000,
                 })
-            } else if (responseStatus === 400) {
-                const resData = await response.text()
-                console.error(resData)
-                toast.error(resData, {
-                    onClose: () => {
-                        setIsBlocked(false)
-                    },
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
                     autoClose: 3000,
                 })
-            } else {
-                console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                setIsBlocked(false)
-            }
-
-            await refreshTokens(responseStatus)
-        } catch(error) {
-            console.error("Błąd sieci:", error)
-            setIsBlocked(false)
-        }
+            }),
+            refreshTokens,
+        })
     }
 
     const handleDeactivationDateRange = async (e) => {
         e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz zdezaktywować ten zakres dat?')) {
-            setIsBlocked(true)
-
             const deactivationDateRange = {
                 startingDate: dateRange.startingDate,
                 endingDate: dateRange.endingDate
             }
 
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/admin/calendar/range"
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify(deactivationDateRange)
-                })
-    
-                const responseStatus = response.status
+            const url = "http://localhost:8080/api/admin/calendar/range"
 
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'DELETE',
+                body: deactivationDateRange,
+                onSuccess: ((status, data) => {
                     toast.success(
                         <div>
                             Zdezaktywowano zakres podanych dat
                         </div>,
                         {
+                        onOpen: () => setIsBlocked(true),
                         onClose: () => {
                             window.location.assign('/panel_administratora/kalendarz')
                             setIsBlocked(false)
                         },
                         autoClose: 3000,
                     })
-                } else if (responseStatus === 400) {
-                    const resData = await response.text()
-                    console.error(resData)
-                    toast.error(resData, {
-                        onClose: () => {
-                            setIsBlocked(false)
-                        },
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
                         autoClose: 3000,
                     })
-                } else {
-                    console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                    setIsBlocked(false)
-                }
-    
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-                setIsBlocked(false)
-            }
+                }),
+                refreshTokens,
+            })
         } else {
             console.log("Brak zgody administratora na dezaktywacje podanej daty.")
         }
     }
     
     // FUNKCJA OBSŁUGUJĄCA WYGLĄD KOMPONENTU <CALENDAR/>
-
     const tileClassName = ({ date, view }) => {
         if (view === 'month') {
             const formattedDate = format(date, 'yyyy-MM-dd')
@@ -465,7 +335,6 @@ const Kalendarz = () => {
                             onChange={handleDateChange}
                             onActiveStartDateChange={handleActiveStartDateChange}
                             tileClassName={tileClassName}
-                            //tileDisabled={tileDisabled}
                         />
                     </div>
                     <div className='other-content'>
@@ -561,7 +430,7 @@ const Kalendarz = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default Kalendarz;
+export default Kalendarz

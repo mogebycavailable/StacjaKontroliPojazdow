@@ -1,0 +1,117 @@
+.worker-table
+{
+    width: 100%;
+    table-layout: fixed;
+}
+
+.worker-table td, .worker-table th {
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+.worker-data-input
+{
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    font-size: 14px;
+}
+
+.add-new-worker
+{
+    width: 5%;
+    margin-bottom: 2%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 32px;
+    color: #cc7300;
+    cursor: pointer;
+
+    border-style: solid;
+    border-color: #cc7300;
+    border-radius: 8px;
+}
+
+.add-new-worker:hover
+{
+    color: #ffa500;
+    border-color: #ffa500;
+}
+
+.save-worker, .cancel-editing-worker, .delete-worker
+{
+    display: inline-block;
+}
+
+.save-worker
+{
+    margin-right: 10%;
+    background-color: green;
+    padding: 3% 7%;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.cancel-editing-worker
+{
+    background-color: red;
+    padding: 3% 7%;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.delete-worker
+{
+    margin-left: 10%;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: black;
+    padding: 3% 7%;
+}
+
+.save-worker:hover
+{
+    background-color: darkgreen;
+}
+
+.cancel-editing-worker:hover
+{
+    background-color: darkred;
+}
+
+.delete-worker:hover
+{
+    background-color: grey;
+}
+
+.adding-worker-form
+{
+    margin: 20px auto; /* Centrowanie */
+    padding: 10px;
+    border: 1px solid #ffa500;
+    border-radius: 8px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.form-group label {
+    width: 120px;
+    font-size: 18px;
+    color: white;
+    text-align: left;
+}
+
+.form-group input {
+    flex: 1; /* Wypełnia resztę miejsca */
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
