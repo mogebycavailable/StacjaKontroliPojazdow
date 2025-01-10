@@ -4,6 +4,7 @@ import '../css/Style.css'
 import './MojePojazdy.css'
 import vehicle_icon from '../css/img/vehicle.png';
 import useRefresh from '../../service/useRefresh'
+import apiRequest from '../../service/restApiService'
 
 const MojePojazdy = () => {
     const today = new Date().toISOString().split('T')[0]
@@ -20,35 +21,21 @@ const MojePojazdy = () => {
       }
 
     useEffect(() => {
-        const getAllVehiclesData = async () => {
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/vehicles"
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    }
-                })
-
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
-                    setData(resData)
-                } else {
-                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-            }
-        }
-
-        getAllVehiclesData()
+        getAllVehicles()
     }, [])
+
+    // GET
+    const getAllVehicles = async () => {
+        const url = "http://localhost:8080/api/vehicles"
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setData(data)
+            }),
+            refreshTokens,
+        })
+    }
 
     return(
         <div className='body-div'>

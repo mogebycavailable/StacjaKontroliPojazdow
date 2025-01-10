@@ -5,6 +5,7 @@ import Switch from 'react-switch'
 import '../css/Style.css'
 import './MojePojazdy.css'
 import useRefresh from '../../service/useRefresh'
+import apiRequest from '../../service/restApiService'
 
 const EdytujPojazd = () => {
     const currentYear = 2024
@@ -22,7 +23,7 @@ const EdytujPojazd = () => {
             registrationNumber: '',
             vehicleIdentificationNumber: '',
             vehicleType: '',
-            hasLpg: '',
+            hasLpg: false,
             validityPeriod: ''
     })
 
@@ -39,39 +40,25 @@ const EdytujPojazd = () => {
     }
 
     useEffect(() => {
-        const getVehicleData = async () => {
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/vehicles/"+id
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    }
-                })
-
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
-                    setData(resData)
-                } else {
-                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-            }
-        }
-
-        getVehicleData()
+        getVehicle()
     }, [])
 
+    // GET
+    const getVehicle = async () => {
+        const url = "http://localhost:8080/api/vehicles/"+id
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setData(data)
+            }),
+            refreshTokens,
+        })
+    }
+
+    // PATCH
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setIsBlocked(true)
 
         const updatedVehicle = {
             brand: data.brand,
@@ -84,99 +71,63 @@ const EdytujPojazd = () => {
             validityPeriod: data.validityPeriod
         }
 
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/vehicles/"+id
-            const response = await fetch(url, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(updatedVehicle),
-            })
+        const url = "http://localhost:8080/api/vehicles/"+id
 
-            const responseStatus = response.status
-
-            if (responseStatus >= 200 && responseStatus <= 299) {
-                const resData = await response.json()
+        await apiRequest({
+            url,
+            useToken: true,
+            method: 'PATCH',
+            body: updatedVehicle,
+            onSuccess: ((status, data) => {
                 toast.success(
                     <div>
                         Zaaktualizowano zmiany dla pojazdu:<br/>
-                        {resData.brand} {resData.model}, {resData.year} r.
+                        {data.brand} {data.model}, {data.year} r.
                     </div>,
                     {
+                    onOpen: () => setIsBlocked(true),
                     onClose: () => {
                         window.location.assign('/moje_pojazdy')
                         setIsBlocked(false)
                     },
                     autoClose: 3000,
                 })
-            } else if (responseStatus === 400) {
-                const resData = await response.text()
-                console.error(resData)
-                toast.error(resData, {
-                    onClose: () => {
-                        setIsBlocked(false)
-                    },
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
                     autoClose: 3000,
                 })
-                setIsBlocked(false)
-            } else {
-                console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                setIsBlocked(false)
-            }
-
-            await refreshTokens(responseStatus)
-        } catch(error) {
-            console.error("Błąd sieci:", error)
-            setIsBlocked(false)
-        }
+            }),
+            refreshTokens,
+        })
     }
 
     const handleDeleteVehicle = async (e) => {
         e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz usunąć ten pojazd?')){
-            setIsBlocked(true)
-
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/vehicles/"+id
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                })
-    
-                const responseStatus = response.status
-    
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
+            const url = "http://localhost:8080/api/vehicles/"+id
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'DELETE',
+                onSuccess: ((status, data) => {
                     toast.success(
                         <div>
                             Usunięto pojazd:<br/>
-                            {resData.brand} {resData.model}, {resData.year} r.
+                            {data.brand} {data.model}, {data.year} r.
                         </div>,
                         {
+                        onOpen: () => setIsBlocked(true),
                         onClose: () => {
                             window.location.assign('/moje_pojazdy')
                             setIsBlocked(false)
                         },
                         autoClose: 3000,
                     })
-                } else {
-                    console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                    setIsBlocked(false)
-                }
-    
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-                setIsBlocked(false)
-            }
+                }),
+                refreshTokens,
+            })
         } else {
             console.log("Brak zgody użytkownika na usunięcie tego pojazdu.")
         }
@@ -269,7 +220,7 @@ const EdytujPojazd = () => {
                             <Switch
                                 name="hasLpg"
                                 checked={data.hasLpg}
-                                onChange={(checked) => {setData((prevState) => ({...prevState,hasLpg: checked}))}}
+                                onChange={(checked) => {setData((prevState) => ({...prevState, hasLpg: checked}))}}
                             />
 
                             <label>Termin następnego badania technicznego</label>

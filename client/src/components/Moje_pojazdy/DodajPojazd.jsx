@@ -5,6 +5,7 @@ import Switch from 'react-switch'
 import '../css/Style.css'
 import './MojePojazdy.css'
 import useRefresh from '../../service/useRefresh'
+import apiRequest from '../../service/restApiService'
 
 const DodajPojazd = () => {
     const refreshTokens = useRefresh()
@@ -38,7 +39,6 @@ const DodajPojazd = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setIsBlocked(true)
         
         const vehicle = {
             brand: data.brand,
@@ -51,54 +51,35 @@ const DodajPojazd = () => {
             validityPeriod: data.validityPeriod
         }
 
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/vehicles"
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify(vehicle),
-            })
+        const url = "http://localhost:8080/api/vehicles"
 
-            const responseStatus = response.status
-
-            if (responseStatus >= 200 && responseStatus <= 299) {
-                const resData = await response.json()
+        await apiRequest({
+            url,
+            useToken: true,
+            method: 'POST',
+            body: vehicle,
+            onSuccess: ((status, data) => {
                 toast.success(
                     <div>
                         Dodano nowy pojazd:<br/>
-                        {resData.brand} {resData.model}, {resData.year} r.
+                        {data.brand} {data.model}, {data.year} r.
                     </div>, 
                     {
+                    onOpen: () => setIsBlocked(true),
                     onClose: () => {
                         window.location.assign('/moje_pojazdy')
                         setIsBlocked(false)
                     },
                     autoClose: 3000,
                 })
-            } else if (responseStatus === 400) {
-                const resData = await response.text()
-                console.error(resData)
-                toast.error(resData, {
-                    onClose: () => {
-                        setIsBlocked(false)
-                    },
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
                     autoClose: 3000,
                 })
-                setIsBlocked(false)
-            } else {
-                console.error("Błąd podczas przetwrzania przesłanych danych:", responseStatus)
-                setIsBlocked(false)
-            }
-
-            await refreshTokens(responseStatus)
-        } catch(error) {
-            console.error("Błąd sieci:", error)
-            setIsBlocked(false)
-        }
+            }),
+            refreshTokens,
+        })
     }
 
     return(

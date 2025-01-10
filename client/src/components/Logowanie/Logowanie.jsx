@@ -45,11 +45,12 @@ const Logowanie = ({ onLogin }) => {
                     autoClose: 3000,
                 })
             }),
-            onError: ((status) => {
-                if (status === 403){
-                    setError("Niepoprawne dane logowania. Spróbuj ponownie.")
-                }
-                toast.error("Niepoprawne dane logowania. Spróbuj ponownie.", {
+            onError: ((status, data) => {
+                toast.error(
+                    <div>
+                        Niepoprawne dane logowania. Spróbuj ponownie.
+                    </div>, 
+                    {
                     autoClose: 3000,
                 })
             }),
@@ -90,7 +91,6 @@ const Logowanie = ({ onLogin }) => {
                     { validData && (
                         <button type="submit">Zaloguj się</button>
                     )}
-                    {error.length > 0 && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
             </form>
             <ToastContainer 

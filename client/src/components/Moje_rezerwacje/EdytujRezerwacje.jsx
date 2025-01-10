@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from "react-router-dom"
 import '../css/Style.css'
 import '../css/formstyle.css'
-import useFetch from '../../service/useFetch'
 
 const EdytujRezerwacje = () => {
-    const navigate = useNavigate()
     const { id } = useParams()
-    const { data: service, error } = useFetch('http://localhost:3000/services/' + id)
     const [data, setData] = useState({
         pojazd: '',
         typPojazdu: '',
