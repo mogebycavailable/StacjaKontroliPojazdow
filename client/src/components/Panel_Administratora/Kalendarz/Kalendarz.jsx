@@ -385,7 +385,7 @@ const Kalendarz = () => {
                                 </div>
                             ) : (
                                 <div>
-                                    <button onClick={handleSetActiveDate}>Aktywuj &gt; &#x1F513;</button>
+                                    <button onClick={handleSetActiveDate}>Aktywuj &gt; &#x26A1;</button>
                                 </div>
                             )
                         ) : (
@@ -416,7 +416,7 @@ const Kalendarz = () => {
                             />
                         </label>
                         <div className='activation-dates-btns'>
-                            <button className='activate-range' onClick={handleActivationDateRange}>&#x1F513;</button>
+                            <button className='activate-range' onClick={handleActivationDateRange}>&#x26A1;</button>
                             <button className='deactivate-range' onClick={handleDeactivationDateRange}>&#x1F512;</button>
                             <button className='cancel-activation' onClick={() => setDateRange({startingDate: '', endingDate: ''})}>&#x2716;</button>
                         </div>

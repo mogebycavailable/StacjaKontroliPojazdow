@@ -26,6 +26,11 @@ const Pracownicy = () => {
         phone: '',
         email: '',
     })
+    const [isChangingPassword, setIsChangingPassword] = useState(false)
+    const [editPwdHash, setEditPwdHash] = useState({
+        newPwdHash: '',
+        confirmNewPwdHash: ''
+    })
 
     const handleChange = ({ currentTarget: input }) => {
         setData({ ...data, [input.name]: input.value })
@@ -37,6 +42,10 @@ const Pracownicy = () => {
 
     const handleEditingChange = ({ currentTarget: input }) => {
         setEditingWorkerData({ ...editingWorkerData, [input.name]: input.value })
+    }
+
+    const handleEditPwdChange = ({ currentTarget: input }) => {
+        setEditPwdHash({ ...editPwdHash, [input.name]: input.value })
     }
 
     const handleAddClick = () => {
@@ -77,6 +86,15 @@ const Pracownicy = () => {
     const handleCancelEditing = () => {
         setEditingWorker(null)
         setEditingWorkerData(null)
+    }
+
+    const handleCancelChangingPwd = () => {
+        setIsChangingPassword(false)
+        setEditPwdHash({
+            newPwdHash: '',
+            confirmNewPwdHash: ''
+        })
+        setIsBlocked(false)
     }
 
     useEffect(() => {
@@ -181,6 +199,65 @@ const Pracownicy = () => {
         })
     }
 
+    const handleEditWorkerPwd = async (e) => {
+        e.preventDefault()
+
+        if(window.confirm('Czy na pewno chcesz zmienić hasło pracownika?')){
+            const validNewPwd = editPwdHash.newPwdHash === editPwdHash.confirmNewPwdHash
+
+            if(validNewPwd) {
+                const updateWorkerPwd = {
+                    pwdHash: editPwdHash.newPwdHash
+                }
+        
+                const url = "http://localhost:8080/api/admin/worker/"+editingWorker
+
+                await apiRequest({
+                    url,
+                    useToken: true,
+                    method: 'PATCH',
+                    body: updateWorkerPwd,
+                    onSuccess: ((status, data) => {
+                        toast.success(
+                            <div>
+                                Hasło pracownika:<br/>
+                                {data.name} {data.surname}<br/>
+                                zostało zmienione
+                            </div>,
+                            {
+                            onOpen: () => setIsBlocked(true),
+                            onClose: () => {
+                                window.location.assign('/panel_administratora/pracownicy')
+                                setIsBlocked(false)
+                            },
+                            autoClose: 3000,
+                        })
+                    }),
+                    onError: ((status, data) => {
+                        toast.error(data, {
+                            autoClose: 3000,
+                        })
+                    }),
+                    refreshTokens,
+                })
+            } else {
+                toast.error("Podane hasła nie są identyczne!" ,
+                    {
+                        onClose: () => { setIsBlocked(false) },
+                        autoClose: 3000
+                    })
+            }
+        } else {
+            console.log("Brak zgody administratora na zmianę hasła pracownika.")
+        }
+        setIsChangingPassword(false)
+        setEditPwdHash({
+            newPwdHash: '',
+            confirmNewPwdHash: ''
+        })
+        setEditingWorker(null)
+    }
+
     // DELETE
     const handleDeleteWorker = async (e) => {
         e.preventDefault()
@@ -222,7 +299,27 @@ const Pracownicy = () => {
     return(
         <div className='div-body'>
             {/* Nakładka blokująca */}
-            {isBlocked && <div className="overlay"></div>}
+            {isBlocked && (
+                <div className="overlay">
+                    {editingWorker && isChangingPassword && (
+                        <form className='change-pwd-form'>
+                            <h3>Zamiana hasła do konta: {editingWorker}</h3>
+                            <div className='form-group'>
+                                <label>Nowe hasło:</label>
+                                <input type='password' name='newPwdHash' required value={editPwdHash.newPwdHash} onChange={handleEditPwdChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label>Potwierdź nowe hasło:</label>
+                                <input type='password' name='confirmNewPwdHash' required value={editPwdHash.confirmNewPwdHash} onChange={handleEditPwdChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <div className='save-worker' onClick={handleEditWorkerPwd}>&#x1F4BE;</div>
+                                <div className='cancel-editing-worker' onClick={handleCancelChangingPwd}>&#x2716;</div>
+                            </div>
+                        </form>
+                    )}
+                </div>
+            )}
 
             <h2>Zarządzanie pracownikami</h2>
             <Link to='/panel_administratora' className='back-arrow'>&#8592;</Link>
@@ -265,6 +362,7 @@ const Pracownicy = () => {
                             <th>Nazwisko</th>
                             <th>Nr telefonu</th>
                             <th>E-mail</th>
+                            { editingWorker && (<th>Hasło</th>)}
                             <th>Opcje</th>
                         </tr>
                     </thead>
@@ -315,6 +413,9 @@ const Pracownicy = () => {
                                             />
                                         </td>
                                         <td>
+                                            <div className='change-worker-pwd' onClick={() => {setIsChangingPassword(true); setIsBlocked(true)}}>&#x1F511;</div>
+                                        </td>
+                                        <td>
                                             <div className='save-cancel-delete-btns'>
                                                 <div className='save-worker' onClick={handleEditWorkerData}>&#x1F4BE;</div>
                                                 <div className='cancel-editing-worker' onClick={handleCancelEditing}>&#x2716;</div>
@@ -331,6 +432,7 @@ const Pracownicy = () => {
                                     <td>{worker.surname}</td>
                                     <td>{worker.phone}</td>
                                     <td>{worker.email}</td>
+                                    { editingWorker && (<td></td>)}
                                     <td className='edit-workday' onClick={(e) => {e.stopPropagation(); handleEditClick(worker)}}>&#9881;</td>
                                 </tr>
                             )

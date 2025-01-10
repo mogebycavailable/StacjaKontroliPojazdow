@@ -41,7 +41,7 @@
     border-color: #ffa500;
 }
 
-.save-worker, .cancel-editing-worker, .delete-worker
+.save-worker, .cancel-editing-worker, .delete-worker, .change-worker-pwd
 {
     display: inline-block;
 }
@@ -85,6 +85,27 @@
 .delete-worker:hover
 {
     background-color: grey;
+}
+
+.change-worker-pwd
+{
+    background-color: blue;
+    padding: 3% 7%;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.change-worker-pwd:hover
+{
+    background-color: darkblue;
+}
+
+.change-pwd-form
+{
+    margin: 20px auto; /* Centrowanie */
+    padding: 10px;
+    border: 1px solid #ffa500;
+    border-radius: 8px;
 }
 
 .adding-worker-form

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import '../css/formstyle.css'
+import apiRequest from '../../service/restApiService'
 
 const Rejestracja = ({ onRegister }) => {
-    const navigate = useNavigate()
+    const [isBlocked, setIsBlocked] = useState(false)
     const [error, setError] = useState("")
     const [data, setData] = useState({
         name: "",
@@ -32,37 +34,41 @@ const Rejestracja = ({ onRegister }) => {
             phone: data.phone,
             pwdHash: data.pwdHash
         }
-		
-		try {
-            const url = "http://localhost:8080/api/register"
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            })
 
-            if(response.ok) {
-                const user = await response.json()
-                console.log("Dodano nowego użytkownika")
-                localStorage.setItem("access-token", user.accessToken)
-                localStorage.setItem("refresh-token", user.refreshToken)
-                localStorage.setItem("role", user.role)
-                navigate('/')
-                window.location.reload()
-            }else if (response.status === 400){
-                setError("Istnieje już konto o podanym adresie e-mail!");
-            }else {
-                setError(`Wystąpił błąd: ${response.status} ${response.statusText}`);
-            }
-        } catch (error) {
-            setError("Nie udało się połączyć z serwerem. Spróbuj ponownie później.")
-        }
+        const url = "http://localhost:8080/api/register"
+
+        await apiRequest({
+            url,
+            method: 'POST',
+            body: userData,
+            onSuccess: ((status, data) => {
+                localStorage.setItem("access-token", data.accessToken)
+                localStorage.setItem("refresh-token", data.refreshToken)
+                localStorage.setItem("role", data.role)
+                toast.success(
+                    <div>
+                        Pomyślnie zarejestrowano konto
+                    </div>,
+                    {
+                    onOpen: () => setIsBlocked(true),
+                    onClose: () => {
+                        window.location.assign('/')
+                        setIsBlocked(false)
+                    },
+                    autoClose: 3000,
+                })
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
+        })
     }
 
     return(
         <div className='div-body'>
+            {isBlocked && (<div className="overlay"></div>)}
             <h2>Rejestracja do serwisu</h2>
             <form onSubmit={handleSubmit}>
                 <div className='form'>
@@ -142,6 +148,11 @@ const Rejestracja = ({ onRegister }) => {
                     )}
                 </div>
             </form>
+            <ToastContainer 
+                position="top-center"
+                theme="dark"
+                closeOnClick={true}
+            />
         </div>
     );
 };

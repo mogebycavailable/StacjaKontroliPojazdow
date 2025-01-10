@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import '../css/formstyle.css'
+import apiRequest from '../../service/restApiService'
 
 const Logowanie = ({ onLogin }) => {
-    const navigate = useNavigate()
+    const [isBlocked, setIsBlocked] = useState(false)
     const [error, setError] = useState("")
     const [data, setData] = useState({
         email: "root@skp.pl",
@@ -19,35 +21,44 @@ const Logowanie = ({ onLogin }) => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            const url = "http://localhost:8080/api/login"
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-			
-            if(response.ok){
-                const user = await response.json()
-                localStorage.setItem("access-token", user.accessToken)
-                localStorage.setItem("refresh-token", user.refreshToken)
-                localStorage.setItem("role", user.role)
-                navigate('/')
-                window.location.reload()
-            }else if (response.status === 403){
-                setError("Niepoprawne dane logowania. Spróbuj ponownie.");
-            }else {
-                setError(`Wystąpił błąd: ${response.status} ${response.statusText}`);
-            }
-        } catch (error) {
-            setError("Nie udało się połączyć z serwerem. Spróbuj ponownie później.");
-        }
+
+        const url = "http://localhost:8080/api/login"
+
+        await apiRequest({
+            url,
+            method: 'POST',
+            body: data,
+            onSuccess: ((status, data) => {
+                localStorage.setItem("access-token", data.accessToken)
+                localStorage.setItem("refresh-token", data.refreshToken)
+                localStorage.setItem("role", data.role)
+                toast.success(
+                    <div>
+                        Pomyślne logowanie do konta
+                    </div>,
+                    {
+                    onOpen: () => setIsBlocked(true),
+                    onClose: () => {
+                        window.location.assign('/')
+                        setIsBlocked(false)
+                    },
+                    autoClose: 3000,
+                })
+            }),
+            onError: ((status) => {
+                if (status === 403){
+                    setError("Niepoprawne dane logowania. Spróbuj ponownie.")
+                }
+                toast.error("Niepoprawne dane logowania. Spróbuj ponownie.", {
+                    autoClose: 3000,
+                })
+            }),
+        })
     }   
 
     return(
         <div className='div-body'>
+            {isBlocked && (<div className="overlay"></div>)}
             <h2>Logowanie do serwisu</h2>
             <form onSubmit={handleSubmit}>
                 <div className='form'>
@@ -79,9 +90,14 @@ const Logowanie = ({ onLogin }) => {
                     { validData && (
                         <button type="submit">Zaloguj się</button>
                     )}
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {error.length > 0 && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
             </form>
+            <ToastContainer 
+                position="top-center"
+                theme="dark"
+                closeOnClick={true}
+            />
 	    </div>
     );
 };

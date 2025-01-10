@@ -140,7 +140,9 @@ const Klienci = () => {
                     onSuccess: ((status, data) => {
                         toast.success(
                             <div>
-                                Hasło klienta zostało zmienione
+                                Hasło klienta:<br/>
+                                {data.name} {data.surname}<br/>
+                                zostało zmienione
                             </div>,
                             {
                             onOpen: () => setIsBlocked(true),
@@ -221,7 +223,7 @@ const Klienci = () => {
                 <div className="overlay">
                     {editingClient && isChangingPassword && (
                         <form className='change-pwd-form'>
-                            <h3>Zamiana hasła do konta: {editingClient}</h3>
+                            <h3 className='zmiana-hasla-h3'>Zamiana hasła do konta: {editingClient}</h3>
                             <div className='form-group'>
                                 <label>Nowe hasło:</label>
                                 <input type='password' name='newPwdHash' required value={editPwdHash.newPwdHash} onChange={handleEditPwdChange}/>

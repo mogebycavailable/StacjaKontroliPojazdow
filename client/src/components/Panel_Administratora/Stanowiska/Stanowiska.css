@@ -192,3 +192,9 @@
     border-color: white;
     border-radius: 8px;
 }
+
+.back-arrow:hover
+{
+    border-color: lightgray;
+    color: lightgray;
+}

@@ -50,7 +50,8 @@ button:hover
 
 #logout:hover
 {
-	background-color: #ff3333;
+	background-color: darkred;
+	border: 2px solid red;
 }
 
 #delete

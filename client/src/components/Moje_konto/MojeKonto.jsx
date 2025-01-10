@@ -5,11 +5,12 @@ import '../css/Style.css'
 import './MojeKonto.css'
 import user_icon from '../css/img/user.png'
 import useRefresh from '../../service/useRefresh'
+import apiRequest from '../../service/restApiService'
 
 const MojeKonto = ({ onLogout }) => {
     const [isBlocked, setIsBlocked] = useState(false)
-    const [data, setData] = useState([])
     const refreshTokens = useRefresh()
+    const [data, setData] = useState([])
 
     const [newData, setNewData] = useState({
         name: '',
@@ -28,7 +29,6 @@ const MojeKonto = ({ onLogout }) => {
         password: ''
     })
     
-    const validNewPassword = editPwd.newPassword === editPwd.confirmNewPassword
     const [pwdError, setPwdError] = useState("")
     const [pwdChangeSuccess, setPwdChangeSuccess] = useState({
         success: false,
@@ -51,37 +51,6 @@ const MojeKonto = ({ onLogout }) => {
     const handleToDeleteChange = ({ currentTarget: input }) => {
         setToDelete({ ...toDelete, [input.name]: input.value })
     }
-    
-    useEffect(() => {
-        const getUserData = async () => {
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/user/my-account"
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    }
-                })
-
-                const responseStatus = response.status
-
-                if (responseStatus >= 200 && responseStatus <= 299) {
-                    const resData = await response.json()
-                    setData(resData)
-                } else {
-                    console.error("Błąd podczas pobierania danych zabezpieczonych:", responseStatus)
-                }
-
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
-            }
-        }
-
-        getUserData()
-    }, [])
 
     const openCloseEditDataSection = () => {
         if(isEditingData === false){
@@ -113,6 +82,24 @@ const MojeKonto = ({ onLogout }) => {
         setIsDeleting((prev) => !prev)
     }
 
+    useEffect(() => {
+        getUserData()
+    }, [])
+
+    // GET
+    const getUserData = async () => {
+        const url = "http://localhost:8080/api/user/my-account"
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setData(data)
+            }),
+            refreshTokens,
+        })
+    }
+
+    // PATCH
     const handleEditAccount = async (e) => {
         e.preventDefault()
         
@@ -123,132 +110,123 @@ const MojeKonto = ({ onLogout }) => {
             phone: newData.phone
         }
 
-        try {
-            const accessToken = localStorage.getItem('access-token')
-            const url = "http://localhost:8080/api/user/my-account"
-            const response = await fetch(url, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-                body: JSON.stringify(newUserData),
-            })
-
-            const responseStatus = response.status
-
-            if(responseStatus >= 200 && responseStatus <= 299){
-                const responseData = await response.json()
-                const newRefreshToken = responseData.refreshToken
+        const url = "http://localhost:8080/api/user/my-account"
+        await apiRequest({
+            url,
+            useToken: true,
+            method: 'PATCH',
+            body: newUserData,
+            onSuccess: ((status, data) => {
+                const newRefreshToken = data.refreshToken
                 localStorage.setItem('refresh-token', newRefreshToken)
-            } else {
-                console.error("Błąd podczas przetwarzania przesłanych danych!", responseStatus)
-            }
-
-            await refreshTokens(responseStatus)
-            window.location.reload()
-        } catch(error) {
-            console.error("Błąd sieci:", error)
-        }
+                toast.success(
+                    <div>
+                        Zaaktualizowano dane konta
+                    </div>,
+                    {
+                    onOpen: () => setIsBlocked(true),
+                    onClose: () => {
+                        window.location.assign('/moje_konto')
+                        setIsBlocked(false)
+                    },
+                    autoClose: 3000,
+                })
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
+            refreshTokens,
+        })
     }
 
     const handleEditPassword = async (e) => {
         e.preventDefault()
         
-        if(validNewPassword){
-            const passwords = {
-                oldPassword: editPwd.oldPassword,
-                newPassword: editPwd.newPassword
-            }
-
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/user/my-account/change-password"
-                const response = await fetch(url, {
-                    method: "PATCH",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`
-                    },
-                    body: JSON.stringify(passwords),
-                })
-
-                const responseStatus = response.status
-
-                if(responseStatus >= 200 && responseStatus <= 299){
-                    const responseData = await response.text()
-                    setPwdChangeSuccess({
-                        success: true,
-                        text: responseData
-                    })
-
-                    window.location.reload()
-                } else if(responseStatus === 400) {
-                    const responseData = await response.text()
-                    setPwdError(responseData)
-                } else {
-                    console.error("Błąd podczas przetwarzania przesłanych danych!", responseStatus)
+        if(window.confirm('Czy na pewno chcesz zmienić hasło?')){
+            const validNewPassword = editPwd.newPassword === editPwd.confirmNewPassword
+            if(validNewPassword){
+                const passwords = {
+                    oldPassword: editPwd.oldPassword,
+                    newPassword: editPwd.newPassword
                 }
-
-                await refreshTokens(responseStatus)
-            } catch(error) {
-                console.error("Błąd sieci:", error)
+                const url = "http://localhost:8080/api/user/my-account/change-password"
+                await apiRequest({
+                    url,
+                    useToken: true,
+                    method: 'PATCH',
+                    body: passwords,
+                    onSuccess: ((status, data) => {
+                        toast.success(
+                            <div>
+                                Twoje hasło zostało zmienione
+                            </div>,
+                            {
+                            onOpen: () => setIsBlocked(true),
+                            onClose: () => {
+                                window.location.assign('/moje_konto')
+                                setIsBlocked(false)
+                            },
+                            autoClose: 3000,
+                        })
+                    }),
+                    onError: ((status, data) => {
+                        toast.error(data, {
+                            autoClose: 3000,
+                        })
+                    }),
+                    refreshTokens,
+                })
+            } else {
+                toast.error("Podane hasła nie są identyczne!" ,
+                {
+                    onClose: () => { setIsBlocked(false) },
+                    autoClose: 3000
+                })
             }
         } else {
-            setPwdError("Podane nowe hasła nie są identyczne!")
+            console.log("Brak zgody użytkownika na zmianę hasła.")
         }
     }
 
+    // DELETE
     const handleDeleteAccount = async (e) => {
         e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz usunąć swoje konto?')){
-            setIsBlocked(true)
-
             const password = {
                 pwdHash: toDelete.password
             }
-
-            try {
-                const accessToken = localStorage.getItem('access-token')
-                const url = "http://localhost:8080/api/user/my-account"
-                const response = await fetch(url, {
-                    method: "DELETE",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`
-                    },
-                    body: JSON.stringify(password),
-                })
-
-                const responseStatus = response.status
-
-                if(responseStatus >= 200 && responseStatus <= 299){
+            const url = "http://localhost:8080/api/user/my-account"
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'DELETE',
+                body: password,
+                onSuccess: ((status, data) => {
                     localStorage.removeItem('access-token')
                     localStorage.removeItem('refresh-token')
                     localStorage.removeItem('role')
-                    
-                    toast.success('Konto zostało pomyślnie usunięte!', {
+                    toast.success(
+                        <div>
+                            Konto zostało pomyślnie usunięte!
+                        </div>,
+                        {
+                        onOpen: () => setIsBlocked(true),
                         onClose: () => {
-                            window.location.assign('/'),
+                            window.location.assign('/')
                             setIsBlocked(false)
                         },
                         autoClose: 3000,
                     })
-                } else if(responseStatus === 400) {
-                    setIsBlocked(false)
-                    const responseData = await response.text()
-                    setDeleteError(responseData)
-                } else {
-                    setIsBlocked(false)
-                    console.error("Błąd podczas usuwania konta!", responseStatus)
-                    setDeleteError("Error status 403 (Forbidden)")
-                }
-
-            } catch(error) {
-                setIsBlocked(false)
-                console.error("Błąd sieci:", error)
-            }
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
+                        autoClose: 3000,
+                    })
+                }),
+            })
         } else {
             console.log("Brak zgody użytkownika na usunięcie konta.")
         }

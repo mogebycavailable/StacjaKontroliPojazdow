@@ -13,9 +13,9 @@ const apiRequest = async ({
         }
 
         if (useToken) {
-            const accessToken = localStorage.getItem('access-token');
+            const accessToken = localStorage.getItem('access-token')
             if (accessToken) {
-                headers['Authorization'] = `Bearer ${accessToken}`;
+                headers['Authorization'] = `Bearer ${accessToken}`
             }
         }
 
@@ -26,17 +26,24 @@ const apiRequest = async ({
         })
 
         const responseStatus = response.status
-        let resData;
+        const contentType = response.headers.get('Content-Type')
+        let resData
 
         if (responseStatus >= 200 && responseStatus <= 299) {
-            resData = await response.json()
+            if (contentType && contentType.includes('application/json')) {
+                resData = await response.json()
+            } else {
+                resData = await response.text()
+            }
+
             if(onSuccess){
                 onSuccess(responseStatus, resData)
             }
         } else {
             resData = await response.text()
-            if(resData.length === 0){
+            if(resData.length === 0  && onError){
                 console.error('Błąd podczas pobierania danych zabezpieczonych:', responseStatus)
+                onError(responseStatus)
             } else {
                 if(onError){
                     onError(responseStatus, resData)
@@ -50,7 +57,7 @@ const apiRequest = async ({
     } catch (error) {
         console.error('Błąd sieci:', error)
         if (onError) {
-            onError(error.message);
+            onError(error.message)
         }
     }
 }
