@@ -24,9 +24,13 @@ public class InspectionEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    InspectionStatus status;
+    private InspectionStatus status;
 
     @OneToMany(mappedBy = "inspection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookedTimeEntity> reservedTimestamps;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "fk_vehicle")
+    private VehicleEntity vehicle;
 
 }

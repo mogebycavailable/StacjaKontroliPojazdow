@@ -54,4 +54,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DateUnavaliableException.class)
+    public ResponseEntity<?> handleDateUnavaliableException(final DateUnavaliableException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(StandUnavaliableException.class)
+    public ResponseEntity<?> handleStandUnavaliableException(final StandUnavaliableException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

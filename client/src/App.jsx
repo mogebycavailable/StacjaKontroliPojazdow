@@ -21,7 +21,6 @@ import Kalendarz from './components/Panel_Administratora/Kalendarz/Kalendarz'
 import Pracownicy from './components/Panel_Administratora/Pracownicy/Pracownicy'
 import Klienci from './components/Panel_Administratora/Klienci/Klienci'
 import Rezerwacje from './components/Panel_Administratora/Rezerwacje/Rezerwacje'
-import Test from './components/Test/Test'
 
 function App() {
   const [accessToken, setAccessToken] = useState(null)
@@ -74,7 +73,6 @@ function App() {
             { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/rezerwacje' exact element={<Rezerwacje/>}/> }
             { !accessToken && <Route path='/rejestracja' exact element={<Rejestracja onRegister={setAccessToken}/>}/> }
             { !accessToken && <Route path='/logowanie' exact element={<Logowanie onLogin={setAccessToken} />}/>}
-            { accessToken && <Route path='/test' exact element={<Test/>}/>}
           </Routes>
         </div>
         <Footer />

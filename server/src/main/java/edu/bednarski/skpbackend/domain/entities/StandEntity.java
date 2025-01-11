@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "stands")
 @AllArgsConstructor
@@ -24,5 +26,8 @@ public class StandEntity {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "stand",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<BookedTimeEntity> bookedTimes;
 
 }
