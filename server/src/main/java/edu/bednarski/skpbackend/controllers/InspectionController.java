@@ -48,6 +48,12 @@ public class InspectionController {
         }
     }
 
+    @GetMapping(path = "/stand")
+    public ResponseEntity<?> findAllStands() {
+        List<StandDto> all = standService.findAll();
+        return new ResponseEntity<>(all,HttpStatus.OK);
+    }
+
     @PostMapping(path = "/inspections")
     public ResponseEntity<?> reserveInspection(
             @RequestBody InspectionRequestDto data
