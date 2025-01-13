@@ -21,10 +21,16 @@ public class InspectionController {
 
     private final InspectionService service;
 
-    @GetMapping(path = "/inspections")
+    @GetMapping(path = "/inspections/{vehicleId}/{date}")
     public ResponseEntity<?> findFreeHours(
-            @RequestBody InspectionPreflightDto data
+            @PathVariable("vehicleId") Long vehicleId,
+            @PathVariable("date") String date
     ) {
+        InspectionPreflightDto data = InspectionPreflightDto
+                .builder()
+                .vehicleId(vehicleId)
+                .date(date)
+                .build();
         List<InspectionPreflightResponseDto> freeHours = service.findFreeHours(data);
         return new ResponseEntity<>(freeHours, HttpStatus.OK);
     }
