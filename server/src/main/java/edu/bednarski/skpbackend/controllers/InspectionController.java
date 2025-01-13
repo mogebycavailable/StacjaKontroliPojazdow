@@ -1,10 +1,8 @@
 package edu.bednarski.skpbackend.controllers;
 
-import edu.bednarski.skpbackend.domain.dto.InspectionDetailsDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionPreflightDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionPreflightResponseDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionRequestDto;
+import edu.bednarski.skpbackend.domain.dto.*;
 import edu.bednarski.skpbackend.services.InspectionService;
+import edu.bednarski.skpbackend.services.StandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,8 @@ public class InspectionController {
 
     private final InspectionService service;
 
+    private final StandService standService;
+
     @GetMapping(path = "/inspections/{vehicleId}/{date}")
     public ResponseEntity<?> findFreeHours(
             @PathVariable("vehicleId") Long vehicleId,
@@ -33,6 +33,19 @@ public class InspectionController {
                 .build();
         List<InspectionPreflightResponseDto> freeHours = service.findFreeHours(data);
         return new ResponseEntity<>(freeHours, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/stand/{id}")
+    public ResponseEntity<?> findStandById(
+            @PathVariable Long id
+    ) {
+        Optional<StandDto> foundStand = standService.findById(id);
+        if(foundStand.isPresent()) {
+            return new ResponseEntity<>(foundStand.get(),HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("To stanowisko nie istnieje!",HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping(path = "/inspections")
