@@ -9,7 +9,7 @@ const Rezerwacje = () => {
     const [isBlocked, setIsBlocked] = useState(false)
 
     return(
-        <div className='div-body'>
+        <div>
             {/* Nakładka blokująca */}
             {isBlocked && <div className="overlay"></div>}
 

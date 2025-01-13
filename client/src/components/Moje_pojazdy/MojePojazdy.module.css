@@ -1,15 +1,16 @@
-.moje_pojazd-main-div
+/* .moje_pojazd-main-div
 {
 	width: 70%;
 	margin: 20px auto;
 	background-color: #333;
 	border-radius: 14px;
 	padding: 5px;
-}
+} */
 
-img
+.vehicle-img
 {
-	margin: 0;
+	width: 100%;
+	height: auto;
 }
 
 .vehicle,.rezerwacja
@@ -17,22 +18,53 @@ img
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: center;
+	justify-content: space-between;
 	border: 2px solid black;
 	border-radius: 5px;
-	margin: 5px;
+	margin-left: 5%;
+	margin-right: 5%;
+	margin-bottom: 5%;
+	padding: 1%;
 }
 
 .photo
 {
-	/* width: 20%; */
-	margin: 14px;
+	width: 30% !important;
+	margin: auto;
 }
 
-.data
+.vehicle-container
 {
 	width: 50%;
-	margin: 14px;
+	margin: 2%;
+}
+
+.vehicle-data
+{
+	display: flex;
+	justify-content: space-between;
+
+	color: #ffa500;
+	font-size: 18px;
+	border: 2px dotted black;
+}
+
+.vehicle-data > *
+{
+	padding: 10px;
+}
+
+@media (max-width: 768px) {
+	.vehicle {
+		flex-direction: column; /* Zmieniamy układ na kolumnowy */
+        align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.vehicle-container {
+		width: 100%;
+		margin: auto;
+	}
 }
 
 h4
@@ -53,7 +85,7 @@ h4
 	color: red;
 }
 
-button
+/* button
 {
 	background-color: #cc7300;
 	border: 2px solid #aa5100;
@@ -69,7 +101,7 @@ button:hover
 {
 	background-color: #ffa500;
 	cursor: pointer;
-}
+} */
 
 #delete
 {
@@ -95,9 +127,4 @@ button:hover
 {
 	background-color: #33dd22;
 	cursor: pointer;
-}
-
-.fieldset-edit{
-	width: 30em;
-	margin: 1em auto;
 }

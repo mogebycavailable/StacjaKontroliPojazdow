@@ -3,11 +3,12 @@ import { Link, useParams, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import Switch from 'react-switch'
 import '../css/Style.css'
-import './MojePojazdy.css'
+import styles from './MojePojazdy.module.css'
 import useRefresh from '../../service/useRefresh'
 import apiRequest from '../../service/restApiService'
 
 const EdytujPojazd = () => {
+    const navigate = useNavigate()
     const currentYear = 2024
     const earliestYear = 1900
     const rangeOfYears = Array.from({ length: currentYear - earliestYear + 1 }, (_, i) => currentYear - i)
@@ -138,110 +139,125 @@ const EdytujPojazd = () => {
             {/* Nakładka blokująca */}
             {isBlocked && <div className="overlay"></div>}
 
+            <h2>Edycja danych pojazdu</h2>
             { data && (
-                <div>
-                    <h2>Edycja danych pojazdu o id: {id}</h2>
-                    <fieldset className='fieldset-edit'>
+                <main>
+                    <fieldset className='fieldset-form'>
                         <legend>Informacje o pojeździe</legend>
                         <form onSubmit={handleSubmit}>
-                            <label>Marka</label>
-                            <input
-                                type="text"
-                                placeholder="Wprowadź markę pojazdu"
-                                name="brand"
-                                required
-                                value={data.brand}
-                                onChange={handleChange}
-                            />
+                            <div className='form-group'>
+                                <label>Marka:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Wprowadź markę pojazdu"
+                                    name="brand"
+                                    required
+                                    value={data.brand}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
-                            <label>Model</label>
-                            <input
-                                type="text"
-                                placeholder="Wprowadź model pojazdu"
-                                name="model"
-                                required
-                                value={data.model}
-                                onChange={handleChange}
-                            />
+                            <div className='form-group'>
+                                <label>Model:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Wprowadź model pojazdu"
+                                    name="model"
+                                    required
+                                    value={data.model}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
-                            <label>Rok produkcji</label>
-                            <select
-                                name="year"
-                                placeholder="Wprowadź rok produkcji pojazdu"
-                                required 
-                                value={data.year}
-                                onChange={handleChange}>
-                                {rangeOfYears.map((year) => (
-                                    <option key={year} value={year}>
-                                        {year}
+                            <div className='form-group'>
+                                <label>Rok produkcji:</label>
+                                <select
+                                    name="year"
+                                    placeholder="Wprowadź rok produkcji pojazdu"
+                                    required 
+                                    value={data.year}
+                                    onChange={handleChange}>
+                                    {rangeOfYears.map((year) => (
+                                        <option key={year} value={year}>
+                                            {year}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>           
+
+                            <div className='form-group'>
+                                <label>Nr rej:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Wprowadź nr rejestracyjny pojazdu"
+                                    name="registrationNumber"
+                                    required
+                                    value={data.registrationNumber}
+                                    onChange={handleChange}
+                            />
+                            </div>
+
+                            <div className='form-group'>
+                                <label>VIN:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Wprowadź nr VIN pojazdu"
+                                    name="vehicleIdentificationNumber"
+                                    required
+                                    value={data.vehicleIdentificationNumber}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className='form-group'>
+                                <label>Typ pojazdu:</label>
+                                <select
+                                    type="text"
+                                    placeholder="Wybierz typ pojazdu"
+                                    name="vehicleType"
+                                    required
+                                    value={data.vehicleType}
+                                    onChange={handleChange}
+                                >
+                                    
+                                    <option value="" disabled>
+                                        Wybierz typ pojazdu
                                     </option>
-                                ))}
-                            </select>              
+                                    {vehicleTypes.map((type) => (
+                                        <option key={type.key} value={type.key}>{type.label}</option>
+                                    ))}
+                                </select>
+                            </div>
 
-                            <label>Numer rejestracyjny</label>
-                            <input
-                                type="text"
-                                placeholder="Wprowadź nr rejestracyjny pojazdu"
-                                name="registrationNumber"
-                                required
-                                value={data.registrationNumber}
-                                onChange={handleChange}
-                            />
+                            <div className='form-group'>
+                                <label>Instalacja LPG:</label>
+                                <Switch
+                                    name="hasLpg"
+                                    checked={data.hasLpg}
+                                    onChange={(checked) => {setData((prevState) => ({...prevState, hasLpg: checked}))}}
+                                />
+                            </div>
 
-                            <label>VIN</label>
-                            <input
-                                type="text"
-                                placeholder="Wprowadź nr VIN pojazdu"
-                                name="vehicleIdentificationNumber"
-                                required
-                                value={data.vehicleIdentificationNumber}
-                                onChange={handleChange}
-                            />
+                            <div className='form-group'>
+                                <label>Data ważności badania:</label>
+                                <input
+                                    type="date"
+                                    placeholder="Wprowadź termin badania"
+                                    name="validityPeriod"
+                                    required
+                                    value={data.validityPeriod}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
-                            <label>Typ pojazdu</label>
-                            <select
-                                type="text"
-                                placeholder="Wybierz typ pojazdu"
-                                name="vehicleType"
-                                required
-                                value={data.vehicleType}
-                                onChange={handleChange}
-                            >
-                                
-                                <option value="" disabled>
-                                    Wybierz typ pojazdu
-                                </option>
-                                {vehicleTypes.map((type) => (
-                                    <option key={type.key} value={type.key}>{type.label}</option>
-                                ))}
-                            </select>
-
-                            <label>Czy posiada instlację LPG?</label>
-                            <Switch
-                                name="hasLpg"
-                                checked={data.hasLpg}
-                                onChange={(checked) => {setData((prevState) => ({...prevState, hasLpg: checked}))}}
-                            />
-
-                            <label>Termin następnego badania technicznego</label>
-                            <input
-                                type="date"
-                                placeholder="Wprowadź termin badania"
-                                name="validityPeriod"
-                                required
-                                value={data.validityPeriod}
-                                onChange={handleChange}
-                            />
-
-                            <br />
-                            <div className='edit-buttons-div' style={{display: 'inline', padding: '1em'}}>
-                                <button type="submit" id="update">Zapisz zmiany</button>
-                                <button id="delete" onClick={handleDeleteVehicle}>Usuń pojazd</button>
-                                <Link to="/moje_pojazdy"><button id="back">Anuluj</button></Link>
+                            <div className='btns'>
+                                <button className='save-btn' type='submit'>&#x1F4BE;</button>
+                                <button className='delete-btn' onClick={handleDeleteVehicle}>&#x1F5D1;</button>
+                                <button className='cancel-btn' onClick={() => navigate('/moje_pojazdy')}>&#x2716;</button>
                             </div>
                         </form>
                     </fieldset>
-                </div>
+                </main>
             )}
             <ToastContainer 
                 position="top-center"

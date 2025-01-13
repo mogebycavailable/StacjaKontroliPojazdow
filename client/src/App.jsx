@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
 import Menu from './components/Menu/Menu'
-import Footer from './components/Footer/Footer'
 import StronaGlowna from './components/Strona_glowna/StronaGlowna'
 import ONas from './components/O_nas/ONas'
 import MojeKonto from './components/Moje_konto/MojeKonto'
@@ -47,6 +46,7 @@ function App() {
     console.log("Usunięcie tokenu uwierzytelniającego użytkownika")
     setIsLoggedIn(false)
     console.log("Wylogowanie użytkownika")
+    window.location.assign('/logowanie')
   };
 
   return (
@@ -75,7 +75,6 @@ function App() {
             { !accessToken && <Route path='/logowanie' exact element={<Logowanie onLogin={setAccessToken} />}/>}
           </Routes>
         </div>
-        <Footer />
       </div>
     </BrowserRouter>
   )

@@ -1,4 +1,4 @@
-.zmiana-hasla-h3
+/* .zmiana-hasla-h3
 {
     text-align: center;
 }
@@ -107,7 +107,7 @@
 
 .change-pwd-form
 {
-    margin: 20px auto; /* Centrowanie */
+    margin: 20px auto;
     padding: 10px;
     border: 1px solid #ffa500;
     border-radius: 8px;
@@ -127,9 +127,9 @@
 }
 
 .form-group input {
-    flex: 1; /* Wypełnia resztę miejsca */
+    flex: 1;
     padding: 8px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
+} */

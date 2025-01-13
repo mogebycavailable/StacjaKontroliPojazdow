@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom"
 import '../css/Style.css'
-import '../Moje_pojazdy/MojePojazdy.css'
+import styles from '../Moje_pojazdy/MojePojazdy.module.css'
 import notes from '../css/img/notes.png'
 
 const MojeRezerwacje = () => {
@@ -52,19 +52,19 @@ const MojeRezerwacje = () => {
     }
 
     return(
-        <div className='div-body'>
+        <div>
             <h2>moje rezerwacje</h2>
-            <div className='moje_rezerwacje-main-div'>
+            <main>
                 <Link to="/zamow_usluge"><button id="add">Umów się na przegląd</button></Link>
                 { services.map((service) => {
                     const currentVehicle = vehicles.find((vehicle) => vehicle.id === service.pojazd)
 
                     return(
                         <div key={service.id} className="rezerwacja">
-                            <div className="photo">
+                            <div className={styles.photo}>
                                 <img src={notes}/>
                             </div>
-                            <div className="data">
+                            <div className={styles.data}>
                                 <h4>Pojazd: {currentVehicle ? `${currentVehicle.marka} ${currentVehicle.model}` : 'Nie odnaleziono'}</h4>
                                 <h4>Nr rej.: {currentVehicle ? `${currentVehicle.nrRejestracyjny}` : 'Nie odnaleziono'}</h4>
                                 <h4>Przegląd zaplanowany na: {service.terminData} {service.terminGodzina}</h4>
@@ -77,7 +77,7 @@ const MojeRezerwacje = () => {
                         </div>
                     )
                 })}
-            </div>
+            </main>
 	    </div>
     );
 };

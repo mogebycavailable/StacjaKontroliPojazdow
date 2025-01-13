@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../../css/Style.css'
-import '../TydzienPracy/TydzienPracy.css'
-import './klienci.css'
+import tableStyles from '../PanelAdministratora.module.css'
+import './Klienci.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
@@ -217,13 +217,14 @@ const Klienci = () => {
     }
 
     return(
-        <div className='div-body'>
+        <div>
             {/* Nakładka blokująca */}
             {isBlocked && (
                 <div className="overlay">
-                    {editingClient && isChangingPassword && (
-                        <form className='change-pwd-form'>
-                            <h3 className='zmiana-hasla-h3'>Zamiana hasła do konta: {editingClient}</h3>
+                {editingClient && isChangingPassword && (
+                    <div className='confirm-section'>
+                        <form className='confirm-form'>
+                            <h3>Zamiana hasła do konta: {editingClient}</h3>
                             <div className='form-group'>
                                 <label>Nowe hasło:</label>
                                 <input type='password' name='newPwdHash' required value={editPwdHash.newPwdHash} onChange={handleEditPwdChange}/>
@@ -232,22 +233,23 @@ const Klienci = () => {
                                 <label>Potwierdź nowe hasło:</label>
                                 <input type='password' name='confirmNewPwdHash' required value={editPwdHash.confirmNewPwdHash} onChange={handleEditPwdChange}/>
                             </div>
-                            <div className='form-group'>
-                                <div className='save-client' onClick={handleEditClientPwd}>&#x1F4BE;</div>
-                                <div className='cancel-editing-client' onClick={handleCancelChangingPwd}>&#x2716;</div>
+                            <div className='btns'>
+                                <div className='save-btn' onClick={handleEditClientPwd}>&#x1F4BE;</div>
+                                <div className='cancel-btn' onClick={handleCancelChangingPwd}>&#x2716;</div>
                             </div>
                         </form>
-                    )}
-                </div>
+                    </div>
+                )}
+            </div>
             )}
 
             <h2>Zarządzanie klientami</h2>
             <Link to='/panel_administratora' className='back-arrow'>&#8592;</Link>
 
             <main>
-                <table className='client-table'>
+                <table>
                     <thead>
-                        <tr className='theaders'>
+                        <tr className={tableStyles.theaders}>
                             <th>Imię</th>
                             <th>Nazwisko</th>
                             <th>Nr telefonu</th>
@@ -261,9 +263,8 @@ const Klienci = () => {
                             if(editingClient === client.email){
                                 return(
                                     <tr key={client.email}>
-                                        <td>
+                                        <td data-title="Imię">
                                             <input
-                                                className='client-data-input'
                                                 type='text'
                                                 required
                                                 name='name'
@@ -271,9 +272,8 @@ const Klienci = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="Nazwisko">
                                             <input
-                                                className='client-data-input'
                                                 type='text'
                                                 required
                                                 name='surname'
@@ -281,9 +281,8 @@ const Klienci = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="Nr telefonu">
                                             <input
-                                                className='client-data-input'
                                                 type='tel'
                                                 placeholder='123-456-789'
                                                 required
@@ -292,9 +291,8 @@ const Klienci = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="E-mail">
                                             <input
-                                                className='client-data-input'
                                                 type='email'
                                                 required
                                                 name='email'
@@ -302,14 +300,14 @@ const Klienci = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
-                                            <div className='change-client-pwd' onClick={() => {setIsChangingPassword(true); setIsBlocked(true)}}>&#x1F511;</div>
+                                        <td data-title="Hasło">
+                                            <div className={tableStyles['change-pwd-key-btn']} onClick={() => {setIsChangingPassword(true); setIsBlocked(true)}}>&#x1F511;</div>
                                         </td>
-                                        <td>
-                                            <div className='save-cancel-delete-btns'>
-                                                <div className='save-client' onClick={handleEditClientData}>&#x1F4BE;</div>
-                                                <div className='cancel-editing-client' onClick={handleCancelEditing}>&#x2716;</div>
-                                                <div className='delete-client' onClick={handleDeleteClient}>&#x1F5D1;</div>
+                                        <td data-title="Opcje">
+                                            <div className='btns'>
+                                                <button className='save-btn' onClick={handleEditClientData}>&#x1F4BE;</button>
+                                                <button className='cancel-btn' onClick={handleCancelEditing}>&#x2716;</button>
+                                                <button className='delete-btn' onClick={handleDeleteClient}>&#x1F5D1;</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -317,13 +315,13 @@ const Klienci = () => {
                             }
 
                             return(
-                                <tr key={client.email} className='tbody-rows'>
-                                    <td>{client.name}</td>
-                                    <td>{client.surname}</td>
-                                    <td>{client.phone}</td>
-                                    <td>{client.email}</td>
-                                    { editingClient && (<td></td>)}
-                                    <td className='edit-workday' onClick={(e) => {e.stopPropagation(); handleEditClick(client)}}>&#9881;</td>
+                                <tr key={client.email} className={tableStyles['tbody-rows']}>
+                                    <td data-title="Imię">{client.name}</td>
+                                    <td data-title="Nazwisko">{client.surname}</td>
+                                    <td data-title="Nr telefonu">{client.phone}</td>
+                                    <td data-title="E-mail">{client.email}</td>
+                                    { editingClient && (<td data-title="Hasło"></td>)}
+                                    <td data-title="Opcje"><button className='edit-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => {e.stopPropagation(); handleEditClick(client)}}>&#9881;</button></td>
                                 </tr>
                             )
                         })}

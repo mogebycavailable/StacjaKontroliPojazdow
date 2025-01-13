@@ -1,23 +1,12 @@
-.worker-table
-{
-    width: 100%;
-    table-layout: fixed;
-}
-
-.worker-table td, .worker-table th {
-    word-wrap: break-word;
-    overflow: hidden;
-}
-
-.worker-data-input
+/* .table-data-input
 {
     width: 100%;
     box-sizing: border-box;
     max-width: 100%;
     font-size: 14px;
-}
+} */
 
-.add-new-worker
+/* .add-new-worker
 {
     width: 5%;
     margin-bottom: 2%;
@@ -39,9 +28,9 @@
 {
     color: #ffa500;
     border-color: #ffa500;
-}
+} */
 
-.save-worker, .cancel-editing-worker, .delete-worker, .change-worker-pwd
+/* .save-worker, .cancel-editing-worker, .delete-worker, .change-worker-pwd
 {
     display: inline-block;
 }
@@ -85,9 +74,9 @@
 .delete-worker:hover
 {
     background-color: grey;
-}
+} */
 
-.change-worker-pwd
+/* .change-worker-pwd
 {
     background-color: blue;
     padding: 3% 7%;
@@ -98,11 +87,11 @@
 .change-worker-pwd:hover
 {
     background-color: darkblue;
-}
+} */
 
-.change-pwd-form
+/* .change-pwd-form
 {
-    margin: 20px auto; /* Centrowanie */
+    margin: 20px auto;
     padding: 10px;
     border: 1px solid #ffa500;
     border-radius: 8px;
@@ -110,13 +99,13 @@
 
 .adding-worker-form
 {
-    margin: 20px auto; /* Centrowanie */
+    margin: 20px auto;
     padding: 10px;
     border: 1px solid #ffa500;
     border-radius: 8px;
-}
+} */
 
-.form-group {
+/* .form-group {
     display: flex;
     align-items: center;
     padding: 5px;
@@ -130,9 +119,9 @@
 }
 
 .form-group input {
-    flex: 1; /* Wypełnia resztę miejsca */
+    flex: 1;
     padding: 8px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
+} */

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../../css/Style.css'
-import '../TydzienPracy/TydzienPracy.css'
-import './Pracownicy.css'
+import tableStyles from '../PanelAdministratora.module.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
@@ -297,26 +296,28 @@ const Pracownicy = () => {
     }
 
     return(
-        <div className='div-body'>
+        <div>
             {/* Nakładka blokująca */}
             {isBlocked && (
                 <div className="overlay">
                     {editingWorker && isChangingPassword && (
-                        <form className='change-pwd-form'>
-                            <h3>Zamiana hasła do konta: {editingWorker}</h3>
-                            <div className='form-group'>
-                                <label>Nowe hasło:</label>
-                                <input type='password' name='newPwdHash' required value={editPwdHash.newPwdHash} onChange={handleEditPwdChange}/>
-                            </div>
-                            <div className='form-group'>
-                                <label>Potwierdź nowe hasło:</label>
-                                <input type='password' name='confirmNewPwdHash' required value={editPwdHash.confirmNewPwdHash} onChange={handleEditPwdChange}/>
-                            </div>
-                            <div className='form-group'>
-                                <div className='save-worker' onClick={handleEditWorkerPwd}>&#x1F4BE;</div>
-                                <div className='cancel-editing-worker' onClick={handleCancelChangingPwd}>&#x2716;</div>
-                            </div>
-                        </form>
+                        <div className='confirm-section'>
+                            <form className='confirm-form'>
+                                <h3>Zamiana hasła do konta: {editingWorker}</h3>
+                                <div className='form-group'>
+                                    <label>Nowe hasło:</label>
+                                    <input type='password' name='newPwdHash' required value={editPwdHash.newPwdHash} onChange={handleEditPwdChange}/>
+                                </div>
+                                <div className='form-group'>
+                                    <label>Potwierdź nowe hasło:</label>
+                                    <input type='password' name='confirmNewPwdHash' required value={editPwdHash.confirmNewPwdHash} onChange={handleEditPwdChange}/>
+                                </div>
+                                <div className='btns'>
+                                    <div className='save-btn' onClick={handleEditWorkerPwd}>&#x1F4BE;</div>
+                                    <div className='cancel-btn' onClick={handleCancelChangingPwd}>&#x2716;</div>
+                                </div>
+                            </form>
+                        </div>
                     )}
                 </div>
             )}
@@ -325,39 +326,41 @@ const Pracownicy = () => {
             <Link to='/panel_administratora' className='back-arrow'>&#8592;</Link>
 
             <main>
-                { !isAddingWorker && (<div className='add-new-worker' onClick={handleAddClick}>&#x2b;</div>)}
+                { !isAddingWorker && (<div className='plus-add-btn' onClick={handleAddClick}>&#x2b;</div>)}
                 { isAddingWorker && (
-                    <form className='adding-worker-form'>
-                        <h3>Tworzenie pracownika</h3>
-                        <div className='form-group'>
-                            <label>Imię:</label>
-                            <input type='text' name='name' required value={addingWorkerData.name} onChange={handleAddingChange}/>
-                        </div>
-                        <div className='form-group'>
-                            <label>Nazwisko:</label>
-                            <input type='text' name='surname' required value={addingWorkerData.surname} onChange={handleAddingChange}/>
-                        </div>
-                        <div className='form-group'>
-                            <label>Nr tel:</label>
-                            <input type='phone' name='phone' required value={addingWorkerData.phone} onChange={handleAddingChange}/>
-                        </div>
-                        <div className='form-group'>
-                            <label>E-mail:</label>
-                            <input type='email' name='email' required value={addingWorkerData.email} onChange={handleAddingChange}/>
-                        </div>
-                        <div className='form-group'>
-                            <label>Hasło:</label>
-                            <input type='password' name='pwdHash' required value={addingWorkerData.pwdHash} onChange={handleAddingChange}/>
-                        </div>
-                        <div className='form-group'>
-                            <div className='save-worker' onClick={handleCreateWorker}>&#x1F4BE;</div>
-                            <div className='cancel-editing-worker' onClick={handleCancelAdding}>&#x2716;</div>
-                        </div>
-                    </form>
+                    <fieldset className='fieldset-form'>
+                        <legend>Dodawanie pracownika</legend>
+                        <form>
+                            <div className='form-group'>
+                                <label>Imię:</label>
+                                <input type='text' name='name' required value={addingWorkerData.name} onChange={handleAddingChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label>Nazwisko:</label>
+                                <input type='text' name='surname' required value={addingWorkerData.surname} onChange={handleAddingChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label>Nr tel:</label>
+                                <input type='phone' name='phone' required value={addingWorkerData.phone} onChange={handleAddingChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label>E-mail:</label>
+                                <input type='email' name='email' required value={addingWorkerData.email} onChange={handleAddingChange}/>
+                            </div>
+                            <div className='form-group'>
+                                <label>Hasło:</label>
+                                <input type='password' name='pwdHash' required value={addingWorkerData.pwdHash} onChange={handleAddingChange}/>
+                            </div>
+                            <div className='btns'>
+                                <div className='save-btn' onClick={handleCreateWorker}>&#x1F4BE;</div>
+                                <div className='cancel-btn' onClick={handleCancelAdding}>&#x2716;</div>
+                            </div>
+                        </form>
+                    </fieldset>
                 )}
-                <table className='worker-table'>
+                <table>
                     <thead>
-                        <tr className='theaders'>
+                        <tr className={tableStyles.theaders}>
                             <th>Imię</th>
                             <th>Nazwisko</th>
                             <th>Nr telefonu</th>
@@ -371,9 +374,8 @@ const Pracownicy = () => {
                             if(editingWorker === worker.email){
                                 return(
                                     <tr key={worker.email}>
-                                        <td>
+                                        <td data-title="Imię">
                                             <input
-                                                className='worker-data-input'
                                                 type='text'
                                                 required
                                                 name='name'
@@ -381,9 +383,8 @@ const Pracownicy = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="Nazwisko">
                                             <input
-                                                className='worker-data-input'
                                                 type='text'
                                                 required
                                                 name='surname'
@@ -391,9 +392,8 @@ const Pracownicy = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="Nr telefonu">
                                             <input
-                                                className='worker-data-input'
                                                 type='tel'
                                                 placeholder='123-456-789'
                                                 required
@@ -402,9 +402,8 @@ const Pracownicy = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="E-mail">
                                             <input
-                                                className='worker-data-input'
                                                 type='email'
                                                 required
                                                 name='email'
@@ -412,14 +411,14 @@ const Pracownicy = () => {
                                                 onChange={handleEditingChange}
                                             />
                                         </td>
-                                        <td>
-                                            <div className='change-worker-pwd' onClick={() => {setIsChangingPassword(true); setIsBlocked(true)}}>&#x1F511;</div>
+                                        <td data-title="Hasło">
+                                            <div className={tableStyles['change-pwd-key-btn']} onClick={() => {setIsChangingPassword(true); setIsBlocked(true)}}>&#x1F511;</div>
                                         </td>
-                                        <td>
-                                            <div className='save-cancel-delete-btns'>
-                                                <div className='save-worker' onClick={handleEditWorkerData}>&#x1F4BE;</div>
-                                                <div className='cancel-editing-worker' onClick={handleCancelEditing}>&#x2716;</div>
-                                                <div className='delete-worker' onClick={handleDeleteWorker}>&#x1F5D1;</div>
+                                        <td data-title="Opcje">
+                                            <div className='btns'>
+                                                <button className='save-btn' onClick={handleEditWorkerData}>&#x1F4BE;</button>
+                                                <button className='cancel-btn' onClick={handleCancelEditing}>&#x2716;</button>
+                                                <button className='delete-btn' onClick={handleDeleteWorker}>&#x1F5D1;</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -427,13 +426,13 @@ const Pracownicy = () => {
                             }
 
                             return(
-                                <tr key={worker.email} className='tbody-rows'>
-                                    <td>{worker.name}</td>
-                                    <td>{worker.surname}</td>
-                                    <td>{worker.phone}</td>
-                                    <td>{worker.email}</td>
-                                    { editingWorker && (<td></td>)}
-                                    <td className='edit-workday' onClick={(e) => {e.stopPropagation(); handleEditClick(worker)}}>&#9881;</td>
+                                <tr key={worker.email} className={tableStyles['tbody-rows']}>
+                                    <td data-title="Imię">{worker.name}</td>
+                                    <td data-title="Nazwisko">{worker.surname}</td>
+                                    <td data-title="Nr telefonu">{worker.phone}</td>
+                                    <td data-title="E-mail">{worker.email}</td>
+                                    { editingWorker && (<td data-title="Hasło"></td>)}
+                                    <td data-title="Opcje"><button className='edit-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => {e.stopPropagation(); handleEditClick(worker)}}>&#9881;</button></td>
                                 </tr>
                             )
                         })}

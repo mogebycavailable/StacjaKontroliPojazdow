@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
-import './MojeKonto.css'
+import styles from './MojeKonto.module.css'
 import user_icon from '../css/img/user.png'
 import useRefresh from '../../service/useRefresh'
 import apiRequest from '../../service/restApiService'
@@ -76,10 +76,11 @@ const MojeKonto = ({ onLogout }) => {
     }
 
     const openCloseDeleteSection = () => {
+        setIsDeleting((prev) => !prev)
         setToDelete({
             password: ""
         })
-        setIsDeleting((prev) => !prev)
+        setIsBlocked(false)
     }
 
     useEffect(() => {
@@ -233,137 +234,199 @@ const MojeKonto = ({ onLogout }) => {
     }
 
     return(
-        <div className='body-div'>
+        <div>
             {/* Nakładka blokująca */}
-            {isBlocked && <div className="overlay"></div>}
+            {isBlocked && (
+                <div className="overlay">
+                    {isDeleting && (
+                        <div className='confirm-section'>
+                            <fieldset className='confirm-fielset-form'>
+                                <legend>Potwierdź operację hasłem</legend>
+                                <form onSubmit={handleDeleteAccount} className='confirm-form'>
+                                    <div className='form-group'>
+                                        <label>Hasło:</label>
+                                        <input
+                                            type="password"
+                                            placeholder="Podaj hasło"
+                                            name="password"
+                                            required
+                                            value={toDelete.password}
+                                            onChange={handleToDeleteChange}
+                                        />
+                                    </div>
+                                    <div className='btns'>
+                                        <div className='ok-btn' type='submit'>&#x1F4BE;</div>
+                                        <div className='cancel-btn' onClick={openCloseDeleteSection}>&#x2716;</div>
+                                    </div>
+                                </form>
+                            </fieldset>
+                        </div>
+                    )}
+                </div>
+            )}
 
             <h2>Witaj {data.name}</h2>
-            <div className='moje_konto-main-div'>
-                <div>
-                    <img className='user_icon-img' src={user_icon}/>
-                </div>
-                <div>
-                    <h3>Imię i nazwisko: {data.name} {data.surname}</h3>
-                    <h3>E-mail: {data.email}</h3>
-                    <h3>Numer telefonu: {data.phone}</h3>
-                    <span>
-                        <button id="edit-account" onClick={openCloseEditDataSection}>Edytuj konto</button>
-                        <button id="change-password" onClick={openCloseEditPwdSection}>Zmień hasło</button>
-                        <Link to='/'><button id="logout" onClick={onLogout}>Wyloguj się</button></Link>
-                        <button id="delete" onClick={openCloseDeleteSection}>Usuń konto</button>
-                    </span>
-                </div>
-            </div>
 
-            { isEditingData && (
-                <div className='moje_konto-edit-div'>
-                    <h3 className='edit-section-h3'>Sekcja edycji informacji o koncie</h3>
-                    <form onSubmit={handleEditAccount}>
-                        <label>Imię</label>
-                        <input
-                            type="text"
-                            placeholder="Podaj nowe imię"
-                            name="name"
-                            required
-                            value={newData.name}
-                            onChange={handleAccountChange}
-                        />
-                        <label>Nazwisko</label>
-                        <input
-                            type="text"
-                            placeholder="Podaj nowe nazwisko"
-                            name="surname"
-                            required
-                            value={newData.surname}
-                            onChange={handleAccountChange}
-                        />
-                        <label>E-mail</label>
-                        <input
-                            type="email"
-                            placeholder="Podaj nowy adres e-mail"
-                            name="email"
-                            required
-                            value={newData.email}
-                            onChange={handleAccountChange}
-                        />
-                        <label>Nr telefonu</label>
-                        <input
-                            type="phone"
-                            placeholder="Podaj nowy nr telefonu"
-                            name="phone"
-                            required
-                            value={newData.phone}
-                            onChange={handleAccountChange}
-                        />
+            <main>
+                <div className={styles['user-info']}>
+                    <div className={styles.photo}>
+                        <img className={styles['user-img']} src={user_icon}/>
+                    </div>
+                    <div className={styles['user-container']}>
+                        <div className={styles['user-data']}>
+                            <div>Imię i nazwisko:</div><div>{data.name} {data.surname}</div>
+                        </div>
 
-                        <div className='editing-buttons-div'>
-                            <button className="save-changes-button" type="submit">Zapisz</button>
-                            <button className="cancel-editing-button" onClick={openCloseEditDataSection}>Anuluj</button>
+                        <div className={styles['user-data']}>
+                            <div>E-mail:</div><div>{data.email}</div>
                         </div>
-                    </form>
-                </div>
-            )}
-            { isEditingPwd && (
-                <div className='moje_konto-edit-div'>
-                    <h3 className='edit-section-h3'>Sekcja edycji hasła</h3>
-                    <form onSubmit={handleEditPassword}>
-                        <label>Aktualne hasło</label>
-                        <input
-                            type="password"
-                            placeholder="Podaj aktualne hasło"
-                            name="oldPassword"
-                            required
-                            value={editPwd.oldPassword}
-                            onChange={handlePasswordChange}
-                        />
-                        <label>Nowe hasło</label>
-                        <input
-                            type="password"
-                            placeholder="Podaj nowe hasło"
-                            name="newPassword"
-                            required
-                            value={editPwd.newPassword}
-                            onChange={handlePasswordChange}
-                        />
-                        <label>Powtórz nowe hasło</label>
-                        <input
-                            type="password"
-                            placeholder="Powtórz nowe hasło"
-                            name="confirmNewPassword"
-                            required
-                            value={editPwd.confirmNewPassword}
-                            onChange={handlePasswordChange}
-                        />
-                        <div className='editing-buttons-div'>
-                            <button className="save-changes-button" type="submit">Zmień</button>
-                            <button className="cancel-editing-button" onClick={openCloseEditPwdSection}>Anuluj</button>
+
+                        <div className={styles['user-data']}>
+                            <div>Numer telefonu:</div><div>{data.phone}</div>
                         </div>
-                    </form>
-                    { pwdError && (<p>{pwdError}</p>)}
-                    { pwdChangeSuccess.success && (<p>{pwdChangeSuccess.text}</p>)}
-                </div>
-            )}
-            { isDeleting && (
-                <div className='moje_konto-delete-div'>
-                    <h3 className='edit-section-h3'>Sekcja usuwanie konta</h3>
-                    <form onSubmit={handleDeleteAccount}>
-                        <label>Podaj hasło aby usunąć konto</label>
-                        <input
-                            type="password"
-                            placeholder="Podaj hasło"
-                            name="password"
-                            required
-                            value={toDelete.password}
-                            onChange={handleToDeleteChange}
-                        />
-                        <div className='delete-buttons-div'>
-                            <button className="delete-button" type="submit">Usuń</button>
-                            <button className="cancel-delete-button" onClick={openCloseDeleteSection}>Anuluj</button>
+
+                        <div className='btns' style={{margin: '3% auto'}}>
+                            <button className="edit-btn" onClick={openCloseEditDataSection}>&#9881;</button>
+                            <button id="change-password" onClick={openCloseEditPwdSection}>Zmień hasło</button>
+                            <button id="logout" onClick={onLogout}>Wyloguj się</button>
+                            <button id="delete" onClick={() => {setIsDeleting(true); setIsBlocked(true)}}>Usuń konto</button>
                         </div>
-                    </form>
-                    {deleteError && (<p>{deleteError}</p>)}
+                    </div>
                 </div>
-            )}
+
+                { isEditingData && (
+                    <div className='moje_konto-edit-div'>
+                        <fieldset className='fieldset-form'>
+                            <legend>Edytuj dane</legend>
+                            <form onSubmit={handleEditAccount}>
+                                <div className='form-group'>
+                                    <label>Imię:</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Podaj nowe imię"
+                                        name="name"
+                                        required
+                                        value={newData.name}
+                                        onChange={handleAccountChange}
+                                    />
+                                </div>
+
+                                <div className='form-group'>
+                                    <label>Nazwisko:</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Podaj nowe nazwisko"
+                                        name="surname"
+                                        required
+                                        value={newData.surname}
+                                        onChange={handleAccountChange}
+                                    />
+                                </div>
+
+                                <div className='form-group'>
+                                    <label>E-mail:</label>
+                                    <input
+                                        type="email"
+                                        placeholder="Podaj nowy adres e-mail"
+                                        name="email"
+                                        required
+                                        value={newData.email}
+                                        onChange={handleAccountChange}
+                                    />
+                                </div>
+
+                                <div className='form-group'>
+                                    <label>Nr telefonu:</label>
+                                    <input
+                                        type="phone"
+                                        placeholder="Podaj nowy nr telefonu"
+                                        name="phone"
+                                        required
+                                        value={newData.phone}
+                                        onChange={handleAccountChange}
+                                    />
+                                </div>
+
+                                <div className='btns'>
+                                    <button className="save-btn" type="submit">&#x1F4BE;</button>
+                                    <button className="cancel-btn" onClick={openCloseEditDataSection}>&#x2716;</button>
+                                </div>
+                            </form>
+                        </fieldset>
+                    </div>
+                )}
+                { isEditingPwd && (
+                    <div className='moje_konto-edit-div'>
+                        <fieldset className='fieldset-form'>
+                            <legend>Zmiana hasła</legend>
+                            <form onSubmit={handleEditPassword}>
+                                <div className='form-group'>
+                                    <label>Aktualne hasło:</label>
+                                    <input
+                                        type="password"
+                                        placeholder="Podaj aktualne hasło"
+                                        name="oldPassword"
+                                        required
+                                        value={editPwd.oldPassword}
+                                        onChange={handlePasswordChange}
+                                    />
+                                </div>
+
+                                <div className='form-group'>
+                                    <label>Nowe hasło:</label>
+                                    <input
+                                        type="password"
+                                        placeholder="Podaj nowe hasło"
+                                        name="newPassword"
+                                        required
+                                        value={editPwd.newPassword}
+                                        onChange={handlePasswordChange}
+                                    />
+                                </div>
+
+                                <div className='form-group'>
+                                    <label>Powtórz nowe hasło:</label>
+                                    <input
+                                        type="password"
+                                        placeholder="Powtórz nowe hasło"
+                                        name="confirmNewPassword"
+                                        required
+                                        value={editPwd.confirmNewPassword}
+                                        onChange={handlePasswordChange}
+                                    />
+                                </div>
+
+                                <div className='btns'>
+                                    <button className="ok-btn" type="submit">&#x2714;</button>
+                                    <button className="cancel-btn" onClick={openCloseEditPwdSection}>&#x2716;</button>
+                                </div>
+                            </form>
+                        </fieldset>
+                    </div>
+                )}
+                {/* { isDeleting && (
+                    <div className='moje_konto-delete-div'>
+                        <h3 className='edit-section-h3'>Sekcja usuwanie konta</h3>
+                        <form onSubmit={handleDeleteAccount}>
+                            <label>Podaj hasło aby usunąć konto</label>
+                            <input
+                                type="password"
+                                placeholder="Podaj hasło"
+                                name="password"
+                                required
+                                value={toDelete.password}
+                                onChange={handleToDeleteChange}
+                            />
+                            <div className='delete-buttons-div'>
+                                <button className="delete-button" type="submit">Usuń</button>
+                                <button className="cancel-delete-button" onClick={openCloseDeleteSection}>Anuluj</button>
+                            </div>
+                        </form>
+                        {deleteError && (<p>{deleteError}</p>)}
+                    </div>
+                )} */}
+            </main>
+
             <ToastContainer 
                 position="top-center"
                 theme="dark"

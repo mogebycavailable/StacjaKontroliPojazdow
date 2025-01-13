@@ -4,7 +4,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import Switch from 'react-switch'
 //import '../../css/Style.css'
 //import '../PanelAdministratora.css'
-import './Stanowiska.css'
+import styles from './Stanowiska.module.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
@@ -182,7 +182,7 @@ const Stanowiska = () => {
     }
 
     return(
-        <div className='div-body'>
+        <div>
             {/* Nakładka blokująca */}
             {isBlocked && <div className="overlay"></div>}
 
@@ -191,18 +191,19 @@ const Stanowiska = () => {
 
             <main>
                 { data.length === 0 && (
-                    <div className="empty-repo-heading">Brak dodanych stanowisk</div>
+                    <div className="prompt">Brak dodanych stanowisk</div>
                 )}
                 { data.length >= 0 && (
-                    <div className='stands-div'>
+                    <div className={styles.stands}>
                         { data && data.map((stand) => {
                             if(editingStandId === stand.id){
                                 return(
-                                    <div key={stand.id} className='stand'>
-                                        <div className='add-stand'>
-                                            <div className='stand-title'>Stanowisko</div>
-                                            <form onSubmit={handleEditStand} className='stand-adding-form'>
-                                                <div className='name-stand'>
+                                    <div key={stand.id} className={styles.stand}>
+                                        <div className={styles['add-stand']}>
+                                            <div className={styles['stand-title']}>Stanowisko</div>
+                                            <form onSubmit={handleEditStand}>
+                                                <div className='form-group'>
+                                                    <label>Nazwa:</label>
                                                     <input
                                                         type="text"
                                                         placeholder="Podaj nazwę"
@@ -212,18 +213,18 @@ const Stanowiska = () => {
                                                         onChange={(e) => {setEditingStandData((prevState) => ({...prevState, name: e.target.value}))}}
                                                     />
                                                 </div>
-                                                <div className='is-active-stand-switch'>
-                                                    <label>Aktywne:&emsp;</label>
+                                                <div className='form-group'>
+                                                    <label>Aktywne:</label>
                                                     <Switch
                                                         name='isActive'
                                                         checked={editingStandData.isActive}
                                                         onChange={(checked) => {setEditingStandData((prevState) => ({...prevState, isActive: checked}))}}
                                                     />
                                                 </div>
-                                                <div className='adding-btns'>
-                                                    <div className='add-stand-btn' onClick={handleEditStand}>&#x1F4BE;</div>
-                                                    <div className='cancel-adding-stand-btn' onClick={handleEditingCancel}>&#x2716;</div>
-                                                    <div className='delete-stand-btn' onClick={handleDeleteStand}>&#x1F5D1;</div>
+                                                <div className='btns'>
+                                                    <div className='save-btn' onClick={handleEditStand}>&#x1F4BE;</div>
+                                                    <div className='delete-btn' onClick={handleDeleteStand}>&#x1F5D1;</div>
+                                                    <div className='cancel-btn' onClick={handleEditingCancel}>&#x2716;</div>
                                                 </div>
                                             </form>
                                         </div>
@@ -232,24 +233,25 @@ const Stanowiska = () => {
                             }
 
                             return(
-                                <div key={stand.id} className='stand' onClick={() => handleEditClick(stand)}>
-                                    <div className='stand-title'>Stanowisko</div>
-                                    <div className='stand-name'>{stand.name || "Nieznana"}</div>
-                                    <div className='stand-activity' style={{color: stand.isActive == false ? 'red' : 'green'}}>{stand.isActive ? "Aktywne" : "Nieaktywne"}</div>
+                                <div key={stand.id} className={styles.stand} onClick={() => handleEditClick(stand)}>
+                                    <div className={styles['stand-title']}>Stanowisko</div>
+                                    <div className={styles['stand-name']}>{stand.name || "Nieznana"}</div>
+                                    <div className={styles['stand-activity']} style={{color: stand.isActive == false ? 'red' : 'green'}}>{stand.isActive ? "Aktywne" : "Nieaktywne"}</div>
                                 </div>
                             )}
                         )}
                         { !isAddingStand && (
-                            <div className='stand' onClick={openCloseAddingStandSection}>
-                                <div className='plus-sign'>&#x271A;</div>
+                            <div className={styles.stand} onClick={openCloseAddingStandSection}>
+                                <div className={styles['plus-sign']}>&#x271A;</div>
                             </div>
                         )}
                         { isAddingStand && (
-                            <div className='stand'>
-                                <div className='add-stand'>
-                                    <div className='stand-title'>Stanowisko</div>
-                                    <form className='stand-adding-form'>
-                                        <div className='name-stand'>
+                            <div className={styles.stand}>
+                                <div className={styles['add-stand']}>
+                                    <div className={styles['stand-title']}>Stanowisko</div>
+                                    <form>
+                                        <div className='form-group'>
+                                            <label>Nazwa:</label>
                                             <input
                                                 type="text"
                                                 placeholder="Podaj nazwę"
@@ -259,17 +261,17 @@ const Stanowiska = () => {
                                                 onChange={handleChange}
                                             />
                                         </div>
-                                        <div className='is-active-stand-switch'>
-                                            <label>Aktywne:&emsp;</label>
+                                        <div className='form-group'>
+                                            <label>Aktywne:</label>
                                             <Switch
                                                 name='isActive'
                                                 checked={newStand.isActive}
                                                 onChange={(checked) => {setNewStand((prevState) => ({...prevState, isActive: checked}))}}
                                             />
                                         </div>
-                                        <div className='adding-btns'>
-                                            <div className='add-stand-btn' onClick={handleAddNewStand}>&#x2714;</div>
-                                            <div className='cancel-adding-stand-btn' onClick={openCloseAddingStandSection}>&#x2716;</div>
+                                        <div className='btns'>
+                                            <div className='ok-btn' onClick={handleAddNewStand}>&#x2714;</div>
+                                            <div className='cancel-btn' onClick={openCloseAddingStandSection}>&#x2716;</div>
                                         </div>
                                     </form>
                                 </div>

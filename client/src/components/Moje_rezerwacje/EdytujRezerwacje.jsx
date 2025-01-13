@@ -38,7 +38,7 @@ const EdytujRezerwacje = () => {
     }
 
     return(
-        <div className='div-body'>
+        <div>
             <h2>edycja rezerwacji</h2>
             <form onSubmit={handleSubmit}>
                 <label>Pojazd:</label>

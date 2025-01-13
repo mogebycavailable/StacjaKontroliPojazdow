@@ -1,0 +1,171 @@
+.panel-admin-div
+{
+	width: 80%;
+	margin: 0 auto;
+	text-align: center;
+	background-color: #333;
+	border-radius: 12px;
+	padding: 16px;
+}
+
+.admin-options
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.option
+{
+    font-size: 20px;
+	background-color: #ffa500;
+	border: 2px solid #cc7300;
+	border-radius: 7px;
+	text-decoration: none;
+	padding: 10px;
+	/*box-sizing: border-box;*/
+	min-width: 40%;
+	margin: 10px;
+	flex-basis: 30%;
+	height: calc(2.4em + 24px);
+	color: black;
+    font-weight: bold;
+	
+    /* Flexbox do wyśrodkowania tekstu */
+    display: flex;
+    align-items: center; /* Wyśrodkowanie w pionie */
+    justify-content: center; /* Wyśrodkowanie w poziomie */
+
+    transition: background-color 0.3s, color 0.3s; /* Animacja na hover */
+}
+
+.option:hover
+{
+	cursor: pointer;
+	background-color: #cc7300;
+	color: white;
+    font-weight: bold;
+}
+
+
+/* <- */
+.back-arrow
+{
+    width: 5%;
+    margin: 20px auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 32px;
+    color: white;
+    cursor: pointer;
+
+    border-style: solid;
+    border-color: white;
+    border-radius: 8px;
+
+	text-decoration: none;
+}
+
+.back-arrow:hover
+{
+	border-color: lightgray;
+	color: lightgray;
+}
+
+/* Style do tabeli używanej w komponentach TydzienPracy, Pracownicy, Klienci */
+table {
+    width: 100%;
+    color: white;
+
+    border-collapse: collapse;
+    margin: 0;
+}
+
+@media (max-width: 1000px){
+    table thead tr {
+        display: none;
+    }
+
+    table tr {
+        display: block;
+    }
+
+    table td {
+        text-align: right;
+        display: block;
+    }
+
+    table td::before {
+        content: attr(data-title) ": ";
+        font-weight: 700;
+        float: left;
+    }
+
+    table td input{
+        width: auto !important;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #cc7300;
+        color: black;
+    }
+
+    tbody td button {
+        width: 20% !important;
+    }
+}
+
+.theaders
+{
+    color: black;
+    background-color: #cc7300;
+}
+
+th, td {
+    border: 1px solid black;
+    /* border-radius: 10px; */
+    padding: 1rem;
+}
+  
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.tbody-rows:hover
+{
+    background-color: #606060;
+}
+
+td input
+{
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Przycisk z z ikoną klucza do zmiany hasła */
+.change-pwd-key-btn
+{
+    display: inline-block;
+    background-color: blue;
+    padding: 10px 15px;
+    cursor: pointer;
+    border: 2px solid darkblue;
+    border-radius: 8px;
+}
+
+.change-pwd-key-btn:hover
+{
+    background-color: darkblue;
+    border-color: blue;
+}

@@ -1,0 +1,61 @@
+.stands
+{
+    display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.stand
+{
+    width: 400px;
+    border: 2px solid #cc7300;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 7px;
+}
+
+.stand:hover
+{
+    background-color: #cc7300;
+}
+
+.stand-title
+{
+    color: white;
+    font-weight: bold;
+    font-size: 32px;
+    padding: 0 10px;
+}
+
+.stand-name
+{
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.stand-activity
+{
+    text-align: center;
+}
+
+/* Add stand */
+.add-stand
+{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+/* + */
+.plus-sign
+{
+    text-align: center;
+    font-size: 28px;
+    color: white;
+    line-height: 350%;
+}

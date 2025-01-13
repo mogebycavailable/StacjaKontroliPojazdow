@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
-import '../css/formstyle.css'
+//import '../css/formstyle.css'
 import apiRequest from '../../service/restApiService'
 
 const Logowanie = ({ onLogin }) => {
@@ -58,41 +58,48 @@ const Logowanie = ({ onLogin }) => {
     }   
 
     return(
-        <div className='div-body'>
+        <div>
             {isBlocked && (<div className="overlay"></div>)}
             <h2>Logowanie do serwisu</h2>
-            <form onSubmit={handleSubmit}>
-                <div className='form'>
-                    <label>E-mail</label>
-                    <input
-                        type="text"
-                        placeholder="Wprowadź e-mail"
-                        name="email"
-                        autoComplete="email"
-                        value={data.email}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <label>Hasło</label>
-                    <input
-                        type="password"
-                        placeholder="Wprowadź hasło"
-                        name="pwdHash"
-                        autoComplete="current-password"
-                        value={data.pwdHash}
-                        onChange={handleChange}
-                        required
-                    />
-                    
-                    <br/>
-                    <a href="https://pl.wikipedia.org/wiki/Has%C5%82o" target="_blank">Zapomniałem hasła</a>
-
-                    { validData && (
-                        <button type="submit">Zaloguj się</button>
-                    )}
-                </div>
-            </form>
+            <main>
+                <fieldset className='fieldset-form'>
+                    <legend>Zaloguj się</legend>
+                    <form onSubmit={handleSubmit}>
+                        <div className='form-group'>
+                            <label>E-mail:</label>
+                            <input
+                                type="text"
+                                placeholder="Wprowadź e-mail"
+                                name="email"
+                                autoComplete="email"
+                                value={data.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className='form-group'>
+                            <label>Hasło:</label>
+                            <input
+                                type="password"
+                                placeholder="Wprowadź hasło"
+                                name="pwdHash"
+                                autoComplete="current-password"
+                                value={data.pwdHash}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className='form-group' style={{marginTop: '10px', justifyContent: 'center'}}>
+                            <a style={{marginLeft: '20px'}} href="https://pl.wikipedia.org/wiki/Has%C5%82o" target="_blank">Zapomniałem hasła</a>
+                        </div>
+                        <div className='btns'>
+                            { validData && (
+                                <button tyoe='submit'>Zaloguj</button>
+                            )}
+                        </div>
+                    </form>
+                </fieldset>
+            </main>
             <ToastContainer 
                 position="top-center"
                 theme="dark"

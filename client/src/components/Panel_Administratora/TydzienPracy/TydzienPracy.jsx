@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import Switch from 'react-switch'
 import '../../css/Style.css'
-import './TydzienPracy.css'
+import styles from '../PanelAdministratora.module.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
@@ -121,7 +121,7 @@ const TydzienPracy = () => {
     }
 
     return(
-        <div className='div-body'>
+        <div>
             {/* Nakładka blokująca */}
             {isBlocked && <div className="overlay"></div>}
 
@@ -131,7 +131,7 @@ const TydzienPracy = () => {
             <main>
                 <table>
                     <thead>
-                        <tr className='theaders'>
+                        <tr className={styles.theaders}>
                             <th>Dzień tygodnia</th>
                             <th>Godzina rozpoczęcia</th>
                             <th>Godzina zakończenia</th>
@@ -149,6 +149,7 @@ const TydzienPracy = () => {
                                         <td>{matchedDay ? matchedDay.label : "Nieznany dzień"}</td>
                                         <td>
                                             <input
+                                                style={{fontSize: '150%', borderRadius: '8px'}}
                                                 type='time'
                                                 required
                                                 name='workStart'
@@ -158,6 +159,7 @@ const TydzienPracy = () => {
                                         </td>
                                         <td>
                                             <input
+                                                style={{fontSize: '150%', borderRadius: '8px'}}
                                                 type='time'
                                                 required
                                                 name='workEnd'
@@ -173,9 +175,9 @@ const TydzienPracy = () => {
                                             />
                                         </td>
                                         <td>
-                                            <div className='save-cancel-btns'>
-                                                <div className='save-workday' onClick={handleEditWorkDay}>&#x1F4BE;</div>
-                                                <div className='cancel-editing-workday' onClick={handleCancelEditing}>&#x2716;</div>
+                                            <div className='btns'>
+                                                <div className='save-btn' onClick={handleEditWorkDay}>&#x1F4BE;</div>
+                                                <div className='cancel-btn' onClick={handleCancelEditing}>&#x2716;</div>
                                             </div>
                                         </td>
                                     </tr>
@@ -183,12 +185,12 @@ const TydzienPracy = () => {
                             }
 
                             return(
-                                <tr key={day.weekDay} className='tbody-rows'>
+                                <tr key={day.weekDay} className={styles['tbody-rows']}>
                                     <td>{matchedDay ? matchedDay.label : "Nieznany dzień"}</td>
                                     <td>{day.workStart}</td>
                                     <td>{day.workEnd}</td>
                                     <td>{day.isWorkFree ? 'TAK' : 'NIE' }</td>
-                                    <td className='edit-workday' onClick={(e) => {e.stopPropagation(); handleEditClick(day)}}>&#9881;</td>
+                                    <td className='edit-btn' style={{width: '12%', cursor: 'pointer'}} onClick={(e) => {e.stopPropagation(); handleEditClick(day)}}>&#9881;</td>
                                 </tr>
                             )
                         })}
