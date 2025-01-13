@@ -1,6 +1,6 @@
 .progress-bar
 {
-	margin: 0 auto;
+	margin: 10px auto;
 	width: 60%;
 	padding: 0;
 	background-color: black;
@@ -71,17 +71,12 @@ input[type=submit]
 	margin-bottom: 1em;
 }
 
-input[type=submit]:hover, form a:hover
+.step-form-div
 {
-	background-color: #ffc722;
-	cursor: pointer;
-}
-
-/* form
-{
-	font-size: 20px;
-	max-width: 20em;
-	margin: 1em auto;
+	/* font-size: 20px; */
+	max-width: 100%;
+	margin-left: 1em;
+	margin-right: 1em;
 	color: white;
 	display: flex;
 	flex-direction: column;
@@ -89,33 +84,59 @@ input[type=submit]:hover, form a:hover
 	background-color: #333;
 	padding: 0.5em 1em;
 	border-radius: 10px;
-} */
-
-fieldset
-{
-	border-radius: 10px;
-	margin: 10px;
-	border-color: #ffa500;
 }
 
-legend
-{
-	color: #ffa500;
-}
-
-input[type=radio],input[type=checkbox]
-{
-	accent-color: #ffa500;
-}
-
-.flex-buttons
+.confirm-data
 {
 	display: flex;
-	justify-content: center;
 	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+
+	border-bottom: 2px dotted black;
 }
 
-.set-data-in-fieldset
+.confirm-data > *
 {
-	padding: 5%;
+	font-size: 20px;
+	padding: 10px;
+	text-align: left;
+}
+
+.step-btn
+{
+    width: 30%;
+    background-color: #cc7300;
+	align-content: center;
+    cursor: pointer;
+	color: white !important;
+	font-size: 22px;
+
+	border: 2px solid #aa5100;
+    border-radius: 8px;
+}
+
+.step-btn:hover
+{
+	background-color: #ffa500;
+}
+
+.refresh-btn
+{
+    width: 30%;
+    background-color: red;
+	align-content: center;
+    cursor: pointer;
+	color: white !important;
+	font-size: 22px;
+
+	border: 2px solid darkred;
+    border-radius: 8px;
+}
+
+.refresh-btn:hover
+{
+	background-color: darkred;
+	border-color: red;
 }

@@ -9,38 +9,32 @@ import apiRequest from '../../service/restApiService'
 const ZamowUsluge = () => {
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
+    const [step, setStep] = useState(1)
+
     const [data, setData] = useState({
         vehicleId: '',
         date: '',
         time: '',
+        standId: '',
     })
+
+    const [freeTerms, setFreeTerms] = useState([])
     const [vehicles, setVehicles] = useState([])
+    const [selectedVehicle, setSelectedVehicle] = useState({})
+    const [selectedStand, setSelectedStand] = useState({})
 
-    const validStep1 = data.vehicleId
-    const validStep2 = data.date && data.time
-
-    const dostepneGodziny = [
-        '8:00',
-        '9:00',
-        '10:00',
-        '11:00',
-        '12:00',
-        '13:00',
-        '14:00',
-        '15:00'
-    ]
-
-    const [step, setStep] = useState(1)
-    const nextStep = () => {
-        setStep((nextStep) => nextStep + 1)
-    }
-    const previousStep = () => {
-        setStep((prevStep) => prevStep - 1)
-    }
+    const validStep1 = data.vehicleId && data.date
+    const validStep2 = validStep1 && data.time && data.standId
 
     useEffect(() => {
         getAllVehicles()
     }, [])
+
+    const getReservationDetails = async () => {
+        await getVehicleDetails()
+        await getStandDetails()
+        setStep(3)
+    }
 
     // GET
     const getAllVehicles = async () => {
@@ -51,10 +45,68 @@ const ZamowUsluge = () => {
             onSuccess: ((status, data) => {
                 setVehicles(data)
             }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
             refreshTokens,
         })
     }
 
+    const getFreeTerms = async () => {
+        const url = `http://localhost:8080/api/user/inspections/${data.vehicleId}/${data.date}`
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setFreeTerms(data)
+                setStep(2)
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
+            refreshTokens,
+        })
+    }
+
+    const getVehicleDetails = async () => {
+        const url = `http://localhost:8080/api/vehicles/${data.vehicleId}`
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setSelectedVehicle(data)
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
+            refreshTokens,
+        })
+    }
+
+    const getStandDetails = async () => {
+        const url = `http://localhost:8080/api/user/stand/${data.standId}`
+        await apiRequest({
+            url,
+            useToken: true,
+            onSuccess: ((status, data) => {
+                setSelectedStand(data)
+            }),
+            onError: ((status, data) => {
+                toast.error(data, {
+                    autoClose: 3000,
+                })
+            }),
+            refreshTokens,
+        })
+    }
+
+    // POST
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -63,9 +115,10 @@ const ZamowUsluge = () => {
                 vehicleId: data.vehicleId,
                 date: data.date,
                 time: data.time,
+                standId: data.standId,
             }
 
-            const url = "http://localhost:8080/api/..."
+            const url = "http://localhost:8080/api/user/inspections"
 
             await apiRequest({
                 url,
@@ -80,7 +133,7 @@ const ZamowUsluge = () => {
                         {
                         onOpen: () => setIsBlocked(true),
                         onClose: () => {
-                            window.location.assign('/zamow_usluge')
+                            window.location.assign('/moje_rezerwacje')
                             setIsBlocked(false)
                         },
                         autoClose: 3000,
@@ -126,38 +179,27 @@ const ZamowUsluge = () => {
 
                 <h3 className={styles.step}>krok {step}/3</h3>
                 
-                <form onSubmit={handleSubmit}>
-                    { step === 1 && (
-                        <div>
-                            <fieldset>
-                                <legend>Pojazd</legend>
-                                <div className={styles['set-data-in-fieldset']}>
+                <fieldset className='fieldset-form'>
+                    <legend>Zarezerwuj termin</legend>
+                        { step === 1 && (
+                            <div className={styles['step-form-div']}>
+                                <div className='form-group'>
                                     <label>Wybierz pojazd:</label>
-
                                     <select
-                                        name="pojazd"
+                                        name="vehicleId"
                                         value={data.vehicleId}
-                                        onChange={(e) => setData((prevData) => ({ ...prevData, vehicleId: e.target.value }))}
+                                        onChange={(e) => { setData((prevData) => ({ ...prevData, vehicleId: e.target.value })) }}
                                         required
                                     >
                                         <option value=""></option>
                                         {vehicles.map((vehicle) => (
                                             <option key={vehicle.id} value={vehicle.id}>
-                                                {vehicle.brand} {vehicle.model}
+                                                {vehicle.brand} {vehicle.model} - {vehicle.registrationNumber}
                                             </option>
                                         ))}
                                     </select>
-                                </div>                             
-                            </fieldset>
-                            <button type="button" onClick={() => setData((prevData) => ({ ...prevData, vehicleId: '' }))}>&#x27F2;</button>
-                            { validStep1 && <button type="button" onClick={nextStep}>&#8680;</button> }
-                        </div>
-                    )}
-                    { step === 2 && (
-                        <div>
-                            <fieldset>
-                                <legend>Termin</legend>
-                                <div className={styles['set-data-in-fieldset']}>
+                                </div>
+                                <div className='form-group'>
                                     <label>Wybierz datę:</label>
                                     <input
                                         type="date"
@@ -165,47 +207,80 @@ const ZamowUsluge = () => {
                                         value={data.date}
                                         onChange={(e) => setData((prevData) => ({ ...prevData, date: e.target.value }))}
                                         required
-                                    />
+                                    /> 
+                                </div>
 
+                                <div className='btns'>
+                                    <button className={styles['refresh-btn']} onClick={() => setData((prevData) => ({ ...prevData, vehicleId: '', date: '', time: '', standId: '' }))}>&#x27F2;</button>
+                                    { validStep1 && <button className={styles['step-btn']} onClick={ getFreeTerms }>&#129094;</button> }
+                                </div>
+                            </div>
+                        )}
+                        { step === 2 && (
+                            <div className={styles['step-form-div']}>
+                                <div className='form-group'>
                                     <label>Wybierz godzinę:</label>
                                     <select
-                                        name="time"
-                                        value={data.time}
-                                        onChange={(e) => setData((prevData) => ({ ...prevData, time: e.target.value }))}
-                                        required>
-
-                                        <option value=""></option>
-                                        {dostepneGodziny.map((hour) => (
-                                            <option key={hour} value={hour}>
-                                                {hour}
+                                        name="term"
+                                        value={`${data.time},${data.standId}`}
+                                        onChange={(e) => {
+                                            const [time, standId] = e.target.value.split(',')
+                                            setData((prev) => ({ ...prev, time, standId}))
+                                        }}
+                                        required
+                                    >
+                                        
+                                        <option value="">{ freeTerms.length === 0 && (<p>Brak dostępnych terminów</p>) }</option>
+                                        {freeTerms.length > 0 && freeTerms.map((term, index) => (
+                                            <option key={index} value={[`${term.time}`,`${term.standId}`]}>
+                                                {term.time} - Stanowisko {term.standId}
                                             </option>
                                         ))}
                                     </select>
                                 </div>
-                            </fieldset>
-
-                            <button type="button" onClick={previousStep}>&#8678;</button>
-                            <button type="button" onClick={() => setData((prevData) => ({ ...prevData, date: '', time: ''}))}>&#x27F2;</button>
-                            { validStep2 && <button type="button" onClick={nextStep}>&#8680;</button> }
-                        </div>
-                    )}
-                    { step === 3 && (
-                        <div>
-                            <fieldset>
-                                <legend>Potwierdź rezerwację</legend>
-                                <div className={styles['set-data-in-fieldset']}>
-                                    <h4>Pojazd: {data.marka} {data.model}</h4>
-                                    <h4>Data: {data.date}</h4>
-                                    <h4>Godzina: {data.time}</h4>
+                                
+                                <div className='btns'>
+                                    <button className={styles['step-btn']} onClick={() => setStep(1) }>&#129092;</button>
+                                    <button className={styles['refresh-btn']} onClick={() => setData((prevData) => ({ ...prevData, time: '', standId: ''}))}>&#x27F2;</button>
+                                    { validStep2 && <button className={styles['step-btn']} onClick={ getReservationDetails }>&#129094;</button> }
                                 </div>
-                            </fieldset>
+                            </div>
+                        )}
+                        { step === 3 && (
+                            <div className={styles['step-form-div']}>
+                                <div className={styles['confirm-data']}>
+                                    <div>Pojazd:</div>
+                                    <div>{selectedVehicle.brand} {selectedVehicle.model} - {selectedVehicle.registrationNumber}</div>
+                                </div>
 
-                            <button type="button" onClick={previousStep}>&#8678;</button>
-                            <button type="submit">&#x2714;</button>
-                        </div>
-                    )}
-                </form>
+                                <div className={styles['confirm-data']}>
+                                    <div>Data:</div>
+                                    <div>{data.date}</div>
+                                    </div>
+
+                                <div className={styles['confirm-data']}>
+                                    <div>Godzina:</div>
+                                    <div>{data.time}</div>
+                                </div>
+
+                                <div className={styles['confirm-data']}>
+                                    <div>Stanowisko:</div>
+                                    <div>{selectedStand.name}</div>
+                                </div>
+
+                                <div className='btns'>
+                                    <button className={styles['step-btn']} onClick={() => setStep(2) }>&#129092;</button>
+                                    <button className='ok-btn' type="submit" onClick={handleSubmit}>&#x2714;</button>
+                                </div>
+                            </div>
+                        )}
+                </fieldset>
             </main>
+            <ToastContainer 
+                position="top-center"
+                theme="dark"
+                closeOnClick={true}
+            />
 	    </div>
     );
 };

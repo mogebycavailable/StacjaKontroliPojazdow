@@ -54,28 +54,30 @@
 /* <- */
 .back-arrow
 {
-    width: 5%;
-    margin: 20px auto;
+    width: 100px;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
 
+    margin: 30px auto;
+    padding: 2px;
+    padding-bottom: 5px;
+
     font-size: 32px;
+    font-weight: bold;
     color: white;
+    background-color: transparent;
     cursor: pointer;
-
-    border-style: solid;
-    border-color: white;
-    border-radius: 8px;
-
+    border: 4px solid white;
 	text-decoration: none;
 }
 
 .back-arrow:hover
 {
-	border-color: lightgray;
-	color: lightgray;
+    background-color: transparent;
+	border-color: gray;
+	color: gray;
 }
 
 /* Style do tabeli używanej w komponentach TydzienPracy, Pracownicy, Klienci */

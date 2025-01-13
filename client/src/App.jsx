@@ -9,7 +9,6 @@ import MojePojazdy from './components/Moje_pojazdy/MojePojazdy'
 import DodajPojazd from './components/Moje_pojazdy/DodajPojazd'
 import EdytujPojazd from './components/Moje_pojazdy/EdytujPojazd'
 import MojeRezerwacje from './components/Moje_rezerwacje/MojeRezerwacje'
-import EdytujRezerwacje from './components/Moje_rezerwacje/EdytujRezerwacje'
 import ZamowUsluge from './components/Zamow_usluge/ZamowUsluge'
 import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
@@ -61,7 +60,6 @@ function App() {
             { accessToken && <Route path='/moje_pojazdy/dodaj_pojazd' exact element={<DodajPojazd/>}/> }
             { accessToken && <Route path='/moje_pojazdy/edytuj_pojazd/:id' exact element={<EdytujPojazd/>}/> }
             { accessToken && <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/> }
-            { accessToken && <Route path='/moje_rezerwacje/edytuj_rezerwacje/:id' exact element={<EdytujRezerwacje/>}/> }
             { accessToken && <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/> }
             { accessToken && <Route path='/moje_konto' exact element={<MojeKonto onLogout={handleLogout}/>}/> }
             { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora' exact element={<PanelAdministratora/>}/> }

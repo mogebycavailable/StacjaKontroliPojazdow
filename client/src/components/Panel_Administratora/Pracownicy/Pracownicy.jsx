@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../../css/Style.css'
-import tableStyles from '../PanelAdministratora.module.css'
+import panelStyles from '../PanelAdministratora.module.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
 const Pracownicy = () => {
+    const navigate = useNavigate()
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
     const [data, setData] = useState([])
@@ -323,7 +324,7 @@ const Pracownicy = () => {
             )}
 
             <h2>Zarządzanie pracownikami</h2>
-            <Link to='/panel_administratora' className='back-arrow'>&#8592;</Link>
+            <button className={panelStyles['back-arrow']} onClick={() => navigate('/panel_administratora')}>&#8592;</button>
 
             <main>
                 { !isAddingWorker && (<div className='plus-add-btn' onClick={handleAddClick}>&#x2b;</div>)}
@@ -358,86 +359,89 @@ const Pracownicy = () => {
                         </form>
                     </fieldset>
                 )}
-                <table>
-                    <thead>
-                        <tr className={tableStyles.theaders}>
-                            <th>Imię</th>
-                            <th>Nazwisko</th>
-                            <th>Nr telefonu</th>
-                            <th>E-mail</th>
-                            { editingWorker && (<th>Hasło</th>)}
-                            <th>Opcje</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { data && data.map((worker) => {
-                            if(editingWorker === worker.email){
+                { data.length === 0 && (<div className="prompt">Brak dodanych pracowników</div>)}
+                { data.length > 0 && (
+                    <table>
+                        <thead>
+                            <tr className={panelStyles.theaders}>
+                                <th>Imię</th>
+                                <th>Nazwisko</th>
+                                <th>Nr telefonu</th>
+                                <th>E-mail</th>
+                                { editingWorker && (<th>Hasło</th>)}
+                                <th>Opcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { data && data.map((worker) => {
+                                if(editingWorker === worker.email){
+                                    return(
+                                        <tr key={worker.email}>
+                                            <td data-title="Imię">
+                                                <input
+                                                    type='text'
+                                                    required
+                                                    name='name'
+                                                    value={editingWorkerData.name}
+                                                    onChange={handleEditingChange}
+                                                />
+                                            </td>
+                                            <td data-title="Nazwisko">
+                                                <input
+                                                    type='text'
+                                                    required
+                                                    name='surname'
+                                                    value={editingWorkerData.surname}
+                                                    onChange={handleEditingChange}
+                                                />
+                                            </td>
+                                            <td data-title="Nr telefonu">
+                                                <input
+                                                    type='tel'
+                                                    placeholder='123-456-789'
+                                                    required
+                                                    name='phone'
+                                                    value={editingWorkerData.phone}
+                                                    onChange={handleEditingChange}
+                                                />
+                                            </td>
+                                            <td data-title="E-mail">
+                                                <input
+                                                    type='email'
+                                                    required
+                                                    name='email'
+                                                    value={editingWorkerData.email}
+                                                    onChange={handleEditingChange}
+                                                />
+                                            </td>
+                                            <td data-title="Hasło">
+                                                <div className={panelStyles['change-pwd-key-btn']} onClick={() => {setIsChangingPassword(true); setIsBlocked(true)}}>&#x1F511;</div>
+                                            </td>
+                                            <td data-title="Opcje">
+                                                <div className='btns'>
+                                                    <button className='save-btn' onClick={handleEditWorkerData}>&#x1F4BE;</button>
+                                                    <button className='cancel-btn' onClick={handleCancelEditing}>&#x2716;</button>
+                                                    <button className='delete-btn' onClick={handleDeleteWorker}>&#x1F5D1;</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+
                                 return(
-                                    <tr key={worker.email}>
-                                        <td data-title="Imię">
-                                            <input
-                                                type='text'
-                                                required
-                                                name='name'
-                                                value={editingWorkerData.name}
-                                                onChange={handleEditingChange}
-                                            />
-                                        </td>
-                                        <td data-title="Nazwisko">
-                                            <input
-                                                type='text'
-                                                required
-                                                name='surname'
-                                                value={editingWorkerData.surname}
-                                                onChange={handleEditingChange}
-                                            />
-                                        </td>
-                                        <td data-title="Nr telefonu">
-                                            <input
-                                                type='tel'
-                                                placeholder='123-456-789'
-                                                required
-                                                name='phone'
-                                                value={editingWorkerData.phone}
-                                                onChange={handleEditingChange}
-                                            />
-                                        </td>
-                                        <td data-title="E-mail">
-                                            <input
-                                                type='email'
-                                                required
-                                                name='email'
-                                                value={editingWorkerData.email}
-                                                onChange={handleEditingChange}
-                                            />
-                                        </td>
-                                        <td data-title="Hasło">
-                                            <div className={tableStyles['change-pwd-key-btn']} onClick={() => {setIsChangingPassword(true); setIsBlocked(true)}}>&#x1F511;</div>
-                                        </td>
-                                        <td data-title="Opcje">
-                                            <div className='btns'>
-                                                <button className='save-btn' onClick={handleEditWorkerData}>&#x1F4BE;</button>
-                                                <button className='cancel-btn' onClick={handleCancelEditing}>&#x2716;</button>
-                                                <button className='delete-btn' onClick={handleDeleteWorker}>&#x1F5D1;</button>
-                                            </div>
-                                        </td>
+                                    <tr key={worker.email} className={panelStyles['tbody-rows']}>
+                                        <td data-title="Imię">{worker.name}</td>
+                                        <td data-title="Nazwisko">{worker.surname}</td>
+                                        <td data-title="Nr telefonu">{worker.phone}</td>
+                                        <td data-title="E-mail">{worker.email}</td>
+                                        { editingWorker && (<td data-title="Hasło"></td>)}
+                                        <td data-title="Opcje"><button className='edit-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => {e.stopPropagation(); handleEditClick(worker)}}>&#9881;</button></td>
                                     </tr>
                                 )
-                            }
-
-                            return(
-                                <tr key={worker.email} className={tableStyles['tbody-rows']}>
-                                    <td data-title="Imię">{worker.name}</td>
-                                    <td data-title="Nazwisko">{worker.surname}</td>
-                                    <td data-title="Nr telefonu">{worker.phone}</td>
-                                    <td data-title="E-mail">{worker.email}</td>
-                                    { editingWorker && (<td data-title="Hasło"></td>)}
-                                    <td data-title="Opcje"><button className='edit-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => {e.stopPropagation(); handleEditClick(worker)}}>&#9881;</button></td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </main>
             
             <ToastContainer 

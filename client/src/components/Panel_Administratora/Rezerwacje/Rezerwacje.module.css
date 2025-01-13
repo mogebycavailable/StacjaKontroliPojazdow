@@ -1,0 +1,33 @@
+@media (max-width: 1180px){
+    table thead tr {
+        display: none;
+    }
+
+    table tr {
+        display: block;
+    }
+
+    table td {
+        text-align: right;
+        display: block;
+    }
+
+    table td::before {
+        content: attr(data-title) ": ";
+        font-weight: 700;
+        float: left;
+    }
+
+    table td input{
+        width: auto !important;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #cc7300;
+        color: black;
+    }
+
+    tbody td button {
+        width: 20% !important;
+    }
+}

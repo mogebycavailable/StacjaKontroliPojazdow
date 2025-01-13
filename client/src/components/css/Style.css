@@ -145,8 +145,20 @@ footer
 
 
 /* Fieldset do formularzów */
+fieldset
+{
+	border-radius: 10px;
+	margin: 10px;
+	border-color: #ffa500;
+}
 
-.fieldset-form{
+legend
+{
+	color: #ffa500;
+}
+
+.fieldset-form
+{
 	width: 40%;
 	margin: 1em auto;
 	justify-content: center;
@@ -161,8 +173,8 @@ legend
 /* Formularze */
 form
 {
-	font-size: 20px;
-	max-width: 80%;
+	/* font-size: 20px; */
+	max-width: 100%;
 	margin-left: 1em;
 	margin-right: 1em;
 	color: white;
@@ -185,14 +197,15 @@ form
 
 .form-group label
 {
-    width: 120px;
+    /* width: 120px; */
+	width: 40%;
     font-size: 18px;
     color: white;
     text-align: left;
 	margin-right: 5%;
 }
 
-.form-group input, .form-group input[type="date"], .form-group select
+.form-group input, .form-group input[type="date"], .form-group select, .form-group textarea
 {
     flex: 1;
     padding: 8px;
@@ -245,12 +258,6 @@ form
 {
 	margin: 3% 3%;
 }
-
-/* .btns div
-{
-	margin: 10px;
-	width: 100px;
-} */
 
 /* + */
 .plus-add-btn

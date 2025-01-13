@@ -90,7 +90,7 @@ const Logowanie = ({ onLogin }) => {
                             />
                         </div>
                         <div className='form-group' style={{marginTop: '10px', justifyContent: 'center'}}>
-                            <a style={{marginLeft: '20px'}} href="https://pl.wikipedia.org/wiki/Has%C5%82o" target="_blank">Zapomniałem hasła</a>
+                            <a href="https://pl.wikipedia.org/wiki/Has%C5%82o" target="_blank">Zapomniałem hasła</a>
                         </div>
                         <div className='btns'>
                             { validData && (

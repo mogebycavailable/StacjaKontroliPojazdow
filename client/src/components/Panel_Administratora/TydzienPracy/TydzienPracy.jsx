@@ -3,11 +3,12 @@ import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import Switch from 'react-switch'
 import '../../css/Style.css'
-import styles from '../PanelAdministratora.module.css'
+import panelStyles from '../PanelAdministratora.module.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
 const TydzienPracy = () => {
+    const navigate = useNavigate()
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
 
@@ -126,12 +127,12 @@ const TydzienPracy = () => {
             {isBlocked && <div className="overlay"></div>}
 
             <h2>Zarządzanie tygodniem pracy</h2>
-            <Link to='/panel_administratora' className='back-arrow'>&#8592;</Link>
+            <button className={panelStyles['back-arrow']} onClick={() => navigate('/panel_administratora')}>&#8592;</button>
 
             <main>
                 <table>
                     <thead>
-                        <tr className={styles.theaders}>
+                        <tr className={panelStyles.theaders}>
                             <th>Dzień tygodnia</th>
                             <th>Godzina rozpoczęcia</th>
                             <th>Godzina zakończenia</th>
@@ -146,10 +147,10 @@ const TydzienPracy = () => {
                             if(editingWorkDay === day.weekDay){
                                 return(
                                     <tr key={day.weekDay}>
-                                        <td>{matchedDay ? matchedDay.label : "Nieznany dzień"}</td>
-                                        <td>
+                                        <td data-title="Dzień tygodnia">{matchedDay ? matchedDay.label : "Nieznany dzień"}</td>
+                                        <td data-title="Godzina rozpoczęcia">
                                             <input
-                                                style={{fontSize: '150%', borderRadius: '8px'}}
+                                                style={{width: '70%', fontSize: '150%', borderRadius: '8px'}}
                                                 type='time'
                                                 required
                                                 name='workStart'
@@ -157,9 +158,9 @@ const TydzienPracy = () => {
                                                 onChange={handleChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="Godzina zakończenia">
                                             <input
-                                                style={{fontSize: '150%', borderRadius: '8px'}}
+                                                style={{width: '70%', fontSize: '150%', borderRadius: '8px'}}
                                                 type='time'
                                                 required
                                                 name='workEnd'
@@ -167,17 +168,17 @@ const TydzienPracy = () => {
                                                 onChange={handleChange}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="Dzień wolny">
                                             <Switch
                                                 name='isWorkFree'
                                                 checked={editingWorkDayData.isWorkFree}
                                                 onChange={(checked) => {setEditingWorkDayData((prevState) => ({...prevState, isWorkFree: checked}))}}
                                             />
                                         </td>
-                                        <td>
+                                        <td data-title="Opcje">
                                             <div className='btns'>
-                                                <div className='save-btn' onClick={handleEditWorkDay}>&#x1F4BE;</div>
-                                                <div className='cancel-btn' onClick={handleCancelEditing}>&#x2716;</div>
+                                                <button className='save-btn' onClick={handleEditWorkDay}>&#x1F4BE;</button>
+                                                <button className='cancel-btn' onClick={handleCancelEditing}>&#x2716;</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -185,12 +186,12 @@ const TydzienPracy = () => {
                             }
 
                             return(
-                                <tr key={day.weekDay} className={styles['tbody-rows']}>
-                                    <td>{matchedDay ? matchedDay.label : "Nieznany dzień"}</td>
-                                    <td>{day.workStart}</td>
-                                    <td>{day.workEnd}</td>
-                                    <td>{day.isWorkFree ? 'TAK' : 'NIE' }</td>
-                                    <td className='edit-btn' style={{width: '12%', cursor: 'pointer'}} onClick={(e) => {e.stopPropagation(); handleEditClick(day)}}>&#9881;</td>
+                                <tr key={day.weekDay} className={panelStyles['tbody-rows']}>
+                                    <td data-title="Dzień tygodnia">{matchedDay ? matchedDay.label : "Nieznany dzień"}</td>
+                                    <td data-title="Godzina rozpoczęcia">{day.workStart}</td>
+                                    <td data-title="Godzina zakończenia">{day.workEnd}</td>
+                                    <td data-title="Dzień wolny">{day.isWorkFree ? 'TAK' : 'NIE' }</td>
+                                    <td data-title="Opcje"><button className='edit-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => {e.stopPropagation(); handleEditClick(day)}}>&#9881;</button></td>
                                 </tr>
                             )
                         })}

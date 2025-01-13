@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import Switch from 'react-switch'
-//import '../../css/Style.css'
-//import '../PanelAdministratora.css'
+import '../../css/Style.css'
+import panelStyles from '../PanelAdministratora.module.css'
 import styles from './Stanowiska.module.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
 const Stanowiska = () => {
+    const navigate = useNavigate()
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
     const [isAddingStand, setIsAddingStand] = useState(false)
@@ -187,7 +188,7 @@ const Stanowiska = () => {
             {isBlocked && <div className="overlay"></div>}
 
             <h2>Zarządzanie stanowiskami</h2>
-            <Link to='/panel_administratora' className='back-arrow'>&#8592;</Link>
+            <button className={panelStyles['back-arrow']} onClick={() => navigate('/panel_administratora')}>&#8592;</button>
 
             <main>
                 { data.length === 0 && (
@@ -222,9 +223,9 @@ const Stanowiska = () => {
                                                     />
                                                 </div>
                                                 <div className='btns'>
-                                                    <div className='save-btn' onClick={handleEditStand}>&#x1F4BE;</div>
-                                                    <div className='delete-btn' onClick={handleDeleteStand}>&#x1F5D1;</div>
-                                                    <div className='cancel-btn' onClick={handleEditingCancel}>&#x2716;</div>
+                                                    <button className='save-btn' onClick={handleEditStand}>&#x1F4BE;</button>
+                                                    <button className='delete-btn' onClick={handleDeleteStand}>&#x1F5D1;</button>
+                                                    <button className='cancel-btn' onClick={handleEditingCancel}>&#x2716;</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -270,8 +271,8 @@ const Stanowiska = () => {
                                             />
                                         </div>
                                         <div className='btns'>
-                                            <div className='ok-btn' onClick={handleAddNewStand}>&#x2714;</div>
-                                            <div className='cancel-btn' onClick={openCloseAddingStandSection}>&#x2716;</div>
+                                            <button className='ok-btn' onClick={handleAddNewStand}>&#x2714;</button>
+                                            <button className='cancel-btn' onClick={openCloseAddingStandSection}>&#x2716;</button>
                                         </div>
                                     </form>
                                 </div>

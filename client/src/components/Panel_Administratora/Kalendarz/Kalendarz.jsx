@@ -6,11 +6,13 @@ import Calendar from 'react-calendar'
 import { format, getMonth, getYear } from 'date-fns'
 //import 'react-calendar/dist/Calendar.css'
 import '../../css/Style.css'
+import panelStyles from '../PanelAdministratora.module.css'
 import './Kalendarz.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
 const Kalendarz = () => {
+    const navigate = useNavigate()
     const refreshTokens = useRefresh()
 
     const weekDays = [
@@ -325,7 +327,7 @@ const Kalendarz = () => {
             {isBlocked && <div className="overlay"></div>}
 
             <h2>Zarządzanie kalendarzem</h2>
-            <Link to='/panel_administratora' className='back-arrow'>&#8592;</Link>
+            <button className={panelStyles['back-arrow']} onClick={() => navigate('/panel_administratora')}>&#8592;</button>
 
             <main>
                 <div className='calendar-content'>
@@ -338,138 +340,112 @@ const Kalendarz = () => {
                         />
                     </div>
                     <div className='legend-to-calendar'>
-                        {/* <fieldset>
-                            <legend>Legenda</legend>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Kolor</th>
-                                        <th>Opis</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Szary</td>
-                                        <td>Nieaktywny</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Zielony</td>
-                                        <td>Dzień aktywny - roboczy</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Czerwony</td>
-                                        <td>Dzień aktywny - wolny</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </fieldset> */}
+                        
                     </div>
-                    <div className='date-details-content'>
+                    <div className='date-details'>
                         {calendarDate ? ( 
                             isDateActive ? (
-                                <div className="date-details">
-                                    Wybrano dzień: {format(new Date(calendarDate), 'yyyy-MM-dd')}
-                                    <fieldset className='fieldset-form'>
-                                        <legend>Szczegóły dnia</legend>
-                                        <form onSubmit={handleEditDateDetails}>
-                                            <div className='form-group'>
-                                                <label>Dzień:</label>
-                                                <label>{weekDays.find((day) => day.key === dateDetails.weekDay)?.label || 'Nieznany dzień'}</label>
-                                            </div>
+                                <fieldset className='fieldset-form' style={{width: '100%'}}>
+                                    <legend>Szczegóły dnia {format(new Date(calendarDate), 'yyyy-MM-dd')}</legend>
+                                    <form onSubmit={handleEditDateDetails}>
+                                        <div className='form-group'>
+                                            <label>Dzień:</label>
+                                            <label>{weekDays.find((day) => day.key === dateDetails.weekDay)?.label || 'Nieznany dzień'}</label>
+                                        </div>
 
-                                            <div className='form-group'>
-                                                <label>Start pracy:</label>
-                                                <input
-                                                    type='time'
-                                                    name='workStart'
-                                                    value={dateDetails.workStart}
-                                                    onChange={(e) => {setDateDetails((prevState) => ({...prevState, workStart: e.target.value}))}}
-                                                    required
-                                                />
-                                            </div>
-                                            
-                                            <div className='form-group'>
-                                                <label>Koniec pracy:</label>
-                                                <input
-                                                    type='time'
-                                                    name='workEnd'
-                                                    value={dateDetails.workEnd}
-                                                    onChange={(e) => {setDateDetails((prevState) => ({...prevState, workEnd: e.target.value}))}}
-                                                    required
-                                                />
-                                            </div>
+                                        <div className='form-group'>
+                                            <label>Start pracy:</label>
+                                            <input
+                                                type='time'
+                                                name='workStart'
+                                                value={dateDetails.workStart}
+                                                onChange={(e) => {setDateDetails((prevState) => ({...prevState, workStart: e.target.value}))}}
+                                                required
+                                            />
+                                        </div>
+                                    
+                                        <div className='form-group'>
+                                            <label>Koniec pracy:</label>
+                                            <input
+                                                type='time'
+                                                name='workEnd'
+                                                value={dateDetails.workEnd}
+                                                onChange={(e) => {setDateDetails((prevState) => ({...prevState, workEnd: e.target.value}))}}
+                                                required
+                                            />
+                                        </div>
 
-                                            <div className='form-group'>
-                                                <label>Dzień wolny:</label>
-                                                <Switch
-                                                    name='isWorkFree'
-                                                    checked={dateDetails.isWorkFree}
-                                                    onChange={(checked) => {setDateDetails((prevState) => ({...prevState, isWorkFree: checked}))}}
-                                                />
-                                            </div>
-                                            
-                                            <div className='form-group'>
-                                                <label>Opis</label>
-                                                <textarea
-                                                    className='description'
-                                                    name='description'
-                                                    value={dateDetails.description}
-                                                    onChange={(e) => {setDateDetails((prevState) => ({...prevState, description: e.target.value}))}}
-                                                />
-                                            </div>
+                                        <div className='form-group'>
+                                            <label>Dzień wolny:</label>
+                                            <Switch
+                                                name='isWorkFree'
+                                                checked={dateDetails.isWorkFree}
+                                                onChange={(checked) => {setDateDetails((prevState) => ({...prevState, isWorkFree: checked}))}}
+                                            />
+                                        </div>
+                                        
+                                        <div className='form-group'>
+                                        <label>Opis</label>
+                                            <textarea
+                                                className='description'
+                                                name='description'
+                                                value={dateDetails.description}
+                                                onChange={(e) => {setDateDetails((prevState) => ({...prevState, description: e.target.value}))}}
+                                            />
+                                        </div>
 
-                                            <div className='btns'>
-                                                <button className='save-btn' type='submit'>&#x1F4BE;</button>
-                                                <button className='deactivate-date' onClick={handleDeactivationDate}>&#x1F512;</button>
-                                                <button className='cancel-btn' onClick={() => setCalendarDate(null)}>&#x2716;</button>
-                                            </div>
-                                        </form>
-                                    </fieldset>
-                                </div>
+                                        <div className='btns'>
+                                            <button className='save-btn' type='submit'>&#x1F4BE;</button>
+                                            <button className='deactivate-btn' onClick={handleDeactivationDate}>&#x1F512;</button>
+                                            <button className='cancel-btn' onClick={() => setCalendarDate(null)}>&#x2716;</button>
+                                        </div>
+                                    </form>
+                                </fieldset>
                             ) : (
                                 <div>
-                                    <button onClick={handleSetActiveDate}>Aktywuj &gt; &#x26A1;</button>
+                                    <div className='prompt'>Naciśnij aby aktywować</div>
+                                    <button className='activate-btn' onClick={handleSetActiveDate}>&#x26A1;</button>
                                 </div>
                             )
                         ) : (
-                            <div className="date-details">Nie wybrano żadnego dnia</div>
+                            <div className='prompt'>Nie wybrano żadnego dnia</div>
                         )}
                     </div>
+                </div>
                 
-                    <div className='setting-calendar-range'>
-                        <fieldset className='fieldset-form'>
-                        <legend>Aktywuj zakres dat</legend>
-                            <form>
-                                <div className='form-group'>
-                                    <label>Początek:</label>
-                                    <input
-                                        type='date'
-                                        name='startingDate'
-                                        value={dateRange.startingDate}
-                                        onChange={(e) => {setDateRange((prevState) => ({...prevState, startingDate: e.target.value}))}}
-                                        required
-                                    />
-                                </div>
+                <div className='set-calendar-range'>
+                    <fieldset className='fieldset-form'>
+                    <legend>Aktywuj zakres dat</legend>
+                        <form>
+                            <div className='form-group'>
+                                <label>Początek:</label>
+                                <input
+                                    type='date'
+                                    name='startingDate'
+                                    value={dateRange.startingDate}
+                                    onChange={(e) => {setDateRange((prevState) => ({...prevState, startingDate: e.target.value}))}}
+                                    required
+                                />
+                            </div>
                                 
-                                <div className='form-group'>
-                                    <label>Koniec:</label>
-                                    <input
-                                        type='date'
-                                        name='endingDate'
-                                        value={dateRange.endingDate}
-                                        onChange={(e) => {setDateRange((prevState) => ({...prevState, endingDate: e.target.value}))}}
-                                        required
-                                    />
-                                </div>
-                                
-                                <div className='btns'>
-                                    <button className='activate-range' onClick={handleActivationDateRange}>&#x26A1;</button>
-                                    <button className='deactivate-range' onClick={handleDeactivationDateRange}>&#x1F512;</button>
-                                    <button className='cancel-btn' onClick={() => setDateRange({startingDate: '', endingDate: ''})}>&#x2716;</button>
-                                </div>
-                            </form>
-                        </fieldset>
-                    </div>
+                            <div className='form-group'>
+                                <label>Koniec:</label>
+                                <input
+                                    type='date'
+                                    name='endingDate'
+                                    value={dateRange.endingDate}
+                                    onChange={(e) => {setDateRange((prevState) => ({...prevState, endingDate: e.target.value}))}}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className='btns'>
+                                <button className='activate-btn' onClick={handleActivationDateRange}>&#x26A1;</button>
+                                <button className='deactivate-btn' onClick={handleDeactivationDateRange}>&#x1F512;</button>
+                                <button className='cancel-btn' onClick={() => setDateRange({startingDate: '', endingDate: ''})}>&#x2716;</button>
+                            </div>
+                        </form>
+                    </fieldset>
                 </div>
             </main>
             

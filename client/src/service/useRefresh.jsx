@@ -28,14 +28,11 @@ const useRefresh = () => {
                     localStorage.setItem('refresh-token', newTokens.refreshToken)
                     localStorage.setItem('role', newTokens.role)
                     console.log("Zasoby zostały zaaktualizowane.")
-                    //return true
                 } else {
                     console.error("Błąd podczas odświeżania tokenów:", response.status)
-                    //return false
                 }
             } catch(error) {
                 console.error("Błąd sieci podczas odświeżania tokenów:", error)
-                //return false;
             }
         } else if(status === 401 || status === 403){
             console.warn("Błąd autoryzacji lub nieważny token (status: " + status + ").")
@@ -44,10 +41,8 @@ const useRefresh = () => {
             localStorage.removeItem('role')
             navigate('/logowanie')
             window.location.reload()
-            //return false
         } else {
             console.error("Nieoczekiwany błąd serwera (status: " + status + ").")
-            //return false
         }
     }
 

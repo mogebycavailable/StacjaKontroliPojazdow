@@ -19,7 +19,7 @@ const MojePojazdy = () => {
         MOTORCYCLE: "Motocykl",
         VINTAGE: "Samochód zabytkowy",
         SLOW_MOVING: "Pojazd wolnobieżny",
-      }
+    }
 
     useEffect(() => {
         getAllVehicles()
@@ -39,13 +39,10 @@ const MojePojazdy = () => {
     }
 
     return(
-        // <div className='body-div'>
         <div>
             <h2>Moje pojazdy</h2>
-            {/* <div className='moje_pojazdy-main-div'> */}
             <main>
                 <Link className='link-react-router' to="/moje_pojazdy/dodaj_pojazd">
-                    {/* <button id="add">Dodaj</button> */}
                     <div className='plus-add-btn'>&#x2b;</div>
                 </Link>
                 {data && data.map((vehicle) => {
@@ -98,11 +95,10 @@ const MojePojazdy = () => {
                     </div>
                 );})}
                 {data.length == 0 && (
-                    <h2>
+                    <div className='prompt'>
                         Nie masz jeszcze dodanych pojazdów
-                    </h2>
+                    </div>
                 )}
-            {/* </div> */}
             </main>
 	    </div>
     );
