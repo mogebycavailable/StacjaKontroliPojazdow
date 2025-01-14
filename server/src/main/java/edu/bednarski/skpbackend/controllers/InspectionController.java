@@ -31,7 +31,7 @@ public class InspectionController {
                 .vehicleId(vehicleId)
                 .date(date)
                 .build();
-        List<InspectionPreflightResponseDto> freeHours = service.findFreeHours(data);
+        InspectionPreflightResponseDto freeHours = service.findFreeHours(data);
         return new ResponseEntity<>(freeHours, HttpStatus.OK);
     }
 

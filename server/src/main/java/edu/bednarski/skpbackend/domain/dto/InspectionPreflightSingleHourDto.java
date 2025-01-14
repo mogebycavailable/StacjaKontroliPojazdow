@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class InspectionPreflightResponseDto {
+public class InspectionPreflightSingleHourDto {
 
     private String time;
 
     private StandDto stand;
-
-    private VehicleDto vehicle;
 
 }

@@ -1,9 +1,7 @@
 package edu.bednarski.skpbackend.services;
 
-import edu.bednarski.skpbackend.domain.dto.InspectionDetailsDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionPreflightDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionPreflightResponseDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionRequestDto;
+import edu.bednarski.skpbackend.domain.dto.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +13,7 @@ public interface InspectionService {
 
     Optional<InspectionDetailsDto> findInspectionById(Long id);
 
-    List<InspectionPreflightResponseDto> findFreeHours(InspectionPreflightDto preflightData);
+    InspectionPreflightResponseDto findFreeHours(InspectionPreflightDto preflightData);
 
     Optional<InspectionDetailsDto> createInspection(String email, InspectionRequestDto inspectionData);
 

@@ -72,7 +72,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public List<InspectionPreflightResponseDto> findFreeHours(InspectionPreflightDto preflightData) {
+    public InspectionPreflightResponseDto findFreeHours(InspectionPreflightDto preflightData) {
         if(preflightData == null || preflightData.getDate() == null || preflightData.getVehicleId() == null)
             throw new DataNotProvidedException("Brakujace dane lub dane w nieprawidlowym formacie!");
         Date inspectionDate = formatter.toDate(preflightData.getDate());
@@ -94,7 +94,7 @@ public class InspectionServiceImpl implements InspectionService {
         int neededCycles = inspectionTimeMinutes/offset;
         int cycleCounter;
         LocalTime workEnd = inspectionDay.getWorkEnd();
-        List<InspectionPreflightResponseDto> avaliableHours = new ArrayList<>();
+        List<InspectionPreflightSingleHourDto> hours = new ArrayList<>();
         List<StandEntity> avaliableStands = standRepository.findAllActive();
         if(avaliableStands.isEmpty()) throw new StandUnavaliableException("Brak dostepnych stanowisk!");
         for(StandEntity stand : avaliableStands) {
@@ -111,12 +111,11 @@ public class InspectionServiceImpl implements InspectionService {
                 if (isHourBusy) cycleCounter = 0;
                 else cycleCounter++;
                 if (cycleCounter >= neededCycles) {
-                    avaliableHours.add(
-                            InspectionPreflightResponseDto
+                    hours.add(
+                            InspectionPreflightSingleHourDto
                                     .builder()
-                                    .stand(standMapper.mapTo(stand))
                                     .time(formatter.toStr(timeIterator.minusMinutes((long) inspectionTimeMinutes - offset)))
-                                    .vehicle(vehicleMapper.mapTo(vehicle))
+                                    .stand(standMapper.mapTo(stand))
                                     .build()
                     );
                     cycleCounter = neededCycles - 1;
@@ -124,7 +123,11 @@ public class InspectionServiceImpl implements InspectionService {
                 timeIterator = timeIterator.plusMinutes(offset);
             }
         }
-        return avaliableHours;
+        return InspectionPreflightResponseDto
+                .builder()
+                .vehicle(vehicleMapper.mapTo(vehicle))
+                .hours(hours)
+                .build();
     }
 
     @Override
