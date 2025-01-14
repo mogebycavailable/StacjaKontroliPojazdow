@@ -1,9 +1,11 @@
 package edu.bednarski.skpbackend.mappers.impl;
 
 import edu.bednarski.skpbackend.domain.dto.InspectionDetailsDto;
+import edu.bednarski.skpbackend.domain.dto.StandDto;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
 import edu.bednarski.skpbackend.domain.entities.BookedTimeEntity;
 import edu.bednarski.skpbackend.domain.entities.InspectionEntity;
+import edu.bednarski.skpbackend.domain.entities.StandEntity;
 import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
 import edu.bednarski.skpbackend.domain.enums.InspectionStatus;
 import edu.bednarski.skpbackend.mappers.Mapper;
@@ -31,6 +33,10 @@ public class InspectionDetailsMapper implements Mapper<InspectionEntity, Inspect
 
     private final AppDatetimeFormatterService formatter;
 
+    private final Mapper<VehicleEntity, VehicleDto> vehicleMapper;
+
+    private final Mapper<StandEntity, StandDto> standMapper;
+
     @Override
     public InspectionDetailsDto mapTo(InspectionEntity inspectionEntity) {
         LocalTime inspectionStart = inspectionEntity.getReservedTimestamps()
@@ -46,28 +52,38 @@ public class InspectionDetailsMapper implements Mapper<InspectionEntity, Inspect
         inspectionEnd = inspectionEnd.plusMinutes(inspectionTimeService.getDivider());
         String inspectionStartString = formatter.toStr(inspectionStart);
         String inspectionEndString = formatter.toStr(inspectionEnd);
-        Long standId = inspectionEntity
+        StandDto stand = inspectionEntity
                 .getReservedTimestamps()
                 .stream()
                 .findFirst()
-                .map(existingInspection -> existingInspection.getStand().getId())
+                .map(existingInspection -> standMapper.mapTo(existingInspection.getStand()))
                 .orElseThrow(() -> new RuntimeException("Blad mapowania - timestamps niedostepne!"));
+        String date = inspectionEntity
+                .getReservedTimestamps()
+                .stream()
+                .findAny()
+                .map(existingInspectionTimeDetails -> formatter.toStr(
+                        existingInspectionTimeDetails
+                                .getDay()
+                                .getDate()
+                )).orElseThrow(() -> new RuntimeException("Blad mapowania - data w CalendarDateEntity niedostepna!"));
         String userEmail = inspectionEntity.getVehicle().getOwner().getEmail();
         return InspectionDetailsDto
                 .builder()
                 .id(inspectionEntity.getId())
                 .status(inspectionEntity.getStatus().toString())
+                .date(date)
                 .inspectionStart(inspectionStartString)
                 .inspectionEnd(inspectionEndString)
-                .vehicleId(inspectionEntity.getVehicle().getId())
-                .standId(standId)
+                .vehicle(vehicleMapper.mapTo(inspectionEntity.getVehicle()))
+                .stand(stand)
                 .userEmail(userEmail)
                 .build();
     }
 
     @Override
     public InspectionEntity mapFrom(InspectionDetailsDto inspectionDetailsDto) {
-        Optional<VehicleEntity> vehicleWrapped = vehicleRepository.findById(inspectionDetailsDto.getVehicleId());
+        Optional<VehicleEntity> vehicleWrapped = vehicleRepository.findById(inspectionDetailsDto.getVehicle().getId());
         VehicleEntity vehicle;
         if(vehicleWrapped.isPresent()) vehicle = vehicleWrapped.get();
         else throw new RuntimeException("Blad mapowania: nie ma takiego samochodu w bazie!");

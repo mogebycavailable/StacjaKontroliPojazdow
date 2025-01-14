@@ -1,9 +1,6 @@
 package edu.bednarski.skpbackend.services.impl;
 
-import edu.bednarski.skpbackend.domain.dto.InspectionDetailsDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionPreflightDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionPreflightResponseDto;
-import edu.bednarski.skpbackend.domain.dto.InspectionRequestDto;
+import edu.bednarski.skpbackend.domain.dto.*;
 import edu.bednarski.skpbackend.domain.entities.*;
 import edu.bednarski.skpbackend.domain.enums.InspectionStatus;
 import edu.bednarski.skpbackend.exceptions.DataNotProvidedException;
@@ -46,6 +43,10 @@ public class InspectionServiceImpl implements InspectionService {
     private final AppDatetimeFormatterService formatter;
 
     private final Mapper<InspectionEntity, InspectionDetailsDto> inspectionMapper;
+
+    private final Mapper<StandEntity, StandDto> standMapper;
+
+    private final Mapper<VehicleEntity, VehicleDto> vehicleMapper;
 
     @Override
     public List<InspectionDetailsDto> findAllInspections() {
@@ -158,10 +159,10 @@ public class InspectionServiceImpl implements InspectionService {
             inspectionRepository.delete(savedInspection);
             throw new DateUnavaliableException("Te godziny sa juz zajete!");
         }
-        Long standId = bookedHours
+        StandDto stand = bookedHours
                 .stream()
                 .findAny()
-                .map(bookedHour -> bookedHour.getStand().getId())
+                .map(bookedHour -> standMapper.mapTo(bookedHour.getStand()))
                 .orElseThrow(() -> new RuntimeException("Fatalny blad przy rezerwowaniu uslugi - BookedTimeService nie zarezerwowal zadnej godziny!"));
         LocalTime inspectionStart = bookedHours
                 .stream()
@@ -180,9 +181,10 @@ public class InspectionServiceImpl implements InspectionService {
                 .builder()
                 .id(savedInspection.getId())
                 .userEmail(email)
-                .standId(standId)
-                .vehicleId(savedInspection.getVehicle().getId())
+                .stand(stand)
+                .vehicle(vehicleMapper.mapTo(savedInspection.getVehicle()))
                 .status(savedInspection.getStatus().toString())
+                .date(formatter.toStr(inspectionDay.getDate()))
                 .inspectionStart(inspectionStartString)
                 .inspectionEnd(inspectionEndString)
                 .build();

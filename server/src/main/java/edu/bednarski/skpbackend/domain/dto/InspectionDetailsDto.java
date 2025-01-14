@@ -16,13 +16,15 @@ public class InspectionDetailsDto {
 
     private String status;
 
+    private String date;
+
     private String inspectionStart;
 
     private String inspectionEnd;
 
-    private Long vehicleId;
+    private VehicleDto vehicle;
 
-    private Long standId;
+    private StandDto stand;
 
     private String userEmail;
 
