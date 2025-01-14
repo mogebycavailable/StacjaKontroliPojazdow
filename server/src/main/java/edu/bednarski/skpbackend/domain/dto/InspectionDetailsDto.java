@@ -16,6 +16,8 @@ public class InspectionDetailsDto {
 
     private String status;
 
+    private String description;
+
     private String date;
 
     private String inspectionStart;

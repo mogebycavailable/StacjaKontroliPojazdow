@@ -73,6 +73,7 @@ public class InspectionDetailsMapper implements Mapper<InspectionEntity, Inspect
                 .id(inspectionEntity.getId())
                 .status(inspectionEntity.getStatus().toString())
                 .date(date)
+                .description(inspectionEntity.getDescription())
                 .inspectionStart(inspectionStartString)
                 .inspectionEnd(inspectionEndString)
                 .vehicle(vehicleMapper.mapTo(inspectionEntity.getVehicle()))

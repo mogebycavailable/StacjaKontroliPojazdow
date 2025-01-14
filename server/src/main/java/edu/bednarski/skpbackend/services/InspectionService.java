@@ -13,9 +13,13 @@ public interface InspectionService {
 
     Optional<InspectionDetailsDto> findInspectionById(Long id);
 
+    List<InspectionDetailsDto> findInspectionsByStandAndDate(Long standId, String date);
+
     InspectionPreflightResponseDto findFreeHours(InspectionPreflightDto preflightData);
 
     Optional<InspectionDetailsDto> createInspection(String email, InspectionRequestDto inspectionData);
+
+    Optional<InspectionDetailsDto> partialUpdateInspection(Long inspectionId, InspectionPatchDto updateData);
 
     Optional<InspectionDetailsDto> delete(Long inspectionId);
 

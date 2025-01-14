@@ -131,6 +131,38 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
+    public List<InspectionDetailsDto> findInspectionsByStandAndDate(Long standId, String date) {
+        Date dateObject = formatter.toDate(date);
+        LocalDate localDate = dateObject.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return inspectionRepository
+                .findAll()
+                .stream()
+                .filter(inspection -> inspection.getReservedTimestamps()
+                        .stream()
+                        .findAny()
+                        .map(existingTimestamp -> {
+                            boolean condition = false;
+                            condition = existingTimestamp
+                                    .getStand()
+                                    .getId()
+                                    .equals(standId)
+                                    && existingTimestamp
+                                    .getDay()
+                                    .getDate()
+                                    .toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                                    .equals(localDate);
+                            if(condition) System.out.println("Conditions meet");
+                            else System.out.println("Conditions not meet");
+                            return condition;
+                        })
+                        .orElseThrow(() -> new RuntimeException("Nie odnaleziono dat powiazanych z przegladem w bazie danych!")))
+                .map(inspectionMapper::mapTo)
+                .toList();
+    }
+
+    @Override
     public Optional<InspectionDetailsDto> createInspection(String email, InspectionRequestDto inspectionData) {
         if(inspectionData == null
                 || inspectionData.getDate() == null
@@ -145,6 +177,7 @@ public class InspectionServiceImpl implements InspectionService {
         InspectionEntity inspectionToSave = InspectionEntity
                 .builder()
                 .status(InspectionStatus.ARRANGED)
+                .description("")
                 .vehicle(vehicle)
                 .build();
         InspectionEntity savedInspection = inspectionRepository.save(inspectionToSave);
@@ -189,6 +222,7 @@ public class InspectionServiceImpl implements InspectionService {
                 .id(savedInspection.getId())
                 .userEmail(email)
                 .stand(stand)
+                .description(savedInspection.getDescription())
                 .vehicle(vehicleMapper.mapTo(savedInspection.getVehicle()))
                 .status(savedInspection.getStatus().toString())
                 .date(formatter.toStr(inspectionDay.getDate()))
@@ -196,6 +230,55 @@ public class InspectionServiceImpl implements InspectionService {
                 .inspectionEnd(inspectionEndString)
                 .build();
         return Optional.of(result);
+    }
+
+    @Override
+    public Optional<InspectionDetailsDto> partialUpdateInspection(Long inspectionId, InspectionPatchDto updateData) {
+        if(inspectionId == null || updateData == null) throw new DataNotProvidedException("Nieprawidlowo wprowadzone dane!");
+        Optional<InspectionEntity> inspectionToUpdateWrapped = inspectionRepository.findById(inspectionId);
+        InspectionEntity inspectionToUpdate;
+        if(inspectionToUpdateWrapped.isPresent())
+            inspectionToUpdate = inspectionToUpdateWrapped.get();
+        else return Optional.empty();
+        try {
+            Optional.ofNullable(updateData.getStatus()).ifPresent(status -> {
+                inspectionToUpdate.setStatus(
+                        InspectionStatus.valueOf(updateData.getStatus())
+                );
+                if(inspectionToUpdate.getStatus().equals(InspectionStatus.PASSED)) {
+                    Optional<VehicleEntity> vehicleToUpdateWrapped = vehicleRepository.findById(inspectionToUpdate.getVehicle().getId());
+                    if(vehicleToUpdateWrapped.isPresent()) {
+                        VehicleEntity vehicleToUpdate = vehicleToUpdateWrapped.get();
+                        vehicleToUpdate.setValidityPeriod(
+                                inspectionToUpdate
+                                        .getReservedTimestamps()
+                                        .stream()
+                                        .findAny()
+                                        .map(existingBookedTime -> {
+                                            Date oldValidityPeriod = existingBookedTime.getDay().getDate();
+                                            LocalDate newValidityPeriod = oldValidityPeriod
+                                                    .toInstant()
+                                                    .atZone(ZoneId.systemDefault())
+                                                    .toLocalDate()
+                                                    .plusYears(1);
+                                            return Date.from(
+                                                    newValidityPeriod
+                                                            .atStartOfDay()
+                                                            .atZone(ZoneId.systemDefault())
+                                                            .toInstant());
+                                        }).orElseThrow(() -> new RuntimeException("Fatalny blad! Nie odnaleziono danych o godzinach trwania przegladu!"))
+                        );
+                        vehicleRepository.save(vehicleToUpdate);
+                    }
+                    else throw new RuntimeException("Nie ma takiego pojazdu w bazie!");
+                }
+            });
+        } catch (IllegalArgumentException ex) {
+            throw new DataNotProvidedException("Nieprawidlowy status przegladu!");
+        }
+        Optional.ofNullable(updateData.getDescription()).ifPresent(inspectionToUpdate::setDescription);
+        InspectionEntity savedInspection = inspectionRepository.save(inspectionToUpdate);
+        return Optional.of(inspectionMapper.mapTo(savedInspection));
     }
 
     @Override
