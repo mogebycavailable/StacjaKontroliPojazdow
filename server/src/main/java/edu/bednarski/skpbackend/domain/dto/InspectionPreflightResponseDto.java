@@ -13,6 +13,8 @@ public class InspectionPreflightResponseDto {
 
     private String time;
 
-    private Long standId;
+    private StandDto stand;
+
+    private VehicleDto vehicle;
 
 }

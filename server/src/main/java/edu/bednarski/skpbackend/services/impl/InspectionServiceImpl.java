@@ -111,10 +111,14 @@ public class InspectionServiceImpl implements InspectionService {
                 if (isHourBusy) cycleCounter = 0;
                 else cycleCounter++;
                 if (cycleCounter >= neededCycles) {
-                    avaliableHours.add(new InspectionPreflightResponseDto(
-                            formatter.toStr(timeIterator.minusMinutes((long) inspectionTimeMinutes - offset)),
-                            stand.getId()
-                    ));
+                    avaliableHours.add(
+                            InspectionPreflightResponseDto
+                                    .builder()
+                                    .stand(standMapper.mapTo(stand))
+                                    .time(formatter.toStr(timeIterator.minusMinutes((long) inspectionTimeMinutes - offset)))
+                                    .vehicle(vehicleMapper.mapTo(vehicle))
+                                    .build()
+                    );
                     cycleCounter = neededCycles - 1;
                 }
                 timeIterator = timeIterator.plusMinutes(offset);

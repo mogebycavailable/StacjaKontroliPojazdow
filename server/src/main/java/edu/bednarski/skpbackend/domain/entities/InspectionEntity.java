@@ -26,6 +26,9 @@ public class InspectionEntity {
     @Column(name = "status")
     private InspectionStatus status;
 
+    @Column(name = "description")
+    private String description;
+
     @OneToMany(mappedBy = "inspection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookedTimeEntity> reservedTimestamps;
 
