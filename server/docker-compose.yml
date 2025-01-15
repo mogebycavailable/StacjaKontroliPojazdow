@@ -2,10 +2,20 @@ version: '3.1'
 
 services:
 
-  db:
+  database:
     image: postgres
     ports:
       - "5432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: changemeinprod!
+  server:
+    image: openjdk:21-jdk-slim
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - database
