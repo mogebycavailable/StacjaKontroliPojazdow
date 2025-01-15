@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState } from 'react'
+import { Link } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import styles from './PanelAdministratora.module.css'
-import useRefresh from '../../service/useRefresh'
 
 const PanelAdministratora = () => {
-    const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
 
     return(
@@ -33,7 +31,7 @@ const PanelAdministratora = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default PanelAdministratora;
+export default PanelAdministratora

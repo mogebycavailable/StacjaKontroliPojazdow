@@ -427,22 +427,6 @@ form
 	border-color: red;
 }
 
-.loupe-btn
-{
-	width: 80%;
-	font-size: 22px;
-	background-color: lightskyblue;
-	border: 2px solid gray;
-	align-content: center;
-    cursor: pointer;
-}
-
-.loupe-btn:hover
-{
-	border-color: gray;
-	background-color: lightblue;
-}
-
 /* button */
 button
 {

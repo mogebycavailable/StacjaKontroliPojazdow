@@ -1,5 +1,4 @@
 /* MOJE KONTO */
-
 .user-info
 {
 	display: flex;
@@ -47,7 +46,7 @@
 
 @media (max-width: 768px) {
 	.user-info {
-		flex-direction: column; /* Zmieniamy układ na kolumnowy */
+		flex-direction: column;
         align-items: center;
 		flex-wrap: wrap;
 	}
@@ -57,28 +56,6 @@
 		margin: auto;
 	}
 }
-
-/* div
-{
-	margin: auto;
-} */
-
-/* button
-{
-	background-color: #cc7300;
-	border: 2px solid #aa5100;
-	font-size: 22px;
-	border-radius: 10px;
-	padding: 5px;
-	margin-right: 1em;
-	font-weight: 700;
-}
-
-button:hover
-{
-	background-color: #ffa500;
-	cursor: pointer;
-} */
 
 #logout
 {
@@ -104,7 +81,6 @@ button:hover
 }
 
 /* EDYCJA KONTA */
-
 .moje_konto-edit-div
 {
 	width: 60%;

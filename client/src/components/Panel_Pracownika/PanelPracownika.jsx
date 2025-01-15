@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
-import panelAdminStyles from '../Panel_Administratora/PanelAdministratora.module.css'
-import styles from './PanelPracownika.module.css'
 import useRefresh from '../../service/useRefresh'
 import apiRequest from '../../service/restApiService'
 
@@ -95,7 +93,7 @@ const PanelPracownika = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default PanelPracownika;
+export default PanelPracownika

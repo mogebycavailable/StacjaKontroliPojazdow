@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../../css/Style.css'
 import panelAdminStyles from '../../Panel_Administratora/PanelAdministratora.module.css'
@@ -86,7 +86,7 @@ const ZarzadzanieBadaniami = () => {
                         {
                         onOpen: () => setIsBlocked(true),
                         onClose: () => {
-                            window.location.assign('/panel_pracownika')
+                            window.location.reload()
                             setIsBlocked(false)
                         },
                         autoClose: 3000,
@@ -228,7 +228,7 @@ const ZarzadzanieBadaniami = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default ZarzadzanieBadaniami;
+export default ZarzadzanieBadaniami

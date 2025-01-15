@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom"
 import '../css/Style.css'
 import logo from '../css/img/mechanik-alpha.png';
@@ -31,7 +31,7 @@ const Menu = ({ onLogout }) => {
                 </ul>
             </nav>
         </header>
-    );
-};
+    )
+}
 
-export default Menu;
+export default Menu

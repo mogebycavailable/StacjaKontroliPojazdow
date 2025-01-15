@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import Switch from 'react-switch'
 import '../css/Style.css'
-import styles from './MojePojazdy.module.css'
 import useRefresh from '../../service/useRefresh'
 import apiRequest from '../../service/restApiService'
 
@@ -265,7 +264,7 @@ const EdytujPojazd = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default EdytujPojazd;
+export default EdytujPojazd

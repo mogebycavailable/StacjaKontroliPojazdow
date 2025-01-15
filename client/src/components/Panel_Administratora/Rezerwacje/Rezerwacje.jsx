@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../../css/Style.css'
 import panelStyles from '../PanelAdministratora.module.css'
-import './Rezerwacje.module.css'
+import styles from './Rezerwacje.module.css'
 import useRefresh from '../../../service/useRefresh'
 import apiRequest from '../../../service/restApiService'
 
@@ -11,6 +11,10 @@ const Rezerwacje = () => {
     const navigate = useNavigate()
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
+    const [showDescription, setShowDescription] = useState({
+        inspectionId: null,
+        show: false,
+    })
 
     const [data, setData] = useState([])
 
@@ -106,6 +110,32 @@ const Rezerwacje = () => {
                         </thead>
                         <tbody>
                             { data && data.map((inspection) => {
+                                if(showDescription.inspectionId === inspection.id) {
+                                    return(
+                                        <tr key={inspection.id} className={panelStyles['tbody-rows']}>
+                                            <td data-title="Id">{inspection.id}</td>
+                                            <td data-title="Pojazd">{inspection.vehicle.brand} {inspection.vehicle.model} ({inspection.vehicle.registrationNumber})</td>
+                                            <td data-title="Data">{inspection.date}</td>
+                                            <td data-title="Godz. rozpoczęcia">{inspection.inspectionStart}</td>
+                                            <td data-title="Godz. zakończenia">{inspection.inspectionEnd}</td>
+                                            <td data-title="Stanowisko">{inspection.stand.name}</td>
+                                            <td data-title="Status">{statutesTranslations[inspection.status]}</td>
+                                            <td data-title="Opis">{ inspection.description.length > 0 ? 
+                                                (
+                                                    <div className={styles['loupe-container']}>
+                                                        { showDescription.inspectionId && showDescription.show && (
+                                                            <textarea className={styles['description-textarea']} readOnly value={inspection.description}/>
+                                                        )}
+                                                        <button className='cancel-btn' onClick={() => setShowDescription((prev) => ({...prev, inspectionId: null, show: false}))}>&#x2716;</button>
+                                                    </div>
+                                                ) : "Brak" }
+                                            </td>
+                                            <td data-title="Dane kontaktowe">{inspection.userEmail}</td>
+                                            <td data-title="Opcje"><button className='cancel-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => handleDeleteInspectionByAdmin(e, inspection.id)}>Odwołaj</button></td>
+                                        </tr>
+                                    )
+                                }
+
                                 return(
                                     <tr key={inspection.id} className={panelStyles['tbody-rows']}>
                                         <td data-title="Id">{inspection.id}</td>
@@ -115,7 +145,11 @@ const Rezerwacje = () => {
                                         <td data-title="Godz. zakończenia">{inspection.inspectionEnd}</td>
                                         <td data-title="Stanowisko">{inspection.stand.name}</td>
                                         <td data-title="Status">{statutesTranslations[inspection.status]}</td>
-                                        <td data-title="Opis">{ inspection.description.length > 0 ? <button className='loupe-btn'>&#x1F50D;</button> : "Brak" }</td>
+                                        <td data-title="Opis">{ inspection.description.length > 0 ? 
+                                            (
+                                                <button className={styles['loupe-btn']} onClick={() => setShowDescription((prev) => ({...prev, inspectionId: inspection.id, show: true}))}>&#x1F50D;</button>
+                                            ) : "Brak" }
+                                        </td>
                                         <td data-title="Dane kontaktowe">{inspection.userEmail}</td>
                                         <td data-title="Opcje"><button className='cancel-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => handleDeleteInspectionByAdmin(e, inspection.id)}>Odwołaj</button></td>
                                     </tr>
@@ -132,7 +166,7 @@ const Rezerwacje = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default Rezerwacje;
+export default Rezerwacje

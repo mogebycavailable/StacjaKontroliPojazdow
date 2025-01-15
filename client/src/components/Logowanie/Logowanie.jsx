@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
-//import '../css/formstyle.css'
 import apiRequest from '../../service/restApiService'
 
 const Logowanie = ({ onLogin }) => {
     const [isBlocked, setIsBlocked] = useState(false)
-    const [error, setError] = useState("")
     const [data, setData] = useState({
         email: "root@skp.pl",
         pwdHash: "root"
@@ -106,7 +103,7 @@ const Logowanie = ({ onLogin }) => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default Logowanie;
+export default Logowanie

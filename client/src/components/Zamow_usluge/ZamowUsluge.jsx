@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState, useEffect } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import styles from './ZamowUsluge.module.css'
@@ -155,7 +154,9 @@ const ZamowUsluge = () => {
                                         onChange={(e) => { setData((prevData) => ({ ...prevData, vehicleId: e.target.value })) }}
                                         required
                                     >
-                                        <option value=""></option>
+                                        <option value="">
+                                            { vehicles.length === 0  ? "Brak dodanych pojazdów" : "Wybierz pojazd"}
+                                        </option>
                                         {vehicles.map((vehicle) => (
                                             <option key={vehicle.id} value={vehicle.id}>
                                                 {vehicle.brand} {vehicle.model} ({vehicle.registrationNumber})
@@ -248,7 +249,7 @@ const ZamowUsluge = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default ZamowUsluge;
+export default ZamowUsluge

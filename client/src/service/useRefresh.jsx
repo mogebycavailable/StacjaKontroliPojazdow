@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const useRefresh = () => {
@@ -47,6 +46,6 @@ const useRefresh = () => {
     }
 
     return refreshTokens
-};
+}
 
-export default useRefresh;
+export default useRefresh

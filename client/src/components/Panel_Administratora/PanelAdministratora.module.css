@@ -26,7 +26,6 @@
 	border-radius: 7px;
 	text-decoration: none;
 	padding: 10px;
-	/*box-sizing: border-box;*/
 	min-width: 40%;
 	margin: 10px;
 	flex-basis: 30%;
@@ -34,12 +33,11 @@
 	color: black;
     font-weight: bold;
 	
-    /* Flexbox do wyśrodkowania tekstu */
     display: flex;
-    align-items: center; /* Wyśrodkowanie w pionie */
-    justify-content: center; /* Wyśrodkowanie w poziomie */
+    align-items: center;
+    justify-content: center;
 
-    transition: background-color 0.3s, color 0.3s; /* Animacja na hover */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .option:hover
@@ -48,6 +46,12 @@
 	background-color: #cc7300;
 	color: white;
     font-weight: bold;
+}
+
+@media (max-width: 705px){
+    .option {
+        flex-basis: 100%;
+    }
 }
 
 
@@ -131,13 +135,8 @@ table {
 
 th, td {
     border: 1px solid black;
-    /* border-radius: 10px; */
     padding: 1rem;
 }
-  
-/* tr {
-    border-bottom: 1px solid black;
-} */
 
 .tbody-rows:hover
 {

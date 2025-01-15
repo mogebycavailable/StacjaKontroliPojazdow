@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom"
+import React from 'react'
 import '../css/Style.css'
 import styles from './ONas.module.css'
-import foto3 from '../css/img/foto3.jpg';
-import foto4 from '../css/img/foto4.jpg';
-import foto5 from '../css/img/foto5.png';
-import foto6 from '../css/img/foto6.png';
-import foto7 from '../css/img/foto7.png';
-import foto8 from '../css/img/foto8.png';
+import foto3 from '../css/img/foto3.jpg'
+import foto4 from '../css/img/foto4.jpg'
+import foto5 from '../css/img/foto5.png'
+import foto6 from '../css/img/foto6.png'
+import foto7 from '../css/img/foto7.png'
+import foto8 from '../css/img/foto8.png'
 
 const ONas = () => {
     return(

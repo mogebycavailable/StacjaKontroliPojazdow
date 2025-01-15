@@ -1,12 +1,3 @@
-/* main
-{
-	width: 80%;
-	background-color: #333;
-	border-radius: 12px;
-	padding: 1.5em;
-	margin: 1.5em auto;
-} */
-
 article
 {
 	font-size: 18px;
@@ -25,9 +16,9 @@ article
 .photos > img
 {
 	display: block;
-	margin: 0;
-	width: 560px;
-	height: 400px;
+	margin: 10px;
+	width: 40%;
+	height: auto;
 	border-radius: 14px;
 	transition: all 0.5s ease-in-out;
 }
@@ -38,4 +29,17 @@ article
 	opacity: 70%;
 	scale: 105%;
 	cursor: pointer;
+}
+
+@media (max-width: 1250px){
+	.photos {
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.photos > img {
+		width: 80% !important;
+		height: auto !important;
+	}
 }

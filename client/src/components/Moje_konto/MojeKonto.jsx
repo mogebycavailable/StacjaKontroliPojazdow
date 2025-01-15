@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import styles from './MojeKonto.module.css'
@@ -9,6 +8,7 @@ import apiRequest from '../../service/restApiService'
 
 const MojeKonto = ({ onLogout }) => {
     const [isBlocked, setIsBlocked] = useState(false)
+    const role = localStorage.getItem('role')
     const refreshTokens = useRefresh()
     const [data, setData] = useState([])
 
@@ -28,13 +28,6 @@ const MojeKonto = ({ onLogout }) => {
     const [toDelete, setToDelete] = useState({
         password: ''
     })
-    
-    const [pwdError, setPwdError] = useState("")
-    const [pwdChangeSuccess, setPwdChangeSuccess] = useState({
-        success: false,
-        text: ""
-    })
-    const [deleteError, setDeleteError] = useState("")
 
     const [isEditingData, setIsEditingData] = useState(false)
     const [isEditingPwd, setIsEditingPwd] = useState(false)
@@ -227,6 +220,7 @@ const MojeKonto = ({ onLogout }) => {
                         autoClose: 3000,
                     })
                 }),
+                refreshTokens,
             })
         } else {
             console.log("Brak zgody użytkownika na usunięcie konta.")
@@ -255,8 +249,8 @@ const MojeKonto = ({ onLogout }) => {
                                         />
                                     </div>
                                     <div className='btns'>
-                                        <div className='ok-btn' type='submit'>&#x1F4BE;</div>
-                                        <div className='cancel-btn' onClick={openCloseDeleteSection}>&#x2716;</div>
+                                        <button className='ok-btn' type='submit'>&#x2714;</button>
+                                        <button className='cancel-btn' onClick={openCloseDeleteSection}>&#x2716;</button>
                                     </div>
                                 </form>
                             </fieldset>
@@ -289,7 +283,7 @@ const MojeKonto = ({ onLogout }) => {
                             <button className="edit-btn" onClick={openCloseEditDataSection}>&#9881;</button>
                             <button id="change-password" onClick={openCloseEditPwdSection}>Zmień hasło</button>
                             <button id="logout" onClick={onLogout}>Wyloguj się</button>
-                            <button id="delete" onClick={() => {setIsDeleting(true); setIsBlocked(true)}}>Usuń konto</button>
+                            { !(role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <button id="delete" onClick={() => {setIsDeleting(true); setIsBlocked(true)}}>Usuń konto</button> }
                         </div>
                     </div>
                 </div>
@@ -404,27 +398,6 @@ const MojeKonto = ({ onLogout }) => {
                         </fieldset>
                     </div>
                 )}
-                {/* { isDeleting && (
-                    <div className='moje_konto-delete-div'>
-                        <h3 className='edit-section-h3'>Sekcja usuwanie konta</h3>
-                        <form onSubmit={handleDeleteAccount}>
-                            <label>Podaj hasło aby usunąć konto</label>
-                            <input
-                                type="password"
-                                placeholder="Podaj hasło"
-                                name="password"
-                                required
-                                value={toDelete.password}
-                                onChange={handleToDeleteChange}
-                            />
-                            <div className='delete-buttons-div'>
-                                <button className="delete-button" type="submit">Usuń</button>
-                                <button className="cancel-delete-button" onClick={openCloseDeleteSection}>Anuluj</button>
-                            </div>
-                        </form>
-                        {deleteError && (<p>{deleteError}</p>)}
-                    </div>
-                )} */}
             </main>
 
             <ToastContainer 
@@ -433,7 +406,7 @@ const MojeKonto = ({ onLogout }) => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default MojeKonto;
+export default MojeKonto

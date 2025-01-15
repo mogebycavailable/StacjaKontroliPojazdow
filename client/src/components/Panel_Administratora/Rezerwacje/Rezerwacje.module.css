@@ -1,4 +1,4 @@
-@media (max-width: 1285px){
+@media (max-width: 1510px){
     table thead tr {
         display: none;
     }
@@ -30,10 +30,60 @@
     tbody td button {
         width: 20% !important;
     }
+
+    .loupe-container {
+        justify-content: right !important;
+    }
+
+    .description-textarea {
+        flex: 1;
+        font-size: 18px;
+
+        margin-left: 30px;
+        margin-right: 30px !important;
+    }
 }
 
 @media (max-width: 765px){
     tbody td button {
         width: 115px !important
     }
+}
+
+/* Loupe */
+.loupe-btn
+{
+	width: 100%;
+    max-width: 100px;
+	font-size: 22px;
+	background-color: lightskyblue;
+	border: 2px solid gray;
+	align-content: center;
+    cursor: pointer;
+}
+
+.loupe-btn:hover
+{
+	border-color: gray;
+	background-color: lightblue;
+}
+
+.loupe-container
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.description-textarea
+{
+    margin-right: 10px;
+
+    height: 80px;
+    width: 150px;
+
+    font-size: 16px;
+    border: 2px solid black;
+	border-radius: 8px;
 }

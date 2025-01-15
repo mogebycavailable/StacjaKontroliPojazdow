@@ -7,7 +7,6 @@ import apiRequest from '../../service/restApiService'
 
 const Rejestracja = ({ onRegister }) => {
     const [isBlocked, setIsBlocked] = useState(false)
-    const [error, setError] = useState("")
     const [data, setData] = useState({
         name: "",
         surname: "",
@@ -173,7 +172,7 @@ const Rejestracja = ({ onRegister }) => {
                 closeOnClick={true}
             />
         </div>
-    );
-};
+    )
+}
 
-export default Rejestracja;
+export default Rejestracja

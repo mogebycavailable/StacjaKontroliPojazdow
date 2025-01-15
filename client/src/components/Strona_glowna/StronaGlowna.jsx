@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'
 import { Link } from "react-router-dom"
 import '../css/Style.css'
 import styles from'./StronaGlowna.module.css'
-import foto1 from '../css/img/foto1.jpg';
-import foto2 from '../css/img/foto2.jpg';
+import foto1 from '../css/img/foto1.jpg'
+import foto2 from '../css/img/foto2.jpg'
 
 const StronaGlowna = () => {
     return(

@@ -47,7 +47,7 @@
 
 @media (max-width: 768px) {
 	.vehicle {
-		flex-direction: column; /* Zmieniamy układ na kolumnowy */
+		flex-direction: column;
         align-items: center;
 		flex-wrap: wrap;
 	}

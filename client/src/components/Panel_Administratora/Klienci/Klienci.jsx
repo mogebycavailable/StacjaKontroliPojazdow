@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../../css/Style.css'
 import panelStyles from '../PanelAdministratora.module.css'
@@ -23,10 +23,6 @@ const Klienci = () => {
         newPwdHash: '',
         confirmNewPwdHash: ''
     })
-
-    const handleChange = ({ currentTarget: input }) => {
-        setData({ ...data, [input.name]: input.value })
-    }
 
     const handleEditingChange = ({ currentTarget: input }) => {
         setEditingClientData({ ...editingClientData, [input.name]: input.value })
@@ -338,7 +334,7 @@ const Klienci = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default Klienci;
+export default Klienci

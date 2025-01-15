@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import '../css/Style.css'
 import styles from './MojePojazdy.module.css'
-import vehicle_icon from '../css/img/vehicle.png';
+import vehicle_icon from '../css/img/vehicle.png'
 import useRefresh from '../../service/useRefresh'
 import apiRequest from '../../service/restApiService'
 
@@ -101,7 +101,7 @@ const MojePojazdy = () => {
                 )}
             </main>
 	    </div>
-    );
-};
+    )
+}
 
-export default MojePojazdy;
+export default MojePojazdy

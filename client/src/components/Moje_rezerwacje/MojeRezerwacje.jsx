@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from 'react-toastify'
 import '../css/Style.css'
 import styles from './MojeRezerwacje.module.css'
@@ -142,7 +142,7 @@ const MojeRezerwacje = () => {
                 closeOnClick={true}
             />
 	    </div>
-    );
-};
+    )
+}
 
-export default MojeRezerwacje;
+export default MojeRezerwacje
