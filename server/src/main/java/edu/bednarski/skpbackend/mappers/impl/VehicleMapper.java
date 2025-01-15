@@ -7,8 +7,6 @@ import edu.bednarski.skpbackend.domain.enums.VehicleType;
 import edu.bednarski.skpbackend.exceptions.BadDateFormatException;
 import edu.bednarski.skpbackend.exceptions.UnknownVehicleTypeException;
 import edu.bednarski.skpbackend.mappers.Mapper;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;

@@ -1,6 +1,5 @@
 package edu.bednarski.skpbackend.domain.dto;
 
-import edu.bednarski.skpbackend.domain.enums.InspectionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

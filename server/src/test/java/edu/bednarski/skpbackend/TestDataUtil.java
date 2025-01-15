@@ -2,8 +2,6 @@ package edu.bednarski.skpbackend;
 
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.UserDto;
-import edu.bednarski.skpbackend.domain.entities.UserEntity;
-import edu.bednarski.skpbackend.security.Role;
 
 public class TestDataUtil {
 

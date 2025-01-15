@@ -13,7 +13,6 @@ import edu.bednarski.skpbackend.repositories.VehicleRepository;
 import edu.bednarski.skpbackend.services.AppDatetimeFormatterService;
 import edu.bednarski.skpbackend.services.InspectionTimeService;
 import edu.bednarski.skpbackend.services.StandService;
-import edu.bednarski.skpbackend.services.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

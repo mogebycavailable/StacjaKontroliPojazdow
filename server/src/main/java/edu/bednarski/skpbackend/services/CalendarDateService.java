@@ -1,8 +1,6 @@
 package edu.bednarski.skpbackend.services;
 
 import edu.bednarski.skpbackend.domain.dto.CalendarDateDto;
-import edu.bednarski.skpbackend.domain.entities.CalendarDateEntity;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;

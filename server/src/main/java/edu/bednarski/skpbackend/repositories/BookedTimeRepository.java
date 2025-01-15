@@ -2,7 +2,6 @@ package edu.bednarski.skpbackend.repositories;
 
 import edu.bednarski.skpbackend.domain.entities.BookedTimeEntity;
 import edu.bednarski.skpbackend.domain.entities.CalendarDateEntity;
-import edu.bednarski.skpbackend.domain.entities.StandEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

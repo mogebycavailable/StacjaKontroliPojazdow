@@ -3,7 +3,6 @@ package edu.bednarski.skpbackend.services;
 import edu.bednarski.skpbackend.domain.dto.PasswordChangeDto;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.UserUpdatedDto;
-import edu.bednarski.skpbackend.security.Role;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,5 @@
 package edu.bednarski.skpbackend.domain.entities;
 
-import edu.bednarski.skpbackend.domain.enums.VehicleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

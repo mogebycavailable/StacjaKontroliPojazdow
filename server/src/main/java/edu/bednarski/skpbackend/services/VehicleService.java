@@ -1,12 +1,7 @@
 package edu.bednarski.skpbackend.services;
 
 
-import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.VehicleDto;
-import edu.bednarski.skpbackend.domain.entities.UserEntity;
-import edu.bednarski.skpbackend.domain.entities.VehicleEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.List;
 import java.util.Optional;
 

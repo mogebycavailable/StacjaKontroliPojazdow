@@ -1,7 +1,5 @@
 package edu.bednarski.skpbackend.domain.dto;
 
-import edu.bednarski.skpbackend.domain.entities.UserEntity;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

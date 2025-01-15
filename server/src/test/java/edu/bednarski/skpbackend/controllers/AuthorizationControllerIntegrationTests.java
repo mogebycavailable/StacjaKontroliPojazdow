@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.bednarski.skpbackend.TestDataUtil;
 import edu.bednarski.skpbackend.domain.dto.UserDetailsDto;
 import edu.bednarski.skpbackend.domain.dto.UserDto;
-import edu.bednarski.skpbackend.domain.entities.UserEntity;
 import edu.bednarski.skpbackend.repositories.UserRepository;
 import edu.bednarski.skpbackend.services.AuthenticationService;
 import org.junit.jupiter.api.AfterEach;
