@@ -71,21 +71,6 @@ input[type=submit]
 	margin-bottom: 1em;
 }
 
-.step-form-div
-{
-	/* font-size: 20px; */
-	max-width: 100%;
-	margin-left: 1em;
-	margin-right: 1em;
-	color: white;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	background-color: #333;
-	padding: 0.5em 1em;
-	border-radius: 10px;
-}
-
 .confirm-data
 {
 	display: flex;
@@ -102,41 +87,4 @@ input[type=submit]
 	font-size: 20px;
 	padding: 10px;
 	text-align: left;
-}
-
-.step-btn
-{
-    width: 30%;
-    background-color: #cc7300;
-	align-content: center;
-    cursor: pointer;
-	color: white !important;
-	font-size: 22px;
-
-	border: 2px solid #aa5100;
-    border-radius: 8px;
-}
-
-.step-btn:hover
-{
-	background-color: #ffa500;
-}
-
-.refresh-btn
-{
-    width: 30%;
-    background-color: red;
-	align-content: center;
-    cursor: pointer;
-	color: white !important;
-	font-size: 22px;
-
-	border: 2px solid darkred;
-    border-radius: 8px;
-}
-
-.refresh-btn:hover
-{
-	background-color: darkred;
-	border-color: red;
 }

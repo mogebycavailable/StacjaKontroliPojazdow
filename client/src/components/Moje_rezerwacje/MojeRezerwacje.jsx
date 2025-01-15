@@ -11,12 +11,8 @@ const MojeRezerwacje = () => {
     const navigate = useNavigate()
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState(null)
 
     const [data, setData] = useState([])
-    const [vehicles, setVehicles] = useState([])
-    const [stands, setStands] = useState([])
 
     const statutesTranslations = {
         ARRANGED: "Zaplanowane",
@@ -24,8 +20,12 @@ const MojeRezerwacje = () => {
         NOT_PASSED: "Wynik negatywny",
     }
 
+    useEffect(() => {
+        getAllInspections()
+    }, [])
+
     // GET
-    const getAllReservations = async () => {
+    const getAllInspections = async () => {
         const url = "http://localhost:8080/api/user/inspections"
         await apiRequest({
             url,
@@ -42,42 +42,8 @@ const MojeRezerwacje = () => {
         })
     }
 
-    const getAllVehiclesDetails = async () => {
-        const url = "http://localhost:8080/api/vehicles"
-        await apiRequest({
-            url,
-            useToken: true,
-            onSuccess: ((status, data) => {
-                setVehicles(data)
-            }),
-            onError: ((status, data) => {
-                toast.error(data, {
-                    autoClose: 3000,
-                })
-            }),
-            refreshTokens,
-        })
-    }
-
-    const getAllStandDetails = async () => {
-        const url = "http://localhost:8080/api/user/stand"
-        await apiRequest({
-            url,
-            useToken: true,
-            onSuccess: ((status, data) => {
-                setStands(data)
-            }),
-            onError: ((status, data) => {
-                toast.error(data, {
-                    autoClose: 3000,
-                })
-            }),
-            refreshTokens,
-        })
-    }
-
     // DELETE
-    const handleDeleteReservation = async (e, id) => {
+    const handleDeleteInspection = async (e, id) => {
         e.preventDefault()
         if(window.confirm('Czy na pewno chcesz odwołać tą rezerwację?')){
             const url = "http://localhost:8080/api/user/inspections/"+id
@@ -86,10 +52,11 @@ const MojeRezerwacje = () => {
                 useToken: true,
                 method: 'DELETE',
                 onSuccess: ((status, data) => {
-                    console.log("Zaraz powinien być toast o sukcesie...")
                     toast.success(
                         <div>
-                            Pomyślnie odwołano rezerwację
+                            Pomyślnie odwołano rezerwację:<br/>
+                            {data.vehicle.brand} {data.vehicle.model}<br/>
+                            {data.vehicle.registrationNumber}
                         </div>,
                         {
                         onOpen: () => setIsBlocked(true),
@@ -112,73 +79,57 @@ const MojeRezerwacje = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setIsLoading(true)
-
-                await Promise.all([getAllReservations(), getAllVehiclesDetails(), getAllStandDetails()]);
-
-            } catch (error) {
-                setError("Wystąpił błąd podczas ładowania danych.")
-                console.error("Błąd ładowania:", error)
-            } finally {
-                setIsLoading(false)
-            }
-        };
-
-        fetchData()
-    }, [])
-
-    if (isLoading) {
-        return <div><h2>Ładowanie danych...</h2></div>
-    }
-
-    if (error) {
-        return <div><h2>Błąd: {error}</h2></div>
-    }
-
     return(
         <div>
+            {/* Nakładka blokująca */}
+            {isBlocked && <div className="overlay"></div>}
+
             <h2>Moje rezerwacje</h2>
             <main>
                 <button style={{margin: '20px auto', fontSize: '20px'}} onClick={() => navigate('/zamow_usluge')}>Umów się na przegląd</button>
                 { data.length === 0 && (<div className="prompt">Brak rezerwacji</div>)}
-                { data.length > 0 && data.map((reservation) => {
-                    const vehicleDetails = vehicles.find((vehicle) => vehicle.id === reservation.vehicleId)
-                    const standDetails = stands.find((stand) => stand.id === reservation.standId)
+                { data.length > 0 && data.map((inspection) => {
                     return(
-                        <div key={reservation.id} className={styles.reservation}>
+                        <div key={inspection.id} className={styles.inspection}>
                             <div className={styles.photo}>
-                                <img className={styles['reservation-img']} src={notes_icon}/>
+                                <img className={styles['inspection-img']} src={notes_icon}/>
                             </div>
-                            <div className={styles['reservation-container']}>
-                                <div className={styles['reservation-data']}>
-                                    <div>Pojazd:</div><div>{vehicleDetails.brand} {vehicleDetails.model} - {vehicleDetails.registrationNumber}</div>
+                            <div className={styles['inspection-container']}>
+                                <div className={styles['inspection-data']}>
+                                    <div>Pojazd:</div><div>{inspection.vehicle.brand} {inspection.vehicle.model} ({inspection.vehicle.registrationNumber})</div>
                                 </div>
 
-                                <div className={styles['reservation-data']}>
-                                    <div>Planowany czas rozpoczęcia:</div><div>{reservation.inspectionStart}</div>
+                                <div className={styles['inspection-data']}>
+                                    <div>Data:</div><div>{inspection.date}</div>
                                 </div>
 
-                                <div className={styles['reservation-data']}>
-                                    <div>Planowany czas zakończenia:</div><div>{reservation.inspectionEnd}</div>
+                                <div className={styles['inspection-data']}>
+                                    <div>Planowany czas rozpoczęcia:</div><div>{inspection.inspectionStart}</div>
                                 </div>
 
-                                <div className={styles['reservation-data']}>
-                                    <div>Stanowisko:</div><div>{standDetails.name}</div>
+                                <div className={styles['inspection-data']}>
+                                    <div>Planowany czas zakończenia:</div><div>{inspection.inspectionEnd}</div>
                                 </div>
 
-                                <div className={styles['reservation-data']}>
-                                    <div>Nazwa użytkownika:</div><div>{reservation.userEmail}</div>
+                                <div className={styles['inspection-data']}>
+                                    <div>Stanowisko:</div><div>{inspection.stand.name}</div>
                                 </div>
 
-                                <div className={styles['reservation-data']}>
-                                    <div>Status:</div><div>{statutesTranslations[reservation.status]}</div>
+                                <div className={styles['inspection-data']}>
+                                    <div>Nazwa użytkownika:</div><div>{inspection.userEmail}</div>
+                                </div>
+
+                                <div className={styles['inspection-data']}>
+                                    <div>Status:</div><div>{statutesTranslations[inspection.status]}</div>
+                                </div>
+
+                                <div className={styles['inspection-data']}>
+                                    <div>Opis:</div>
+                                    { inspection.description.length > 0 ? <textarea readOnly value={inspection.description}/> : <div>Brak</div> }
                                 </div>
 
                                 <div className='btns'>
-                                    <button className='cancel-btn' style={{width: 'auto'}} onClick={(e) => handleDeleteReservation(e, reservation.id)}>Odwołaj</button>
+                                    <button className='cancel-btn' style={{width: 'auto'}} onClick={(e) => handleDeleteInspection(e, inspection.id)}>Odwołaj</button>
                                 </div>
                             </div>
                         </div>

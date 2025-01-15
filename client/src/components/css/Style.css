@@ -1,9 +1,18 @@
+html
+{
+	height: 100%;
+}
+
 body
 {
 	background-image: url("img/dark-honeycomb.png");
 	margin: 0;
 	padding: 0;
 	font-family: "Lato", sans-serif;
+
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 
@@ -19,6 +28,8 @@ main
 {
 	width: 80%;
 	margin: 0 auto;
+	margin-bottom: 2em;
+
 	text-align: center;
 	background-color: #333;
 	border-radius: 12px;
@@ -75,6 +86,7 @@ nav > ul a
 	border-right: 1px dashed #cc7200;
 	padding: 7px 15px;
 	text-align: center;
+	align-content: center;
 	flex: 3;
 }
 
@@ -114,9 +126,9 @@ nav a:visited
 footer
 {
 	padding: 8px;
-	margin-top: 1em;
-	margin-left: auto;
-	margin-right: auto;
+	margin-top: auto;
+	margin-left: 0;
+	margin-right: 0;
 	text-align: center;
 	font-size: 20px;
 	color: #fff;
@@ -244,6 +256,21 @@ form
 	}
 }
 
+.step-form-div
+{
+	/* font-size: 20px; */
+	max-width: 100%;
+	margin-left: 1em;
+	margin-right: 1em;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: #333;
+	padding: 0.5em 1em;
+	border-radius: 10px;
+}
+
 /* Przyciski */
 .btns
 {
@@ -262,7 +289,7 @@ form
 /* + */
 .plus-add-btn
 {
-    width: 5%;
+    width: 70px;
 	/* margin-top: 1%;
     margin-bottom: 2%; */
 	margin: 2% auto;
@@ -361,6 +388,59 @@ form
 	color: white;
 	background-color: gray;
 	border-color: #333;
+}
+
+.step-btn
+{
+    width: 30%;
+    background-color: #cc7300;
+	align-content: center;
+    cursor: pointer;
+	color: white !important;
+	font-size: 22px;
+
+	border: 2px solid #aa5100;
+    border-radius: 8px;
+}
+
+.step-btn:hover
+{
+	background-color: #ffa500;
+}
+
+.refresh-btn
+{
+    width: 30%;
+    background-color: red;
+	align-content: center;
+    cursor: pointer;
+	color: white !important;
+	font-size: 22px;
+
+	border: 2px solid darkred;
+    border-radius: 8px;
+}
+
+.refresh-btn:hover
+{
+	background-color: darkred;
+	border-color: red;
+}
+
+.loupe-btn
+{
+	width: 80%;
+	font-size: 22px;
+	background-color: lightskyblue;
+	border: 2px solid gray;
+	align-content: center;
+    cursor: pointer;
+}
+
+.loupe-btn:hover
+{
+	border-color: gray;
+	background-color: lightblue;
 }
 
 /* button */

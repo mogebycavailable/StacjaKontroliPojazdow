@@ -12,6 +12,8 @@ import MojeRezerwacje from './components/Moje_rezerwacje/MojeRezerwacje'
 import ZamowUsluge from './components/Zamow_usluge/ZamowUsluge'
 import Rejestracja from './components/Rejestracja/Rejestracja'
 import Logowanie from './components/Logowanie/Logowanie'
+import PanelPracownika from './components/Panel_Pracownika/PanelPracownika'
+import ZarzadzanieBadaniami from './components/Panel_Pracownika/Zarzadzanie_badaniami/Zarzadzanie_badaniami'
 import PanelAdministratora from './components/Panel_Administratora/PanelAdministratora'
 import Stanowiska from './components/Panel_Administratora/Stanowiska/Stanowiska'
 import TydzienPracy from './components/Panel_Administratora/TydzienPracy/TydzienPracy'
@@ -62,6 +64,8 @@ function App() {
             { accessToken && <Route path='/moje_rezerwacje' exact element={<MojeRezerwacje/>}/> }
             { accessToken && <Route path='/zamow_usluge' exact element={<ZamowUsluge/>}/> }
             { accessToken && <Route path='/moje_konto' exact element={<MojeKonto onLogout={handleLogout}/>}/> }
+            { accessToken && (role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <Route path='/panel_pracownika' exact element={<PanelPracownika/>}/> }
+            { accessToken && (role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <Route path='/panel_pracownika/zarzadzanie_badaniami/:standId/:standName/:date' exact element={<ZarzadzanieBadaniami/>}/> }
             { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora' exact element={<PanelAdministratora/>}/> }
             { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/stanowiska' exact element={<Stanowiska/>}/> }
             { accessToken && role === 'ROLE_ADMIN' && <Route path='/panel_administratora/tydzien_pracy' exact element={<TydzienPracy/>}/> }

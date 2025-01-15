@@ -1,0 +1,129 @@
+@media (max-width: 1285px){
+    table thead tr {
+        display: none;
+    }
+
+    table tr {
+        display: block;
+    }
+
+    table td {
+        text-align: right;
+        display: block;
+    }
+
+    table td::before {
+        content: attr(data-title) ": ";
+        font-weight: 700;
+        float: left;
+    }
+
+    table td input{
+        width: auto !important;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #cc7300;
+        color: black;
+    }
+
+    tbody td button {
+        width: 20% !important;
+    }
+
+    .edit-inspection-container {
+        display: block;
+        width: 584px !important;
+        height: 936px !important;
+        margin: 0 auto;
+    }
+
+    .fielset-form {
+        width: 80%;
+    }
+}
+
+@media (max-width: 765px){
+    tbody td button {
+        width: 115px !important
+    }
+}
+
+@media (max-width: 700px){
+    .edit-inspection-container {
+        display: block;
+        width: 90% !important;
+    }
+
+    .fielset-form {
+        width: 90%;
+    }
+}
+
+.edit-inspection-container
+{
+    width: 50%;
+    height: 100%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: white
+}
+
+.edit-inspection-content
+{
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 80%;
+	margin: 0 auto;
+	background-color: #333;
+	border-radius: 10px;
+}
+
+.edit-inspection-button
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+
+.edit-inspection-data
+{
+    /* flex: 1; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.inspection-data
+{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+
+	border-bottom: 2px dotted black;
+    margin: auto 20px;
+}
+
+.inspection-data > *
+{
+	font-size: 20px;
+	padding: 10px;
+	text-align: left;
+}
+
+@media (max-width: 600px){
+    button {
+        width: 50px !important;
+    }
+}

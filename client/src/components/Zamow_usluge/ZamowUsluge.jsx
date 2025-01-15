@@ -16,12 +16,12 @@ const ZamowUsluge = () => {
         date: '',
         time: '',
         standId: '',
+        standName: '',
     })
 
     const [freeTerms, setFreeTerms] = useState([])
     const [vehicles, setVehicles] = useState([])
-    const [selectedVehicle, setSelectedVehicle] = useState({})
-    const [selectedStand, setSelectedStand] = useState({})
+    const [selectedVehicle, setSelectedVehicle] = useState(null)
 
     const validStep1 = data.vehicleId && data.date
     const validStep2 = validStep1 && data.time && data.standId
@@ -29,12 +29,6 @@ const ZamowUsluge = () => {
     useEffect(() => {
         getAllVehicles()
     }, [])
-
-    const getReservationDetails = async () => {
-        await getVehicleDetails()
-        await getStandDetails()
-        setStep(3)
-    }
 
     // GET
     const getAllVehicles = async () => {
@@ -60,42 +54,9 @@ const ZamowUsluge = () => {
             url,
             useToken: true,
             onSuccess: ((status, data) => {
-                setFreeTerms(data)
+                setFreeTerms(data.hours)
+                setSelectedVehicle(data.vehicle)
                 setStep(2)
-            }),
-            onError: ((status, data) => {
-                toast.error(data, {
-                    autoClose: 3000,
-                })
-            }),
-            refreshTokens,
-        })
-    }
-
-    const getVehicleDetails = async () => {
-        const url = `http://localhost:8080/api/vehicles/${data.vehicleId}`
-        await apiRequest({
-            url,
-            useToken: true,
-            onSuccess: ((status, data) => {
-                setSelectedVehicle(data)
-            }),
-            onError: ((status, data) => {
-                toast.error(data, {
-                    autoClose: 3000,
-                })
-            }),
-            refreshTokens,
-        })
-    }
-
-    const getStandDetails = async () => {
-        const url = `http://localhost:8080/api/user/stand/${data.standId}`
-        await apiRequest({
-            url,
-            useToken: true,
-            onSuccess: ((status, data) => {
-                setSelectedStand(data)
             }),
             onError: ((status, data) => {
                 toast.error(data, {
@@ -153,6 +114,9 @@ const ZamowUsluge = () => {
 
     return(
         <div>
+            {/* Nakładka blokująca */}
+            {isBlocked && <div className="overlay"></div>}
+
             <h2>Zamawianie usługi</h2>
             <main>
                 { step === 1 && (
@@ -182,7 +146,7 @@ const ZamowUsluge = () => {
                 <fieldset className='fieldset-form'>
                     <legend>Zarezerwuj termin</legend>
                         { step === 1 && (
-                            <div className={styles['step-form-div']}>
+                            <div className='step-form-div'>
                                 <div className='form-group'>
                                     <label>Wybierz pojazd:</label>
                                     <select
@@ -194,7 +158,7 @@ const ZamowUsluge = () => {
                                         <option value=""></option>
                                         {vehicles.map((vehicle) => (
                                             <option key={vehicle.id} value={vehicle.id}>
-                                                {vehicle.brand} {vehicle.model} - {vehicle.registrationNumber}
+                                                {vehicle.brand} {vehicle.model} ({vehicle.registrationNumber})
                                             </option>
                                         ))}
                                     </select>
@@ -211,52 +175,54 @@ const ZamowUsluge = () => {
                                 </div>
 
                                 <div className='btns'>
-                                    <button className={styles['refresh-btn']} onClick={() => setData((prevData) => ({ ...prevData, vehicleId: '', date: '', time: '', standId: '' }))}>&#x27F2;</button>
-                                    { validStep1 && <button className={styles['step-btn']} onClick={ getFreeTerms }>&#129094;</button> }
+                                    <button className='refresh-btn' onClick={() => setData((prevData) => ({ ...prevData, vehicleId: '', date: '', time: '', standId: '' }))}>&#x27F2;</button>
+                                    { validStep1 && <button className='step-btn' onClick={ getFreeTerms }>&#129094;</button> }
                                 </div>
                             </div>
                         )}
                         { step === 2 && (
-                            <div className={styles['step-form-div']}>
+                            <div className='step-form-div'>
                                 <div className='form-group'>
                                     <label>Wybierz godzinę:</label>
                                     <select
                                         name="term"
-                                        value={`${data.time},${data.standId}`}
+                                        value={`${data.time},${data.standId},${data.standName}`}
                                         onChange={(e) => {
-                                            const [time, standId] = e.target.value.split(',')
-                                            setData((prev) => ({ ...prev, time, standId}))
+                                            const [time, standId, standName] = e.target.value.split(',')
+                                            setData((prev) => ({ ...prev, time, standId, standName}))
                                         }}
                                         required
                                     >
                                         
-                                        <option value="">{ freeTerms.length === 0 && (<p>Brak dostępnych terminów</p>) }</option>
+                                        <option value="">
+                                            { freeTerms.length === 0 ? "Brak dostępnych terminów" : "Wybierz termin" }
+                                        </option>
                                         {freeTerms.length > 0 && freeTerms.map((term, index) => (
-                                            <option key={index} value={[`${term.time}`,`${term.standId}`]}>
-                                                {term.time} - Stanowisko {term.standId}
+                                            <option key={index} value={`${term.time},${term.stand.id},${term.stand.name}`}>
+                                                {term.time} - Stanowisko {term.stand.name}
                                             </option>
                                         ))}
                                     </select>
                                 </div>
                                 
                                 <div className='btns'>
-                                    <button className={styles['step-btn']} onClick={() => setStep(1) }>&#129092;</button>
-                                    <button className={styles['refresh-btn']} onClick={() => setData((prevData) => ({ ...prevData, time: '', standId: ''}))}>&#x27F2;</button>
-                                    { validStep2 && <button className={styles['step-btn']} onClick={ getReservationDetails }>&#129094;</button> }
+                                    <button className='step-btn' onClick={() => setStep(1) }>&#129092;</button>
+                                    <button className='refresh-btn' onClick={() => setData((prevData) => ({ ...prevData, time: '', standId: ''}))}>&#x27F2;</button>
+                                    { validStep2 && <button className='step-btn' onClick={() => setStep(3) }>&#129094;</button> }
                                 </div>
                             </div>
                         )}
                         { step === 3 && (
-                            <div className={styles['step-form-div']}>
+                            <div className='step-form-div'>
                                 <div className={styles['confirm-data']}>
                                     <div>Pojazd:</div>
-                                    <div>{selectedVehicle.brand} {selectedVehicle.model} - {selectedVehicle.registrationNumber}</div>
+                                    <div>{selectedVehicle.brand} {selectedVehicle.model} ({selectedVehicle.registrationNumber})</div>
                                 </div>
 
                                 <div className={styles['confirm-data']}>
                                     <div>Data:</div>
                                     <div>{data.date}</div>
-                                    </div>
+                                </div>
 
                                 <div className={styles['confirm-data']}>
                                     <div>Godzina:</div>
@@ -265,11 +231,11 @@ const ZamowUsluge = () => {
 
                                 <div className={styles['confirm-data']}>
                                     <div>Stanowisko:</div>
-                                    <div>{selectedStand.name}</div>
+                                    <div>{data.standName}</div>
                                 </div>
 
                                 <div className='btns'>
-                                    <button className={styles['step-btn']} onClick={() => setStep(2) }>&#129092;</button>
+                                    <button className='step-btn' onClick={() => setStep(2) }>&#129092;</button>
                                     <button className='ok-btn' type="submit" onClick={handleSubmit}>&#x2714;</button>
                                 </div>
                             </div>

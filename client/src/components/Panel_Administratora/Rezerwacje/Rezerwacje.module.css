@@ -1,4 +1,4 @@
-@media (max-width: 1180px){
+@media (max-width: 1285px){
     table thead tr {
         display: none;
     }
@@ -29,5 +29,11 @@
 
     tbody td button {
         width: 20% !important;
+    }
+}
+
+@media (max-width: 765px){
+    tbody td button {
+        width: 115px !important
     }
 }

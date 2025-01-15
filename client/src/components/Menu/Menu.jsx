@@ -25,6 +25,7 @@ const Menu = ({ onLogout }) => {
                     { token && <Link to="/moje_konto" className="btn">Moje konto</Link> }
                     { !token && <Link to="/logowanie" className="btn">Zaloguj się</Link> }
                     { !token && <Link to="/rejestracja" className="btn">Zarejestruj się</Link> }
+                    { token && (role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <Link to="/panel_pracownika" className="btn">Panel pracownika</Link> }
                     { token && role === 'ROLE_ADMIN' && <Link to="/panel_administratora" className="btn">Panel administratora</Link> }
                     { token && <Link to='/' className="btn" onClick={onLogout}>Wyloguj się</Link> }
                 </ul>

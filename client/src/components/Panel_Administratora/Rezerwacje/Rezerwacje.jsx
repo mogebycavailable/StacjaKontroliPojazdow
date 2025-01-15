@@ -11,12 +11,8 @@ const Rezerwacje = () => {
     const navigate = useNavigate()
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState(null)
 
     const [data, setData] = useState([])
-    const [vehicles, setVehicles] = useState([])
-    const [stands, setStands] = useState([])
 
     const statutesTranslations = {
         ARRANGED: "Zaplanowane",
@@ -28,6 +24,7 @@ const Rezerwacje = () => {
         getAllInspections()
     }, [])
 
+    // GET
     const getAllInspections = async () => {
         const url = "http://localhost:8080/api/admin/inspections"
         await apiRequest({
@@ -43,6 +40,42 @@ const Rezerwacje = () => {
             }),
             refreshTokens,
         })
+    }
+
+    // DELETE
+    const handleDeleteInspectionByAdmin = async (e, id) => {
+        e.preventDefault()
+        if(window.confirm('Czy na pewno chcesz odwołać tą rezerwację?')){
+            const url = "http://localhost:8080/api/user/inspections/"+id
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'DELETE',
+                onSuccess: ((status, data) => {
+                    toast.success(
+                        <div>
+                            Pomyślnie odwołano<br/>
+                            rezerwację o id: {data.id}
+                        </div>,
+                        {
+                        onOpen: () => setIsBlocked(true),
+                        onClose: () => {
+                            window.location.assign('/panel_administratora/rezerwacje')
+                            setIsBlocked(false)
+                        },
+                        autoClose: 3000,
+                    })
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
+                        autoClose: 3000,
+                    })
+                }),
+                refreshTokens,
+            })
+        } else {
+            console.log("Brak zgody administratora na odwołanie rezerwacji.")
+        }
     }
 
     return(
@@ -66,23 +99,25 @@ const Rezerwacje = () => {
                                 <th>Godz. zakończenia</th>
                                 <th>Stanowisko</th>
                                 <th>Status</th>
+                                <th>Opis</th>
                                 <th>Dane kontaktowe</th>
                                 <th>Opcje</th>
                             </tr>
                         </thead>
                         <tbody>
-                            { data && data.map((reservation) => {
+                            { data && data.map((inspection) => {
                                 return(
-                                    <tr key={reservation.id} className={panelStyles['tbody-rows']}>
-                                        <td data-title="Id">{reservation.id}</td>
-                                        <td data-title="Pojazd">{reservation.id}</td>
-                                        <td data-title="Data">{reservation.date}</td>
-                                        <td data-title="Godz. rozpoczęcia">{reservation.inspectionStart}</td>
-                                        <td data-title="Godz. zakończenia">{reservation.inspectionEnd}</td>
-                                        <td data-title="Stanowisko">{reservation.standId}</td>
-                                        <td data-title="Status">{statutesTranslations[reservation.status]}</td>
-                                        <td data-title="Dane kontaktowe">{reservation.userEmail}</td>
-                                        <td data-title="Opcje"><button className='cancel-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={() => console.log('click')}>Odwołaj</button></td>
+                                    <tr key={inspection.id} className={panelStyles['tbody-rows']}>
+                                        <td data-title="Id">{inspection.id}</td>
+                                        <td data-title="Pojazd">{inspection.vehicle.brand} {inspection.vehicle.model} ({inspection.vehicle.registrationNumber})</td>
+                                        <td data-title="Data">{inspection.date}</td>
+                                        <td data-title="Godz. rozpoczęcia">{inspection.inspectionStart}</td>
+                                        <td data-title="Godz. zakończenia">{inspection.inspectionEnd}</td>
+                                        <td data-title="Stanowisko">{inspection.stand.name}</td>
+                                        <td data-title="Status">{statutesTranslations[inspection.status]}</td>
+                                        <td data-title="Opis">{ inspection.description.length > 0 ? <button className='loupe-btn'>&#x1F50D;</button> : "Brak" }</td>
+                                        <td data-title="Dane kontaktowe">{inspection.userEmail}</td>
+                                        <td data-title="Opcje"><button className='cancel-btn' style={{ width: '100%', cursor: 'pointer' }} onClick={(e) => handleDeleteInspectionByAdmin(e, inspection.id)}>Odwołaj</button></td>
                                     </tr>
                                 )
                             })}

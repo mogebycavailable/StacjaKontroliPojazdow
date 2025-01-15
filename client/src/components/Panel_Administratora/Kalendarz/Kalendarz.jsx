@@ -100,6 +100,8 @@ const Kalendarz = () => {
         e.preventDefault()
 
         if(window.confirm('Czy na pewno chcesz aktywować ten zakres dat?')){
+            setIsBlocked(true)
+
             const activationDateRange = {
                 startingDate: dateRange.startingDate,
                 endingDate: dateRange.endingDate
@@ -118,7 +120,6 @@ const Kalendarz = () => {
                             Aktywowano daty z podanego zakresu
                         </div>,
                         {
-                        onOpen: () => setIsBlocked(true),
                         onClose: () => {
                             window.location.assign('/panel_administratora/kalendarz')
                             setIsBlocked(false)

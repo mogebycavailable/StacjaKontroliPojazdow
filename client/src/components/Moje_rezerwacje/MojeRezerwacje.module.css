@@ -1,11 +1,11 @@
-.reservation-img
+.inspection-img
 {
 	width: 70%;
 	height: auto;
     margin: 0 auto;
 }
 
-.reservation
+.inspection
 {
 	display: flex;
 	flex-direction: row;
@@ -25,13 +25,13 @@
 	margin: auto;
 }
 
-.reservation-container
+.inspection-container
 {
 	width: 50%;
 	margin: 2%;
 }
 
-.reservation-data
+.inspection-data
 {
 	display: flex;
 	justify-content: space-between;
@@ -41,19 +41,30 @@
 	border: 2px dotted black;
 }
 
-.reservation-data > *
+.inspection-data > *
 {
 	padding: 10px;
 }
 
+.inspection-data > textarea
+{
+	font-size: 18px;
+	border: 2px solid black;
+	border-radius: 8px;
+	
+	width: 300px !important;
+	height: 100px !important;
+	margin: 10px;
+}
+
 @media (max-width: 768px) {
-	.reservation {
+	.inspection {
 		flex-direction: column; /* Zmieniamy układ na kolumnowy */
         align-items: center;
 		flex-wrap: wrap;
 	}
 
-	.reservation-container {
+	.inspection-container {
 		width: 100%;
 		margin: auto;
 	}

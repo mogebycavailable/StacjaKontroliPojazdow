@@ -135,9 +135,9 @@ th, td {
     padding: 1rem;
 }
   
-tr {
-    border-bottom: 1px solid #ddd;
-}
+/* tr {
+    border-bottom: 1px solid black;
+} */
 
 .tbody-rows:hover
 {
