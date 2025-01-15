@@ -2,13 +2,16 @@ version: '3.1'
 
 services:
   database:
+    container_name: skp-pssql-database
     image: postgres
     ports:
       - "5432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: changemeinprod!
+
   server:
+    container_name: skp-spring-server
     image: openjdk:21-jdk-slim
     ports:
       - "8080:8080"
@@ -18,3 +21,15 @@ services:
     restart: always
     depends_on:
       - database
+
+  client:
+    container_name: skp-react-client
+    image: node
+    ports:
+      - "5173:5173"
+    build:
+      context: /client
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - server

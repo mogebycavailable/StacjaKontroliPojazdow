@@ -11,14 +11,14 @@ const DodajPojazd = () => {
     const refreshTokens = useRefresh()
     const [isBlocked, setIsBlocked] = useState(false)
     const [data, setData] = useState({
-        brand: 'Fiat',
-        model: 'Uno',
-        year: '1998',
-        registrationNumber: 'LSW 51X2K',
-        vehicleIdentificationNumber: '1N6AD0EV1CC444260',
+        brand: '',
+        model: '',
+        year: '',
+        registrationNumber: '',
+        vehicleIdentificationNumber: '',
         vehicleType: '',
         hasLpg: false,
-        validityPeriod: '2025-01-25'
+        validityPeriod: ''
     })
 
     const vehicleTypes = [

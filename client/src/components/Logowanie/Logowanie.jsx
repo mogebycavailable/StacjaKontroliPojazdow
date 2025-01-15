@@ -6,8 +6,8 @@ import apiRequest from '../../service/restApiService'
 const Logowanie = ({ onLogin }) => {
     const [isBlocked, setIsBlocked] = useState(false)
     const [data, setData] = useState({
-        email: "root@skp.pl",
-        pwdHash: "root"
+        email: '',
+        pwdHash: ''
     })
 
     const validData = data.email && data.pwdHash
