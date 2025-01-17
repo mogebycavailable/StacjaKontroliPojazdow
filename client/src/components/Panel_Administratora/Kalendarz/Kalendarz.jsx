@@ -339,9 +339,7 @@ const Kalendarz = () => {
                             tileClassName={tileClassName}
                         />
                     </div>
-                    <div className='legend-to-calendar'>
-                        
-                    </div>
+
                     <div className='date-details'>
                         {calendarDate ? ( 
                             isDateActive ? (

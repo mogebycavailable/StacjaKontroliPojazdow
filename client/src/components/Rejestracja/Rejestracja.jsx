@@ -88,7 +88,7 @@ const Rejestracja = ({ onRegister }) => {
             <h2>Rejestracja do serwisu</h2>
             <main>
                 <fieldset className='fieldset-form'>
-                    <legend>Zaloguj się</legend>
+                    <legend>Zarejestruj się</legend>
                     <form onSubmit={handleSubmit}>
                         <div className='form-group'>
                             <label>Imię:</label>
