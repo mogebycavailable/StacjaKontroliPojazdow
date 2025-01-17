@@ -44,6 +44,11 @@ const Pracownicy = () => {
         setEditPwdHash({ ...editPwdHash, [input.name]: input.value })
     }
 
+    const validPassword = (pwd) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,26}$/
+        return regex.test(pwd)
+    }
+
     const handleAddClick = () => {
         setEditingWorker(null)
         setEditingWorkerData(null)
@@ -113,44 +118,50 @@ const Pracownicy = () => {
     // POST
     const handleCreateWorker = async (e) => {
         e.preventDefault()
+        if(validPassword(addingWorkerData.pwdHash)) {
+            const newWorker = {
+                name: addingWorkerData.name,
+                surname: addingWorkerData.surname,
+                phone: addingWorkerData.phone,
+                email: addingWorkerData.email,
+                pwdHash: addingWorkerData.pwdHash,
+            }
 
-        const newWorker = {
-            name: addingWorkerData.name,
-            surname: addingWorkerData.surname,
-            phone: addingWorkerData.phone,
-            email: addingWorkerData.email,
-            pwdHash: addingWorkerData.pwdHash,
+            const url = "http://localhost:8080/api/admin/worker"
+
+            await apiRequest({
+                url,
+                useToken: true,
+                method: 'POST',
+                body: newWorker,
+                onSuccess: ((status, data) => {
+                    toast.success(
+                        <div>
+                            Utworzono pracownika:<br/>
+                            {data.name} {data.surname}
+                        </div>,
+                        {
+                        onOpen: () => setIsBlocked(true),
+                        onClose: () => {
+                            window.location.assign('/panel_administratora/pracownicy')
+                            setIsBlocked(false)
+                        },
+                        autoClose: 3000,
+                    })
+                }),
+                onError: ((status, data) => {
+                    toast.error(data, {
+                        autoClose: 3000,
+                    })
+                }),
+                refreshTokens,
+            })
+        } else {
+            toast.error("Hasło musi zawierać od 8 do 26 znaków, w tym 1 małą literę, 1 wielką literę, 1 cyfrę i 1 znak specjalny." ,
+            {
+                autoClose: 3000
+            })
         }
-
-        const url = "http://localhost:8080/api/admin/worker"
-
-        await apiRequest({
-            url,
-            useToken: true,
-            method: 'POST',
-            body: newWorker,
-            onSuccess: ((status, data) => {
-                toast.success(
-                    <div>
-                        Utworzono pracownika:<br/>
-                        {data.name} {data.surname}
-                    </div>,
-                    {
-                    onOpen: () => setIsBlocked(true),
-                    onClose: () => {
-                        window.location.assign('/panel_administratora/pracownicy')
-                        setIsBlocked(false)
-                    },
-                    autoClose: 3000,
-                })
-            }),
-            onError: ((status, data) => {
-                toast.error(data, {
-                    autoClose: 3000,
-                })
-            }),
-            refreshTokens,
-        })
     }
 
     // PATCH
@@ -197,61 +208,70 @@ const Pracownicy = () => {
 
     const handleEditWorkerPwd = async (e) => {
         e.preventDefault()
-
+        let successfulChange = false
         if(window.confirm('Czy na pewno chcesz zmienić hasło pracownika?')){
-            const validNewPwd = editPwdHash.newPwdHash === editPwdHash.confirmNewPwdHash
+            if(validPassword(editPwdHash.newPwdHash)) {
+                const validNewPwd = editPwdHash.newPwdHash === editPwdHash.confirmNewPwdHash
 
-            if(validNewPwd) {
-                const updateWorkerPwd = {
-                    pwdHash: editPwdHash.newPwdHash
-                }
-        
-                const url = "http://localhost:8080/api/admin/worker/"+editingWorker
+                if(validNewPwd) {
+                    const updateWorkerPwd = {
+                        pwdHash: editPwdHash.newPwdHash
+                    }
+            
+                    const url = "http://localhost:8080/api/admin/worker/"+editingWorker
 
-                await apiRequest({
-                    url,
-                    useToken: true,
-                    method: 'PATCH',
-                    body: updateWorkerPwd,
-                    onSuccess: ((status, data) => {
-                        toast.success(
-                            <div>
-                                Hasło pracownika:<br/>
-                                {data.name} {data.surname}<br/>
-                                zostało zmienione
-                            </div>,
-                            {
-                            onOpen: () => setIsBlocked(true),
-                            onClose: () => {
-                                window.location.assign('/panel_administratora/pracownicy')
-                                setIsBlocked(false)
-                            },
-                            autoClose: 3000,
-                        })
-                    }),
-                    onError: ((status, data) => {
-                        toast.error(data, {
-                            autoClose: 3000,
-                        })
-                    }),
-                    refreshTokens,
-                })
-            } else {
-                toast.error("Podane hasła nie są identyczne!" ,
-                    {
-                        onClose: () => { setIsBlocked(false) },
-                        autoClose: 3000
+                    await apiRequest({
+                        url,
+                        useToken: true,
+                        method: 'PATCH',
+                        body: updateWorkerPwd,
+                        onSuccess: ((status, data) => {
+                            successfulChange = true
+                            toast.success(
+                                <div>
+                                    Hasło pracownika:<br/>
+                                    {data.name} {data.surname}<br/>
+                                    zostało zmienione
+                                </div>,
+                                {
+                                onOpen: () => setIsBlocked(true),
+                                onClose: () => {
+                                    window.location.assign('/panel_administratora/pracownicy')
+                                    setIsBlocked(false)
+                                },
+                                autoClose: 3000,
+                            })
+                        }),
+                        onError: ((status, data) => {
+                            toast.error(data, {
+                                autoClose: 3000,
+                            })
+                        }),
+                        refreshTokens,
                     })
+                } else {
+                    toast.error("Podane hasła nie są identyczne!" ,
+                        {
+                            autoClose: 3000
+                        })
+                }
+            } else {
+                toast.error("Nowe hasło musi zawierać od 8 do 26 znaków, w tym 1 małą literę, 1 wielką literę, 1 cyfrę i 1 znak specjalny." ,
+                {
+                    autoClose: 3000
+                })
             }
         } else {
             console.log("Brak zgody administratora na zmianę hasła pracownika.")
         }
-        setIsChangingPassword(false)
-        setEditPwdHash({
-            newPwdHash: '',
-            confirmNewPwdHash: ''
-        })
-        setEditingWorker(null)
+        if(successfulChange){
+            setIsChangingPassword(false)
+            setEditPwdHash({
+                newPwdHash: '',
+                confirmNewPwdHash: ''
+            })
+            setEditingWorker(null)
+        }
     }
 
     // DELETE

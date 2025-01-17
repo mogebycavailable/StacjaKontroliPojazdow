@@ -10,8 +10,6 @@ const Logowanie = ({ onLogin }) => {
         pwdHash: ''
     })
 
-    const validData = data.email && data.pwdHash
-
     const handleChange = ({ currentTarget: input }) => {
         setData({ ...data, [input.name]: input.value })
     }
@@ -86,13 +84,9 @@ const Logowanie = ({ onLogin }) => {
                                 required
                             />
                         </div>
-                        <div className='form-group' style={{marginTop: '10px', justifyContent: 'center'}}>
-                            <a href="https://pl.wikipedia.org/wiki/Has%C5%82o" target="_blank">Zapomniałem hasła</a>
-                        </div>
+
                         <div className='btns'>
-                            { validData && (
-                                <button tyoe='submit'>Zaloguj</button>
-                            )}
+                            <button tyoe='submit'>Zaloguj</button>
                         </div>
                     </form>
                 </fieldset>

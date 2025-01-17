@@ -24,6 +24,11 @@ const Klienci = () => {
         confirmNewPwdHash: ''
     })
 
+    const validPassword = (pwd) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,26}$/
+        return regex.test(pwd)
+    }
+
     const handleEditingChange = ({ currentTarget: input }) => {
         setEditingClientData({ ...editingClientData, [input.name]: input.value })
     }
@@ -117,61 +122,69 @@ const Klienci = () => {
 
     const handleEditClientPwd = async (e) => {
         e.preventDefault()
-
+        let successfulChange = false
         if(window.confirm('Czy na pewno chcesz zmienić hasło klienta?')){
-            const validNewPwd = editPwdHash.newPwdHash === editPwdHash.confirmNewPwdHash
+            if(validPassword(editPwdHash.newPwdHash)) {
+                const validNewPwd = editPwdHash.newPwdHash === editPwdHash.confirmNewPwdHash
+                if(validNewPwd) {
+                    const updateClientPwd = {
+                        pwdHash: editPwdHash.newPwdHash
+                    }
+            
+                    const url = "http://localhost:8080/api/admin/users/"+editingClient
 
-            if(validNewPwd) {
-                const updateClientPwd = {
-                    pwdHash: editPwdHash.newPwdHash
-                }
-        
-                const url = "http://localhost:8080/api/admin/users/"+editingClient
-
-                await apiRequest({
-                    url,
-                    useToken: true,
-                    method: 'PATCH',
-                    body: updateClientPwd,
-                    onSuccess: ((status, data) => {
-                        toast.success(
-                            <div>
-                                Hasło klienta:<br/>
-                                {data.name} {data.surname}<br/>
-                                zostało zmienione
-                            </div>,
-                            {
-                            onOpen: () => setIsBlocked(true),
-                            onClose: () => {
-                                window.location.assign('/panel_administratora/klienci')
-                                setIsBlocked(false)
-                            },
-                            autoClose: 3000,
-                        })
-                    }),
-                    onError: ((status, data) => {
-                        toast.error(data, {
-                            autoClose: 3000,
-                        })
-                    }),
-                    refreshTokens,
-                })
-            } else {
-                toast.error("Podane hasła nie są identyczne!" ,
-                    {
-                        onClose: () => { setIsBlocked(false) },
-                        autoClose: 3000
+                    await apiRequest({
+                        url,
+                        useToken: true,
+                        method: 'PATCH',
+                        body: updateClientPwd,
+                        onSuccess: ((status, data) => {
+                            successfulChange = true
+                            toast.success(
+                                <div>
+                                    Hasło klienta:<br/>
+                                    {data.name} {data.surname}<br/>
+                                    zostało zmienione
+                                </div>,
+                                {
+                                onOpen: () => setIsBlocked(true),
+                                onClose: () => {
+                                    window.location.assign('/panel_administratora/klienci')
+                                    setIsBlocked(false)
+                                },
+                                autoClose: 3000,
+                            })
+                        }),
+                        onError: ((status, data) => {
+                            toast.error(data, {
+                                autoClose: 3000,
+                            })
+                        }),
+                        refreshTokens,
                     })
+                } else {
+                    toast.error("Podane hasła nie są identyczne!" ,
+                        {
+                            autoClose: 3000
+                        })
+                }
+            } else {
+                toast.error("Nowe hasło musi zawierać od 8 do 26 znaków, w tym 1 małą literę, 1 wielką literę, 1 cyfrę i 1 znak specjalny." ,
+                {
+                    autoClose: 3000
+                })
             }
         } else {
             console.log("Brak zgody administratora na zmianę hasła klienta.")
         }
-        setIsChangingPassword(false)
-        setEditPwdHash({
-            newPwdHash: '',
-            confirmNewPwdHash: ''
-        })
-        setEditingClient(null)
+        if(successfulChange){
+            setIsChangingPassword(false)
+            setEditPwdHash({
+                newPwdHash: '',
+                confirmNewPwdHash: ''
+            })
+            setEditingClient(null)
+        }
     }
 
     // DELETE

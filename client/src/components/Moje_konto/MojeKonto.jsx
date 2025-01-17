@@ -33,6 +33,11 @@ const MojeKonto = ({ onLogout }) => {
     const [isEditingPwd, setIsEditingPwd] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 
+    const validPassword = (pwd) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,26}$/
+        return regex.test(pwd)
+    }
+
     const handleAccountChange = ({ currentTarget: input }) => {
         setNewData({ ...newData, [input.name]: input.value })
     }
@@ -139,43 +144,49 @@ const MojeKonto = ({ onLogout }) => {
         e.preventDefault()
         
         if(window.confirm('Czy na pewno chcesz zmienić hasło?')){
-            const validNewPassword = editPwd.newPassword === editPwd.confirmNewPassword
-            if(validNewPassword){
-                const passwords = {
-                    oldPassword: editPwd.oldPassword,
-                    newPassword: editPwd.newPassword
+            if(validPassword(editPwd.newPassword)) {
+                const validNewPassword = editPwd.newPassword === editPwd.confirmNewPassword
+                if(validNewPassword){
+                    const passwords = {
+                        oldPassword: editPwd.oldPassword,
+                        newPassword: editPwd.newPassword
+                    }
+                    const url = "http://localhost:8080/api/user/my-account/change-password"
+                    await apiRequest({
+                        url,
+                        useToken: true,
+                        method: 'PATCH',
+                        body: passwords,
+                        onSuccess: ((status, data) => {
+                            toast.success(
+                                <div>
+                                    Twoje hasło zostało zmienione
+                                </div>,
+                                {
+                                onOpen: () => setIsBlocked(true),
+                                onClose: () => {
+                                    window.location.assign('/moje_konto')
+                                    setIsBlocked(false)
+                                },
+                                autoClose: 3000,
+                            })
+                        }),
+                        onError: ((status, data) => {
+                            toast.error(data, {
+                                autoClose: 3000,
+                            })
+                        }),
+                        refreshTokens,
+                    })
+                } else {
+                    toast.error("Podane hasła nie są identyczne!" ,
+                    {
+                        autoClose: 3000
+                    })
                 }
-                const url = "http://localhost:8080/api/user/my-account/change-password"
-                await apiRequest({
-                    url,
-                    useToken: true,
-                    method: 'PATCH',
-                    body: passwords,
-                    onSuccess: ((status, data) => {
-                        toast.success(
-                            <div>
-                                Twoje hasło zostało zmienione
-                            </div>,
-                            {
-                            onOpen: () => setIsBlocked(true),
-                            onClose: () => {
-                                window.location.assign('/moje_konto')
-                                setIsBlocked(false)
-                            },
-                            autoClose: 3000,
-                        })
-                    }),
-                    onError: ((status, data) => {
-                        toast.error(data, {
-                            autoClose: 3000,
-                        })
-                    }),
-                    refreshTokens,
-                })
             } else {
-                toast.error("Podane hasła nie są identyczne!" ,
+                toast.error("Nowe hasło musi zawierać od 8 do 26 znaków, w tym 1 małą literę, 1 wielką literę, 1 cyfrę i 1 znak specjalny." ,
                 {
-                    onClose: () => { setIsBlocked(false) },
                     autoClose: 3000
                 })
             }
@@ -280,10 +291,10 @@ const MojeKonto = ({ onLogout }) => {
                         </div>
 
                         <div className='btns' style={{margin: '3% auto'}}>
-                            <button className="edit-btn" onClick={openCloseEditDataSection}>&#9881;</button>
-                            <button id="change-password" onClick={openCloseEditPwdSection}>Zmień hasło</button>
-                            <button id="logout" onClick={onLogout}>Wyloguj się</button>
-                            { !(role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <button id="delete" onClick={() => {setIsDeleting(true); setIsBlocked(true)}}>Usuń konto</button> }
+                            <button className='edit-btn' onClick={openCloseEditDataSection}>&#9881;</button>
+                            <button onClick={openCloseEditPwdSection}>Zmień hasło</button>
+                            <button className={styles['logout-btn']} onClick={onLogout}>Wyloguj się</button>
+                            { !(role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <button className={styles['delete-account-btn']} onClick={() => {setIsDeleting(true); setIsBlocked(true)}}>Usuń konto</button> }
                         </div>
                     </div>
                 </div>

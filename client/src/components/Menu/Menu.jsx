@@ -10,24 +10,24 @@ const Menu = ({ onLogout }) => {
     return(
         <header>
             <div>
-                <a href="/">
+                <Link to="/">
                     <img src={logo}/>
-                </a>
+                </Link>
                 <h1>Stacja Kontroli Pojazdów</h1>
             </div>
             <nav>
                 <ul>
-                    <Link to="/" className="btn">Strona główna</Link>
-                    <Link to="/o_nas" className="btn">O nas</Link>
-                    { token && <Link to="/moje_pojazdy" className="btn">Moje pojazdy</Link> }
-                    { token && <Link to="/moje_rezerwacje" className="btn">Moje rezerwacje</Link> }
-                    { token && <Link to="/zamow_usluge" className="btn">Zamów usługę</Link> }
-                    { token && <Link to="/moje_konto" className="btn">Moje konto</Link> }
-                    { !token && <Link to="/logowanie" className="btn">Zaloguj się</Link> }
-                    { !token && <Link to="/rejestracja" className="btn">Zarejestruj się</Link> }
-                    { token && (role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <Link to="/panel_pracownika" className="btn">Panel pracownika</Link> }
-                    { token && role === 'ROLE_ADMIN' && <Link to="/panel_administratora" className="btn">Panel administratora</Link> }
-                    { token && <Link to='/' className="btn" onClick={onLogout}>Wyloguj się</Link> }
+                    <Link to="/">Strona główna</Link>
+                    <Link to="/o_nas">O nas</Link>
+                    { token && <Link to="/moje_pojazdy">Moje pojazdy</Link> }
+                    { token && <Link to="/moje_rezerwacje">Moje rezerwacje</Link> }
+                    { token && <Link to="/zamow_usluge">Zamów usługę</Link> }
+                    { token && <Link to="/moje_konto">Moje konto</Link> }
+                    { !token && <Link to="/logowanie">Zaloguj się</Link> }
+                    { !token && <Link to="/rejestracja">Zarejestruj się</Link> }
+                    { token && (role === 'ROLE_WORKER' || role === 'ROLE_ADMIN') && <Link to="/panel_pracownika">Panel pracownika</Link> }
+                    { token && role === 'ROLE_ADMIN' && <Link to="/panel_administratora">Panel administratora</Link> }
+                    { token && <Link to='/' onClick={onLogout}>Wyloguj się</Link> }
                 </ul>
             </nav>
         </header>

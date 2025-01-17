@@ -21,51 +21,62 @@ const Rejestracja = ({ onRegister }) => {
         setData({ ...data, [input.name]: input.value })
     }
 
+    const validPassword = (pwd) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,26}$/
+        return regex.test(pwd)
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const validData = data.pwdHash === data.confirmPwdHash
-        if(validData) {
-            const userData = { 
-                name: data.name,
-                surname: data.surname,
-                email: data.email,
-                phone: data.phone,
-                pwdHash: data.pwdHash
+        if(validPassword(data.pwdHash)) {
+            const validPasswordsIdentity = data.pwdHash === data.confirmPwdHash
+            if(validPasswordsIdentity) {
+                const userData = { 
+                    name: data.name,
+                    surname: data.surname,
+                    email: data.email,
+                    phone: data.phone,
+                    pwdHash: data.pwdHash
+                }
+        
+                const url = "http://localhost:8080/api/register"
+        
+                await apiRequest({
+                    url,
+                    method: 'POST',
+                    body: userData,
+                    onSuccess: ((status, data) => {
+                        localStorage.setItem("access-token", data.accessToken)
+                        localStorage.setItem("refresh-token", data.refreshToken)
+                        localStorage.setItem("role", data.role)
+                        toast.success(
+                            <div>
+                                Pomyślnie zarejestrowano konto
+                            </div>,
+                            {
+                            onOpen: () => setIsBlocked(true),
+                            onClose: () => {
+                                window.location.assign('/')
+                                setIsBlocked(false)
+                            },
+                            autoClose: 3000,
+                        })
+                    }),
+                    onError: ((status, data) => {
+                        toast.error(data, {
+                            autoClose: 3000,
+                        })
+                    }),
+                })
+            } else {
+                toast.error("Podane hasła nie są identyczne!" ,
+                {
+                    autoClose: 3000
+                })
             }
-    
-            const url = "http://localhost:8080/api/register"
-    
-            await apiRequest({
-                url,
-                method: 'POST',
-                body: userData,
-                onSuccess: ((status, data) => {
-                    localStorage.setItem("access-token", data.accessToken)
-                    localStorage.setItem("refresh-token", data.refreshToken)
-                    localStorage.setItem("role", data.role)
-                    toast.success(
-                        <div>
-                            Pomyślnie zarejestrowano konto
-                        </div>,
-                        {
-                        onOpen: () => setIsBlocked(true),
-                        onClose: () => {
-                            window.location.assign('/')
-                            setIsBlocked(false)
-                        },
-                        autoClose: 3000,
-                    })
-                }),
-                onError: ((status, data) => {
-                    toast.error(data, {
-                        autoClose: 3000,
-                    })
-                }),
-            })
         } else {
-            toast.error("Podane hasła nie są identyczne!" ,
+            toast.error("Hasło musi zawierać od 8 do 26 znaków, w tym 1 małą literę, 1 wielką literę, 1 cyfrę i 1 znak specjalny." ,
             {
-                onClose: () => { setIsBlocked(false) },
                 autoClose: 3000
             })
         }
